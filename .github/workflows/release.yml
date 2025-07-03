@@ -19,20 +19,21 @@ jobs:
 
       - name: Prepare Addon Folder
         run: |
-          mkdir package
-          mkdir package/SAP_Raid
+          mkdir -p package/SAP_Raid
           shopt -s extglob
           cp -r !(package|.git|.github) package/SAP_Raid/
-
-      - name: Create ZIP
+    
+      - name: Create ZIP with tag suffix
         run: |
+          TAG_NAME=${GITHUB_REF#refs/tags/}
           cd package
-          zip -r SAP_Raid.zip SAP_Raid/
-
+          zip -r SAP_Raid-v${TAG_NAME}.zip SAP_Raid/
+          echo "ZIP_NAME=SAP_Raid-v${TAG_NAME}.zip" >> $GITHUB_ENV
+      
       - name: Upload Release Asset
         if: startsWith(github.ref, 'refs/tags/')
         uses: softprops/action-gh-release@v2
         with:
-          files: package/SAP_Raid.zip
+          files: package/${{ env.ZIP_NAME }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
