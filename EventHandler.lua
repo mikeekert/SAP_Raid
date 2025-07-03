@@ -20,12 +20,7 @@ function SAP:EventHandler(e, wowevent, internal, ...) -- internal checks whether
             if not SAPRT then SAPRT = {} end
             if not SAPRT.SAPUI then SAPRT.SAPUI = {scale = 1} end
             if not SAPRT.SAPUI.externals_anchor then SAPRT.SAPUI.externals_anchor = {} end
-            -- if not SAPRT.SAPUI.main_frame then SAPRT.SAPUI.main_frame = {} end
-            -- if not SAPRT.SAPUI.external_frame then SAPRT.SAPUI.external_frame = {} end
-            if not SAPRT.NickNames then SAPRT.NickNames = {} end
             if not SAPRT.Settings then SAPRT.Settings = {} end
-            SAPRT.Settings["MyNickName"] = SAPRT.Settings["MyNickName"] or nil
-            SAPRT.Settings["GlobalNickNames"] = SAPRT.Settings["GlobalNickNames"] or false
             SAPRT.Settings["Blizzard"] = SAPRT.Settings["Blizzard"] or false
             SAPRT.Settings["WA"] = SAPRT.Settings["WA"] or false
             SAPRT.Settings["MRT"] = SAPRT.Settings["MRT"] or false
@@ -33,18 +28,9 @@ function SAP:EventHandler(e, wowevent, internal, ...) -- internal checks whether
             SAPRT.Settings["Grid2"] = SAPRT.Settings["Grid2"] or false
             SAPRT.Settings["OmniCD"] = SAPRT.Settings["OmniCD"] or false
             SAPRT.Settings["ElvUI"] = SAPRT.Settings["ElvUI"] or false
-            SAPRT.Settings["SuF"] = SAPRT.Settings["SuF"] or false
             SAPRT.Settings["Translit"] = SAPRT.Settings["Translit"] or false
             SAPRT.Settings["Unhalted"] = SAPRT.Settings["Unhalted"] or false
-            SAPRT.Settings["ShareNickNames"] = SAPRT.Settings["ShareNickNames"] or 4 -- none default
-            SAPRT.Settings["AcceptNickNames"] = SAPRT.Settings["AcceptNickNames"] or 4 -- none default
-            SAPRT.Settings["NickNamesSyncAccept"] = SAPRT.Settings["NickNamesSyncAccept"] or 2 -- guild default
-            SAPRT.Settings["NickNamesSyncSend"] = SAPRT.Settings["NickNamesSyncSend"] or 3 -- guild default
             SAPRT.Settings["WeakAurasImportAccept"] = SAPRT.Settings["WeakAurasImportAccept"] or 1 -- guild default
-            SAPRT.Settings["PAExtraAction"] = SAPRT.Settings["PAExtraAction"] or false
-            --SAPRT.Settings["LIQUID_MACRO"] = SAPRT.Settings["LIQUID_MACRO"] or false
-            SAPRT.Settings["PASelfPing"] = SAPRT.Settings["PASelfPing"] or false
-            SAPRT.Settings["ExternalSelfPing"] = SAPRT.Settings["ExternalSelfPing"] or false
             SAPRT.Settings["MRTNoteComparison"] = SAPRT.Settings["MRTNoteComparison"] or false
             SAPRT.Settings["TTS"] = SAPRT.Settings["TTS"] or true
             SAPRT.Settings["TTSVolume"] = SAPRT.Settings["TTSVolume"] or 50
@@ -57,16 +43,9 @@ function SAP:EventHandler(e, wowevent, internal, ...) -- internal checks whether
             SAPRT.SAPUI.AutoComplete = SAPRT.SAPUI.AutoComplete or {}
             SAPRT.SAPUI.AutoComplete["WA"] = SAPRT.SAPUI.AutoComplete["WA"] or {}
             SAPRT.SAPUI.AutoComplete["Addon"] = SAPRT.SAPUI.AutoComplete["Addon"] or {}
-
-            SAP.BlizzardNickNamesHook = false
-            SAP.MRTNickNamesHook = false
-            SAP.OmniCDNickNamesHook = false
-            SAP:InitNickNames()
         end
     elseif e == "PLAYER_LOGIN" and wowevent then
         local pafound = false
-        local extfound = false
-        local innervatefound = false
         local macrocount = 0    
         for i=1, 120 do
             local macroname = C_Macro.GetMacroName(i)
@@ -74,66 +53,24 @@ function SAP:EventHandler(e, wowevent, internal, ...) -- internal checks whether
             macrocount = i
             if macroname == "SAP PA Macro" then
                 local macrotext = "/run SAP_API:PrivateAura();"
-                if SAPRT.Settings["PASelfPing"] then
-                    macrotext = macrotext.."\n/ping [@player] Warning;"
-                end
-                if SAPRT.Settings["PAExtraAction"] then
-                    macrotext = macrotext.."\n/click ExtraActionButton1"
-                end
+
                 EditMacro(i, "SAP PA Macro", 132288, macrotext, false)
                 pafound = true
-            elseif macroname == "SAP Ext Macro" then
-                local macrotext = SAPRT.Settings["ExternalSelfPing"] and "/run SAP_API:ExternalRequest();\n/ping [@player] Assist;" or "/run SAP_API:ExternalRequest();"
-                EditMacro(i, "SAP Ext Macro", 135966, macrotext, false)
-                extfound = true
-            elseif macroname == "SAP Innervate" then
-                EditMacro(i, "SAP Innervate", 136048, "/run SAP_API:InnervateRequest();", false)
-                innervatefound = true
             end
-            if pafound and extfound and innervatefound then break end
+            if pafound then break end
         end
         if macrocount >= 120 and not pafound then
             print("You reached the global Macro cap so the Private Aura Macro could not be created")
         elseif not pafound then
             macrocount = macrocount+1            
             local macrotext = "/run SAP_API:PrivateAura();"
-            --if SAPRT.Settings["LIQUID_MACRO"] then
-            --    macrotext = macrotext.."\n/run WeakAuras.ScanEvents(\"LIQUID_PRIVATE_AURA_MACRO\", true)"
-            --end
+
             CreateMacro("SAP PA Macro", 132288, macrotext, false)
         end
-        if macrocount >= 120 and not extfound then 
-            print("You reached the global Macro cap so the External Macro could not be created")
-        elseif not extfound then
-            macrocount = macrocount+1
-            local macrotext = SAPRT.Settings["ExternalSelfPing"] and "/run SAP_API:ExternalRequest();\n/ping [@player] Assist;" or "/run SAP_API:ExternalRequest();"
-            --CreateMacro("SAP Ext Macro", 135966, macrotext, false)
-        end
-        if macrocount >= 120 and not inenrvatefound then
-            print("You reached the global Macro cap so the Innervate Macro could not be created")
-        elseif not innervatefound then
-            macrocount = macrocount+1
 
-            --CreateMacro("SAP Innervate", 136048, "/run SAP_API:InnervateRequest();", false)
-        end
-        if SAPRT.Settings["MyNickName"] then SAP:SendNickName("Any") end -- only send nickname if it exists. If user has ever interacted with it it will create an empty string instead which will serve as deleting the nickname
-        if SAPRT.Settings["GlobalNickNames"] then -- add own nickname if not already in database (for new characters)
-            local name, realm = UnitName("player")
-            if not realm then
-                realm = GetNormalizedRealmName()
-            end
-            if (not SAPRT.NickNames[name.."-"..realm]) or (SAPRT.Settings["MyNickName"] ~= SAPRT.NickNames[name.."-"..realm]) then
-                SAP:NewNickName("player", SAPRT.Settings["MyNickName"], name, realm)
-            end
-        end
         SAP.SAPUI:Init()
         SAP:InitLDB()
-        --if WeakAuras.GetData("Northern Sky Externals") then
-        --    print("lease uninstall the |cFF00FFFFPNorthern Sky Externals Weakaura|r to prevent conflicts with the Northern Sky Raid Tools Addon.")
-        --end
-        --if C_AddOns.IsAddOnLoaded("NorthernSkyMedia") then
-        --    print("Please uninstall the |cFF00FFFFPNorthern Sky Media Addon|r as this new Addon takes over all its functionality")
-        --end
+
     elseif e == "READY_CHECK" and (wowevent or SAPRT.Settings["Debug"]) then
         if WeakAuras.CurrentEncounter then return end
         if SAP:Difficultycheck() or SAPRT.Settings["Debug"] then -- only care about note comparison in normal, heroic&mythic raid
@@ -142,7 +79,6 @@ function SAP:EventHandler(e, wowevent, internal, ...) -- internal checks whether
         end
     elseif e == "GROUP_FORMED" and (wowevent or SAPRT.Settings["Debug"]) then
         if WeakAuras.CurrentEncounter then return end
-        if SAPRT.Settings["MyNickName"] then SAP:SendNickName("Any", true) end -- only send nickname if it exists. If user has ever interacted with it it will create an empty string instead which will serve as deleting the nickname
 
     elseif e == "MRT_NOTE" and SAPRT.Settings["MRTNoteComparison"] and (internal or SAPRT.Settings["Debug"]) then
         if WeakAuras.CurrentEncounter then return end
@@ -177,35 +113,13 @@ function SAP:EventHandler(e, wowevent, internal, ...) -- internal checks whether
             local u, ver, duplicate = SAP:GetVersionNumber(type, name, unit)
             SAP:Broadcast("SAP_VERSION_CHECK", "WHISPER", unit, ver, duplicate)
         end
-    elseif e == "SAP_NICKNAMES_COMMS" and (internal or SAPRT.Settings["Debug"]) then
-        if WeakAuras.CurrentEncounter then return end
-        local unit, nickname, name, realm, requestback, channel = ...
-        if UnitExists(unit) and UnitIsUnit("player", unit) then return end -- don't add new nickname if it's yourself because already adding it to the database when you edit it
-        if requestback and (UnitInRaid(unit) or UnitInParty(unit)) then SAP:SendNickName(channel, false) end -- send nickname back to the person who requested it
-        SAP:NewNickName(unit, nickname, name, realm, channel)
-
     elseif e == "PLAYER_REGEN_ENABLED" and (wowevent or SAPRT.Settings["Debug"]) then
         C_Timer.After(1, function()
-            if SAP.SyncNickNamesStore then
-                SAP:EventHandler("SAP_NICKNAMES_SYNC", false, true, SAP.SyncNickNamesStore.unit, SAP.SyncNickNamesStore.nicknametable, SAP.SyncNickNamesStore.channel)
-                SAP.SyncNickNamesStore = nil
-            end
             if SAP.WAString and SAP.WAString.unit and SAP.WAString.string then
                 SAP:EventHandler("SAP_WA_SYNC", false, true, SAP.WAString.unit, SAP.WAString.string)
                 SAP.WAString = nil
             end
         end)
-    elseif e == "SAP_NICKNAMES_SYNC" and (internal or SAPRT.Settings["Debug"]) then
-        local unit, nicknametable, channel = ...
-        local setting = SAPRT.Settings["NickNamesSyncAccept"]
-        if (setting == 3 or (setting == 2 and channel == "GUILD") or (setting == 1 and channel == "RAID") and (not C_ChallengeMode.IsChallengeModeActive())) then 
-            if UnitExists(unit) and UnitIsUnit("player", unit) then return end -- don't accept sync requests from yourself
-            if UnitAffectingCombat("player") or WeakAuras.CurrentEncounter then
-                SAP.SyncNickNamesStore = {unit = unit, nicknametable = nicknametable, channel = channel}
-            else
-                SAP:NickNamesSyncPopup(unit, nicknametable)
-            end
-        end
     elseif e == "SAP_WA_SYNC" and (internal or SAPRT.Settings["Debug"]) then
         local unit, str = ...
         local setting = SAPRT.Settings["WeakAurasImportAccept"]
@@ -251,10 +165,6 @@ function SAP:EventHandler(e, wowevent, internal, ...) -- internal checks whether
             SAP.MacroPresses = {}
         end        
         C_Timer.After(1, function()
-            if SAP.SyncNickNamesStore then
-                SAP:EventHandler("SAP_NICKNAMES_SYNC", false, true, SAP.SyncNickNamesStore.unit, SAP.SyncNickNamesStore.nicknametable, SAP.SyncNickNamesStore.channel)
-                SAP.SyncNickNamesStore = nil
-            end
             if SAP.WAString and SAP.WAString.unit and SAP.WAString.string then
                 SAP:EventHandler("SAP_WA_SYNC", false, true, SAP.WAString.unit, SAP.WAString.string)
             end

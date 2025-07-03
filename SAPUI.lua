@@ -8,8 +8,6 @@ local window_width = 800
 local window_height = 515
 local expressway = [[Interface\AddOns\SAP_Raid\Media\Fonts\Expressway.TTF]]
 
-local authorsString = "SAP"
-
 local options_text_template = DF:GetTemplate("font", "OPTIONS_FONT_TEMPLATE")
 local options_dropdown_template = DF:GetTemplate("dropdown", "OPTIONS_DROPDOWN_TEMPLATE")
 local options_switch_template = DF:GetTemplate("switch", "OPTIONS_CHECKBOX_TEMPLATE")
@@ -24,11 +22,10 @@ local SAPUI = DF:CreateSimplePanel(UIParent, window_width, window_height, "|cFF0
 SAPUI:SetPoint("CENTER")
 SAPUI:SetFrameStrata("HIGH")
 DF:BuildStatusbarAuthorInfo(SAPUI.StatusBar, _, "x |cFF00FFFFtemporary|r")
-SAPUI.StatusBar.discordTextEntry:SetText("hello world")
+SAPUI.StatusBar.discordTextEntry:SetText(":)")
 
 SAPUI.OptionsChanged = {
     ["general"] = {},
-    ["nicknames"] = {},
     ["externals"] = {},
     ["versions"] = {},
 }
@@ -70,60 +67,6 @@ local function PASelfPingChanged()
     end
 end
 
--- need to run this code on settings change
-local function ExternalSelfPingChanged()
-    local macrocount = 0
-    local extfound = false
-    for i = 1, 120 do
-        local macroname = C_Macro.GetMacroName(i)
-        if not macroname then break end
-        macrocount = i
-        if macroname == "SAP Ext Macro" then
-            extfound = true
-            local macrotext = SAPRT.Settings["ExternalSelfPing"] and "/run SAP_API:ExternalRequest();\n/ping [@player] Assist;" or
-                "/run SAP_API:ExternalRequest();"
-            EditMacro(i, "SAP Ext Macro", 135966, macrotext, false)
-            extfound = true
-            return
-        end
-    end
-    if macrocount >= 120 then 
-        print("You reached the global Macro cap so the External Macro could not be created")
-    elseif not extfound then
-        macrocount = macrocount+1
-        local macrotext = SAPRT.Settings["ExternalSelfPing"] and "/run SAP_API:ExternalRequest();\n/ping [@player] Assist;" or "/run SAP_API:ExternalRequest();"
-        CreateMacro("SAP Ext Macro", 135966, macrotext, false)
-    end
-end
-
--- suf setup guide popup
-local function BuildSUFSetupGuidePopup()
-    local popup = DF:CreateSimplePanel(UIParent, 300, 130, "SUF Setup Guide", "SUFSetupGuidePopup")
-    popup:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
-    popup:SetFrameLevel(100)
-
-    popup.text_entry_label = DF:CreateLabel(popup, "Copy this code and create a new SUF tag with it:", 9.5, "white")
-    popup.text_entry_label:SetPoint("TOPLEFT", popup, "TOPLEFT", 10, -30)
-    
-    popup.text_entry = DF:NewSpecialLuaEditorEntry(popup, 280, 80, _, "$parentTextEntry", true, true, false)
-    popup.text_entry:SetPoint("TOPLEFT", popup, "TOPLEFT", 10, -45)
-    popup.text_entry:SetPoint("BOTTOMRIGHT", popup, "BOTTOMRIGHT", -30, 10)
-    DF:ApplyStandardBackdrop(popup.text_entry)
-    DF:ReskinSlider(popup.text_entry.scroll)
-    
-    local tag_code = [[function(unit)
-    local name = UnitName(unit)
-    return name and SAP_API and SAP_API:GetName(name, "SuF") or name
-end]]
-    popup:SetScript("OnShow", function(self)
-        popup.text_entry:SetText(tag_code)
-        popup.text_entry.editbox:HighlightText()
-        popup.text_entry:SetFocus()
-    end)
-
-    return popup
-end
-
 -- version check ui
 local component_type = "WA"
 local checkable_components = { "WA", "Addon", "Note" }
@@ -141,11 +84,8 @@ local function build_checkable_components_options()
     return t
 end
 
-
-
 local component_name = ""
 local function BuildVersionCheckUI(parent)
-
     local hide_version_response_button = DF:CreateSwitch(parent,
         function(self, _, value) SAPRT.Settings["VersionCheckRemoveResponse"] = value end,
         SAPRT.Settings["VersionCheckRemoveResponse"], 20, 20, nil, nil, nil, "VersionCheckResponseToggle", nil, nil, nil,
@@ -213,9 +153,7 @@ local function BuildVersionCheckUI(parent)
                 local name = thisData.name
                 local version = thisData.version
                 local duplicate = thisData.duplicate
-                local nickname = SAP_API:Shorten(name)
 
-                line.name:SetText(nickname)
                 line.version:SetText(version)
                 line.duplicates:SetText(duplicate and "Yes" or "No")
 
@@ -490,7 +428,6 @@ local function BuildVersionCheckUI(parent)
         line.deleteButton:GetNormalTexture():SetDesaturated(true)
         line.deleteButton:GetHighlightTexture():SetDesaturated(true)
         line.deleteButton:GetPushedTexture():SetDesaturated(true)
-        -- line.deleteButton:SetFontFace(expressway)
         line.deleteButton:SetPoint("RIGHT", line, "RIGHT", -5, 0)
 
         return line
@@ -501,7 +438,6 @@ local function BuildVersionCheckUI(parent)
         "$parentVersionPresetsEditScrollBox", refreshPresets, SAPRT.Settings["VersionCheckPresets"], 360,
         window_height / 2 - 75, presetScrollLines, 20, createPresetLineFunc)
     version_presets_edit_scrollbox:SetPoint("TOPLEFT", version_presets_edit_frame, "TOPLEFT", 10, -30)
-    -- version_presets_edit_scrollbox:SetPoint("BOTTOMRIGHT", version_presets_edit_frame, "BOTTOMRIGHT", -25, 30)
     DF:ReskinSlider(version_presets_edit_scrollbox)
 
     for i = 1, presetScrollLines do
@@ -541,200 +477,14 @@ local function BuildVersionCheckUI(parent)
     return version_check_scrollbox
 end
 
-local function BuildNicknameEditUI()
-    local nicknames_edit_frame = DF:CreateSimplePanel(UIParent, 485, 420, "Nicknames Management", "NicknamesEditFrame", {
-        DontRightClickClose = true
-    })
-    nicknames_edit_frame:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
-
-    local refresh_count = 0
-
-    local function PrepareData(data)
-        local _data = {}
-        for player, nickname in pairs(SAPRT.NickNames) do
-            tinsert(_data, { player = player, nickname = nickname})
-        end
-        table.sort(_data, function(a, b)
-            return a.nickname < b.nickname
-        end)
-        return _data
-    end
-
-    local function MasterRefresh(self) 
-        local data = PrepareData()
-        self:SetData(data)
-        self:Refresh()
-    end
-    
-    local function refresh(self, data, offset, totalLines)
-        for i = 1, totalLines do
-            local index = i + offset
-            local nickData = data[index]
-            if nickData then
-                local line = self:GetLine(i)
-
-                local player, realm = strsplit("-", nickData.player)
-        
-                line.fullName = nickData.player
-                line.player = player
-                line.realm = realm
-                line.playerText.text = nickData.player
-                line.nicknameEntry.text = nickData.nickname
-                -- line:Show()
-            end
-        end
-    end
-
-    local function createLineFunc(self, index)
-        local parent = self
-        local line = CreateFrame("Frame", "$parentLine" .. index, self, "BackdropTemplate")
-        line:SetPoint("TOPLEFT", self, "TOPLEFT", 1, -((index-1) * (self.LineHeight)) - 1)
-        line:SetSize(self:GetWidth() - 2, self.LineHeight)
-        DF:ApplyStandardBackdrop(line)
-
-        -- Player name text
-        line.playerText = DF:CreateLabel(line, "")
-        line.playerText:SetPoint("LEFT", line, "LEFT", 5, 0)
-        
-        -- Nickname text
-        line.nicknameEntry = DF:CreateTextEntry(line, function(_, _, value)
-            SAP:AddNickName(line.player, line.realm, string.sub(value, 1, 12))
-            line.nicknameEntry.text = string.sub(value, 1, 12)
-            parent:MasterRefresh()
-        end, 120, 20)
-        line.nicknameEntry:SetTemplate(options_dropdown_template)
-        line.nicknameEntry:SetPoint("LEFT", line, "LEFT", 185, 0)
-        
-        -- Delete button
-        line.deleteButton = DF:CreateButton(line, function()
-            SAP:AddNickName(line.player, line.realm, "")
-            self:SetData(SAPRT.NickNames)
-            self:MasterRefresh()
-        end, 12, 12)
-        line.deleteButton:SetNormalTexture([[Interface\GLUES\LOGIN\Glues-CheckBox-Check]])
-        line.deleteButton:SetHighlightTexture([[Interface\GLUES\LOGIN\Glues-CheckBox-Check]])
-        line.deleteButton:SetPushedTexture([[Interface\GLUES\LOGIN\Glues-CheckBox-Check]])
-
-        line.deleteButton:GetNormalTexture():SetDesaturated(true)
-        line.deleteButton:GetHighlightTexture():SetDesaturated(true)
-        line.deleteButton:GetPushedTexture():SetDesaturated(true)
-        -- line.deleteButton:SetFontFace(expressway)
-        line.deleteButton:SetPoint("RIGHT", line, "RIGHT", -5, 0)
-
-
-
-        return line
-    end
-
-    local scrollLines = 15
-    local nicknames_edit_scrollbox = DF:CreateScrollBox(nicknames_edit_frame, "$parentNicknameEditScrollBox", refresh, {}, 445, 300, scrollLines, 20, createLineFunc)
-    nicknames_edit_frame.scrollbox = nicknames_edit_scrollbox
-    nicknames_edit_scrollbox:SetPoint("TOPLEFT", nicknames_edit_frame, "TOPLEFT", 10, -50)
-    nicknames_edit_scrollbox.MasterRefresh = MasterRefresh
-    DF:ReskinSlider(nicknames_edit_scrollbox)
-
-    for i = 1, scrollLines do
-        nicknames_edit_scrollbox:CreateLine(createLineFunc)
-    end
-
-    local player_name_header = DF:CreateLabel(nicknames_edit_frame, "Player Name", 11)
-    player_name_header:SetPoint("TOPLEFT", nicknames_edit_frame, "TOPLEFT", 20, -30)
-
-    local nickname_header = DF:CreateLabel(nicknames_edit_frame, "Nickname", 11)
-    nickname_header:SetPoint("TOPLEFT", nicknames_edit_frame, "TOPLEFT", 200, -30)
-
-
-    nicknames_edit_scrollbox:SetScript("OnShow", function(self) 
-        self:MasterRefresh() 
-    end)
-
-    -- Add new nickname section
-    local new_player_label = DF:CreateLabel(nicknames_edit_frame, "New Player:", 11)
-    new_player_label:SetPoint("TOPLEFT", nicknames_edit_scrollbox, "BOTTOMLEFT", 0, -20)
-
-    local new_player_entry = DF:CreateTextEntry(nicknames_edit_frame, function() end, 120, 20)
-    new_player_entry:SetPoint("LEFT", new_player_label, "RIGHT", 10, 0)
-    new_player_entry:SetTemplate(options_dropdown_template)
-
-    local new_nickname_label = DF:CreateLabel(nicknames_edit_frame, "Nickname:", 11)
-    new_nickname_label:SetPoint("LEFT", new_player_entry, "RIGHT", 10, 0)
-
-    local new_nickname_entry = DF:CreateTextEntry(nicknames_edit_frame, function() end, 120, 20)
-    new_nickname_entry:SetPoint("LEFT", new_nickname_label, "RIGHT", 10, 0)
-    new_nickname_entry:SetTemplate(options_dropdown_template)
-
-    local add_button = DF:CreateButton(nicknames_edit_frame, function()
-        local name = new_player_entry:GetText()
-        local nickname = new_nickname_entry:GetText()
-        if player ~= "" and nickname ~= "" then
-            local player, realm = strsplit("-", name)
-            if not realm then
-                realm = GetNormalizedRealmName()
-            end
-            SAP:AddNickName(player, realm, nickname)
-            new_player_entry:SetText("")
-            new_nickname_entry:SetText("")
-            nicknames_edit_scrollbox:MasterRefresh()
-        end
-    end, 60, 20, "Add")
-    add_button:SetPoint("LEFT", new_nickname_entry, "RIGHT", 10, 0)
-    add_button:SetTemplate(options_button_template)
-
-    local sync_button = DF:CreateButton(nicknames_edit_frame, function() SAP:SyncNickNames() end, 225, 20, "Sync Nicknames")
-    sync_button:SetPoint("BOTTOMLEFT", nicknames_edit_frame, "BOTTOMLEFT", 10, 10)
-    sync_button:SetTemplate(options_button_template)
-
-    local function createImportPopup()
-        local popup = DF:CreateSimplePanel(nicknames_edit_frame, 300, 150, "Import Nicknames", "ImportPopup", {
-            DontRightClickClose = true
-        })
-        popup:SetPoint("CENTER", nicknames_edit_frame, "CENTER", 0, 0)
-        popup:SetFrameLevel(100)
-
-        popup.import_text_box = DF:NewSpecialLuaEditorEntry(popup, 280, 80, _, "ImportTextBox", true, false, true)
-        popup.import_text_box:SetPoint("TOPLEFT", popup, "TOPLEFT", 10, -30)
-        popup.import_text_box:SetPoint("BOTTOMRIGHT", popup, "BOTTOMRIGHT", -30, 40)
-        DF:ApplyStandardBackdrop(popup.import_text_box)
-        DF:ReskinSlider(popup.import_text_box.scroll)
-        popup.import_text_box:SetFocus()
-
-        popup.import_confirm_button = DF:CreateButton(popup, function()
-            local import_string = popup.import_text_box:GetText()
-            SAP:ImportNickNames(import_string)
-            popup.import_text_box:SetText("")
-            popup:Hide()
-            nicknames_edit_scrollbox:MasterRefresh()
-        end, 280, 20, "Import")
-        popup.import_confirm_button:SetPoint("BOTTOM", popup, "BOTTOM", 0, 10)
-        popup.import_confirm_button:SetTemplate(options_button_template)
-
-        popup:Hide()
-        return popup
-    end
-
-    local import_popup = createImportPopup()
-    local import_button = DF:CreateButton(nicknames_edit_frame, function() 
-        if not import_popup:IsShown() then 
-            import_popup:Show() 
-        end 
-    end, 225, 20, "Import Nicknames")
-    import_button:SetPoint("BOTTOMRIGHT", nicknames_edit_frame, "BOTTOMRIGHT", -10, 10)
-    import_button:SetTemplate(options_button_template)
-
-    nicknames_edit_frame:Hide()
-    return nicknames_edit_frame
-end
-
 function SAPUI:Init()
     -- Create the scale bar
     DF:CreateScaleBar(SAPUI, SAPRT.SAPUI)
     SAPUI:SetScale(SAPRT.SAPUI.scale)
 
     -- Create the tab container
-    local tabContainer = DF:CreateTabContainer(SAPUI, "SAP", "SAPUI_TabsTemplate", {
+    local tabContainer = DF:CreateTabContainer(SAPUI, "", "SAPUI_TabsTemplate", {
         { name = "General",   text = "General" },
-        --{ name = "Nicknames", text = "Nicknames" },
-        --{ name = "Externals", text = "Externals" },
         { name = "Versions",  text = "Versions" },
         { name = "WeakAuras",   text = "WeakAuras" },
     }, {
@@ -743,13 +493,9 @@ function SAPUI:Init()
         backdrop_color = { 0, 0, 0, 0.2 },
         backdrop_border_color = { 0.1, 0.1, 0.1, 0.4 }
     })
-    -- Position the tab container within the main frame
-    -- tabContainer:SetPoint("TOP", SAPUI, "TOP", 0, 0)
     tabContainer:SetPoint("CENTER", SAPUI, "CENTER", 0, 0)
 
     local general_tab = tabContainer:GetTabFrameByName("General")
-    --local nicknames_tab = tabContainer:GetTabFrameByName("Nicknames")
-    --local externals_tab = tabContainer:GetTabFrameByName("Externals")
     local versions_tab = tabContainer:GetTabFrameByName("Versions")
     local weakaura_tab = tabContainer:GetTabFrameByName("WeakAuras")
     
@@ -762,12 +508,7 @@ function SAPUI:Init()
     generic_display.text:SetPoint("CENTER", generic_display, "CENTER", 0, 0)
     generic_display:Hide()
     SAPUI.generic_display = generic_display
-    -- externals anchor frame
-    local externals_anchor_panel_options = {
-        NoCloseButton = true,
-        NoTitleBar = true,
-        DontRightClickClose = true
-    }
+
     local externals_anchor = CreateFrame("Frame", "ExternalsAnchor", UIParent, "BackdropTemplate")
     SAPUI.externals_anchor = externals_anchor
     externals_anchor:SetClampedToScreen(true)
@@ -786,7 +527,6 @@ function SAPUI:Init()
         }
     })
     externals_anchor:SetBackdropBorderColor(1, 0, 0, 1)
-    SAPUI:LoadExternalsAnchorPosition()
 
     local externals_anchor_text = externals_anchor:CreateFontString(nil, "OVERLAY", "GameFontNormal")
     externals_anchor_text:SetPoint("CENTER", externals_anchor, "CENTER", 0, 0)
@@ -823,8 +563,6 @@ function SAPUI:Init()
     external_frame:Hide()
     SAPUI.external_frame = external_frame
 
-    -- dummy default variables until cvars are implemented
-    local enableSUFNicknames = false
     -- TTS voice preview
     local tts_text_preview = ""
 
@@ -953,72 +691,6 @@ function SAPUI:Init()
     end
     -- end of keybinding logic
 
-    -- nickname logic
-    local nickname_share_options = { "Raid", "Guild", "Both", "None" }
-    local build_nickname_share_options = function()
-        local t = {}
-        for i = 1, #nickname_share_options do
-            tinsert(t, {
-                label = nickname_share_options[i],
-                value = i,
-                onclick = function(_, _, value)
-                    SAPRT.Settings["ShareNickNames"] = value
-                end
-
-            })
-        end
-        return t
-    end
-
-    local nickname_accept_options = { "Raid", "Guild", "Both", "None" }
-    local build_nickname_accept_options = function()
-        local t = {}
-        for i = 1, #nickname_accept_options do
-            tinsert(t, {
-                label = nickname_accept_options[i],
-                value = i,
-                onclick = function(_, _, value)
-                    SAPRT.Settings["AcceptNickNames"] = value
-                end
-
-            })
-        end
-        return t
-    end
-
-    
-    local nickname_syncaccept_options = { "Raid", "Guild", "Both", "None" }
-    local build_nickname_syncaccept_options = function()
-        local t = {}
-        for i = 1, #nickname_syncaccept_options do
-            tinsert(t, {
-                label = nickname_syncaccept_options[i],
-                value = i,
-                onclick = function(_, _, value)
-                    SAPRT.Settings["NickNamesSyncAccept"] = value
-                end
-
-            })
-        end
-        return t
-    end
-
-    local nickname_syncsend_options = { "Raid", "Guild", "None"}
-    local build_nickname_syncsend_options = function()
-        local t = {}
-        for i = 1, #nickname_syncsend_options do
-            tinsert(t, {
-                label = nickname_syncsend_options[i],
-                value = i,
-                onclick = function(_, _, value)
-                    SAPRT.Settings["NickNamesSyncSend"] = value
-                end
-
-            })
-        end
-        return t
-    end
-
     
     local weakauras_importaccept_options = {"Guild only", "Anyone", "None"}
     local build_weakauras_importaccept_options = function()
@@ -1035,33 +707,6 @@ function SAPUI:Init()
         end
         return t
     end
-
-    local function WipeNickNames()
-        local popup = DF:CreateSimplePanel(UIParent, 300, 150, "Confirm Wipe Nicknames", "SAPRTWipeNicknamesPopup")
-        popup:SetFrameStrata("DIALOG")
-        popup:SetPoint("CENTER", UIParent, "CENTER")
-
-        local text = DF:CreateLabel(popup,
-            "Are you sure you want to wipe all nicknames?", 12, "orange")
-        text:SetPoint("TOP", popup, "TOP", 0, -30)
-        text:SetJustifyH("CENTER")
-
-        local confirmButton = DF:CreateButton(popup, function()
-            SAP:WipeNickNames()
-            SAPUI.nickname_frame.scrollbox:MasterRefresh()
-            popup:Hide()
-        end, 100, 30, "Confirm")
-        confirmButton:SetPoint("BOTTOMLEFT", popup, "BOTTOM", 5, 10)
-        confirmButton:SetTemplate(DF:GetTemplate("button", "options_button_template"))
-
-        local cancelButton = DF:CreateButton(popup, function()
-            popup:Hide()
-        end, 100, 30, "Cancel")
-        cancelButton:SetPoint("BOTTOMRIGHT", popup, "BOTTOM", -5, 10)
-        cancelButton:SetTemplate(DF:GetTemplate("button", "options_button_template"))
-        popup:Show()
-    end
-    -- end of nickname logic
 
     -- WeakAuras imports
     local function ImportWeakAura(name)
@@ -1113,66 +758,6 @@ function SAPUI:Init()
             end
         end
         wipe(SAPUI.OptionsChanged["general"])
-    end
-    local nicknames_callback = function()
-
-        if SAPUI.OptionsChanged.nicknames["NICKNAME"] then
-            SAP:NickNameUpdated(SAPRT.Settings["MyNickName"])
-        end
-
-        if SAPUI.OptionsChanged.nicknames["GLOBAL_NICKNAMES"] then
-            SAP:GlobalNickNameUpdate()
-        end
-
-        if SAPUI.OptionsChanged.nicknames["TRANSLIT"] then
-            SAP:UpdateNickNameDisplay(true)
-        end
-
-        if SAPUI.OptionsChanged.nicknames["BLIZZARD_NICKNAMES"] then
-            SAP:BlizzardNickNameUpdated()
-        end
-
-        if SAPUI.OptionsChanged.nicknames["CELL_NICKNAMES"] then
-            SAP:CellNickNameUpdated(true)
-        end
-
-        if SAPUI.OptionsChanged.nicknames["ELVUI_NICKNAMES"] then
-            SAP:ElvUINickNameUpdated()
-        end
-
-        if SAPUI.OptionsChanged.nicknames["GRID2_NICKNAMES"] then
-            SAP:Grid2NickNameUpdated()
-        end
-
-        if SAPUI.OptionsChanged.nicknames["UNHALTED_NICKNAMES"] then
-            SAP:UnhaltedNickNameUpdated()
-        end
-
-        if SAPUI.OptionsChanged.nicknames["MRT_NICKNAMES"] then
-            SAP:MRTNickNameUpdated(true)
-        end
-
-        if SAPUI.OptionsChanged.nicknames["WA_NICKNAMES"] then
-            SAP:WeakAurasNickNameUpdated()
-        end
-
-        wipe(SAPUI.OptionsChanged["nicknames"])
-    end
-
-    local externals_callback = function()
-        if SAPUI.OptionsChanged.externals["EXTERNAL_MACRO"] then
-            ExternalSelfPingChanged()
-        end
-
-        wipe(SAPUI.OptionsChanged["externals"])
-    end
-
-    local versioSAP_callback = function()
-        wipe(SAPUI.OptionsChanged["versions"])
-    end
-
-    local weakauras_callback = function()
-        wipe(SAPUI.OptionsChanged["WeakAuras"])
     end
 
     -- options
@@ -1227,7 +812,7 @@ function SAPUI:Init()
         {
             type = "breakline"
         },   
-        { type = "label", get = function() return "TTS Options" end,     text_template = DF:GetTemplate("font", "ORANGE_FONT_TEMPLATE") },
+        { type = "label", get = function() return "TTS Options" end, text_template = DF:GetTemplate("font", "ORANGE_FONT_TEMPLATE") },
         {
             type = "range",
             name = "TTS Voice",
@@ -1255,8 +840,7 @@ function SAPUI:Init()
             type = "textentry",
             name = "TTS Preview",
             desc = [[Enter any text to preview TTS
-
-Press 'Enter' to hear the TTS]],
+            Press 'Enter' to hear the TTS]],
             get = function() return tts_text_preview end,
             set = function(self, fixedparam, value)
                 tts_text_preview = value
@@ -1286,356 +870,22 @@ Press 'Enter' to hear the TTS]],
             get = function() return "Private Aura Macro" end,
             text_template = DF:GetTemplate("font", "ORANGE_FONT_TEMPLATE"),
         },
-        --{
-        --    type = "toggle",
-        --    boxfirst = true,
-        --    name = "Enable @player Ping",
-        --    desc = "Enable a @player ping when the private aura macro is used.",
-        --    get = function() return SAPRT.Settings["PASelfPing"] end,
-        --    set = function(self, fixedparam, value)
-        --        SAPUI.OptionsChanged.general["PA_MACRO"] = true
-        --        SAPRT.Settings["PASelfPing"] = value
-        --    end,
-        --    nocombat = true
-        --},
-        --{
-        --    type = "toggle",
-        --    boxfirst = true,
-        --    name = "Combine Extra Action Button",
-        --    desc = "Combine the extra action button with the private aura macro.",
-        --    get = function() return SAPRT.Settings["PAExtraAction"] end,
-        --    set = function(self, fixedparam, value)
-        --        SAPUI.OptionsChanged.general["PA_MACRO"] = true
-        --        SAPRT.Settings["PAExtraAction"] = value
-        --    end,
-        --    nocombat = true
-        --},
-        --{
-        --    type = "toggle",
-        --    boxfirst = true,
-        --    name = "Add Liquid Private Aura Macro",
-        --    desc = "Add Scan Event for Liquid Private Aura Macro",
-        --    get = function() return SAPRT.Settings["LIQUID_MACRO"] end,
-        --    set = function(self, fixedparam, value)
-        --        SAPUI.OptionsChanged.general["PA_MACRO"] = true
-        --        SAPRT.Settings["LIQUID_MACRO"] = value
-        --    end,
-        --    nocombat = true
-        --},
+
         {
             type = "label",
             get = function() return "Private Aura Keybind:" end,
         },
         {
             type = "button",
-            name = getMacroKeybind("MACRO NS PA Macro"),
+            name = getMacroKeybind("MACRO SAP PA Macro"),
             desc = "Set the keybind for the private aura macro",
-            param1 = "MACRO NS PA Macro",
-            param2 = "Private Aura Keybind", -- whatever reloe names the keybind to be in Bindings.xml
+            param1 = "MACRO SAP PA Macro",
+            param2 = "Private Aura Keybind",
             func = function(self, _, param1, param2)
                 registerKeybinding(self, param1, param2)
             end,
-            id = "MACRO NS PA Macro",
+            id = "MACRO SAP PA Macro",
         },   
-    }
-
-    local nicknames_options1_table = {
-        
-        { type = "label", get = function() return "Nicknames Options" end, text_template = DF:GetTemplate("font", "ORANGE_FONT_TEMPLATE") },
-        {
-            type = "textentry",
-            name = "Nickname",
-            desc = "Set your nickname to be seen by others and used in assignments",
-            get = function() return SAPRT.Settings["MyNickName"] or "" end,
-            set = function(self, fixedparam, value) 
-                SAPUI.OptionsChanged.nicknames["NICKNAME"] = true
-                SAPRT.Settings["MyNickName"] = string.sub(value, 1, 12)
-            end,
-            hooks = {
-                OnEditFocusLost = function(self)
-                    self:SetText(SAPRT.Settings["MyNickName"])
-                end,
-                OnEnterPressed = function(self) return end
-            },
-            nocombat = true
-        },
-        {
-            type = "toggle",
-            boxfirst = true,
-            name = "Enable Nicknames",
-            desc = "Globaly enable nicknames.",
-            get = function() return SAPRT.Settings["GlobalNickNames"] end,
-            set = function(self, fixedparam, value) 
-                SAPUI.OptionsChanged.nicknames["GLOBAL_NICKNAMES"] = true
-                SAPRT.Settings["GlobalNickNames"] = value
-            end,
-            nocombat = true
-        },
-        
-        {
-            type = "toggle",
-            boxfirst = true,
-            name = "Translit Names",
-            desc = "Translit Russian Names",
-            get = function() return SAPRT.Settings["Translit"] end,
-            set = function(self, fixedparam, value) 
-                SAPUI.OptionsChanged.nicknames["TRANSLIT"] = true
-                SAPRT.Settings["Translit"] = value
-            end,
-            nocombat = true
-        },
-
-        
-        { type = "label", get = function() return "Automated Nickname Share Options" end, text_template = DF:GetTemplate("font", "ORANGE_FONT_TEMPLATE") },
-        {
-            type = "select",
-            get = function() return SAPRT.Settings["ShareNickNames"] end,
-            values = function() return build_nickname_share_options() end,
-            name = "Nickname Sharing",
-            desc = "Choose who you share your nickname with.",
-            nocombat = true
-        },        
-        {
-            type = "select",
-            get = function() return SAPRT.Settings["AcceptNickNames"] end,
-            values = function() return build_nickname_accept_options() end,
-            name = "Nickname Accept",
-            desc = "Choose who you are accepting Nicknames from",
-            nocombat = true
-        },        
-        
-        { type = "label", get = function() return "Manual Nickname Sync Options" end, text_template = DF:GetTemplate("font", "ORANGE_FONT_TEMPLATE") },
-
-        {
-            type = "select",
-            get = function() return SAPRT.Settings["NickNamesSyncSend"] end,
-            values = function() return build_nickname_syncsend_options() end,
-            name = "Nickname Sync Send",
-            desc = "Choose who you are synching nicknames to when pressing on the sync button",
-            nocombat = true
-        },
-
-        
-        {
-            type = "select",
-            get = function() return SAPRT.Settings["NickNamesSyncAccept"] end,
-            values = function() return build_nickname_syncaccept_options() end,
-            name = "Nickname Sync Accept",
-            desc = "Choose who you are accepting Nicknames sync requests to come from",
-            nocombat = true
-        },
-
-        {
-            type = "breakline"
-        },
-        {
-            type = "label",
-            get = function() return "Unit Frame compatibility" end,
-            text_template = DF:GetTemplate("font", "ORANGE_FONT_TEMPLATE"),
-        },
-        {
-            type = "toggle",
-            boxfirst = true,
-            get = function() return SAPRT.Settings["Blizzard"] end,
-            set = function(self, fixedparam, value)
-                SAPUI.OptionsChanged.nicknames["BLIZZARD_NICKNAMES"] = true
-                SAPRT.Settings["Blizzard"] = value
-            end,
-            name = "Enable Blizzard Nicknames",
-            desc = "Enable Nicknames to be used with Blizzard unit frames.",
-            nocombat = true
-        },
-        {
-            type = "toggle",
-            boxfirst = true,
-            get = function() return SAPRT.Settings["Cell"] end,
-            set = function(self, fixedparam, value)
-                SAPUI.OptionsChanged.nicknames["CELL_NICKNAMES"] = true
-                SAPRT.Settings["Cell"] = value
-            end,
-            name = "Enable Cell Nicknames",
-            desc = "Enable Nicknames to be used with Cell unit frames. This requires enabling nicknames within Cell.",
-            nocombat = true
-        },
-        {
-            type = "toggle",
-            boxfirst = true,
-            get = function() return SAPRT.Settings["Grid2"] end,
-            set = function(self, fixedparam, value)
-                SAPUI.OptionsChanged.nicknames["GRID2_NICKNAMES"] = true
-                SAPRT.Settings["Grid2"] = value
-            end,
-            name = "Enable Grid2 Nicknames",
-            desc = "Enable Nicknames to be used with Grid2 unit frames. This requires selecting the 'NSNickName' indicator within Grid2.",
-            nocombat = true
-        },
-        {
-            type = "toggle",
-            boxfirst = true,
-            get = function() return SAPRT.Settings["ElvUI"] end,
-            set = function(self, fixedparam, value)
-                SAPUI.OptionsChanged.nicknames["ELVUI_NICKNAMES"] = true
-                SAPRT.Settings["ElvUI"] = value
-            end,
-            name = "Enable ElvUI Nicknames",
-            desc = "Enable Nicknames to be used with ElvUI unit frames. This requires editing your Tags. Available options are [NSNickName] and [NSNickName:1-12]",
-            nocombat = true
-        },
-        {
-            type = "toggle",
-            boxfirst = true,
-            get = function() return SAPRT.Settings["SuF"] end,
-            set = function(self, fixedparam, value)
-                SAPUI.OptionsChanged.nicknames["SUF_NICKNAMES"] = true
-                SAPRT.Settings["SuF"] = value
-            end,
-            name = "Enable SUF Nicknames",
-            desc = "Enable Nicknames to be used with SUF unit frames. This requires adding your own Tag to the addon. You can copy the required code by clicking on the small 'i'",
-            nocombat = true,
-            id = "SUF-Toggle"
-        },
-        {
-            type = "toggle",
-            boxfirst = true,
-            get = function() return SAPRT.Settings["WA"] end,
-            set = function(self, fixedparam, value)
-                SAPUI.OptionsChanged.nicknames["WA_NICKNAMES"] = true
-                SAPRT.Settings["WA"] = value
-            end,
-            name = "Enable WeakAuras Nicknames",
-            desc = "Enable Nicknames to be used with WeakAuras. This only works if name formatting is used in Display or for any assignment aura.",
-            nocombat = true
-        },
-        {
-            type = "toggle",
-            boxfirst = true,
-            get = function() return SAPRT.Settings["MRT"] end,
-            set = function(self, fixedparam, value)
-                SAPUI.OptionsChanged.nicknames["MRT_NICKNAMES"] = true
-                SAPRT.Settings["MRT"] = value
-            end,
-            name = "Enable MRT Nicknames",
-            desc = "Enable Nicknames to be used with MRT. This affects the Cooldown Tracking and Note Display",
-            nocombat = true
-        },
-        {
-            type = "toggle",
-            boxfirst = true,
-            get = function() return SAPRT.Settings["Unhalted"] end,
-            set = function(self, fixedparam, value)
-                SAPUI.OptionsChanged.nicknames["UNHALTED_NICKNAMES"] = true
-                SAPRT.Settings["Unhalted"] = value
-            end,
-            name = "Enable Unhalted UF Nicknames",
-            desc = "Enable Nicknames to be used with Unhalted Unit Frames. This requires editing your Tags. Available options are [NSNickName] and [NSNickName:1-12]",
-            nocombat = true
-        },
-
-        {
-            type = "breakline"
-        },
-        {
-            type = "button",
-            name = "Wipe Nicknames",
-            desc = "Wipe all nicknames from the database.",
-            func = function(self)
-                WipeNickNames()
-            end,
-            nocombat = true
-        },
-        {
-            type = "button",
-            name = "Edit Nicknames",
-            desc = "Edit the nicknames database stored locally.",
-            func = function(self)
-                if not SAPUI.nickname_frame:IsShown() then
-                    SAPUI.nickname_frame:Show()
-                end
-            end,
-            nocombat = true
-        }
-    }
-
-    local externals_options1_table = {
-        { type = "label", get = function() return "Externals Options" end, text_template = DF:GetTemplate("font", "ORANGE_FONT_TEMPLATE") },
-        {
-            type = "toggle",
-            boxfirst = true,
-            name = "Enable @player Ping",
-            desc = "Enable a @player ping when the external macro is used.",
-            get = function() return SAPRT.Settings["ExternalSelfPing"] end,
-            set = function(self, fixedparam, value) 
-                SAPUI.OptionsChanged.externals["EXTERNAL_MACRO"] = true
-                SAPRT.Settings["ExternalSelfPing"] = value
-            end,
-            nocombat = true
-        },
-        {
-            type = "label",
-            get = function() return "External Macro Keybind:" end,
-        },
-        {
-            type = "button",
-            name = getMacroKeybind("MACRO NS Ext Macro"),
-            desc = "Set the keybind for the external macro",
-            param1 = "MACRO NS Ext Macro",
-            param2 = "External Macro Keybind",
-            func = function(self, _, param1, param2) -- this only ever registers leftclick need to manually set right click
-                registerKeybinding(self, param1, param2)
-            end,
-            id = "MACRO NS Ext Macro",
-        },
-        
-        
-        {
-            type = "blank",
-        },
-
-        {
-        type = "label",
-        get = function() return "Innervate Request Keybind:" end,
-        },
-        
-        {
-            type = "button",
-            name = getMacroKeybind("MACRO NS Innervate"),
-            desc = "Set the keybind for the Innervate Request macro",
-            param1 = "MACRO NS Innervate",
-            param2 = "Innervate Request Macro Keybind",
-            func = function(self, _, param1, param2) -- this only ever registers leftclick need to manually set right click
-                registerKeybinding(self, param1, param2)
-            end,
-            id = "MACRO NS Innervate",
-        },
-
-        {
-            type = "breakline"
-        },
-        {
-            type = "button",
-            name = "Test External",
-            desc = "Simulate recieving an external.",
-            func = function(self)
-                SAP:DisplayExternal(237554, GetUnitName("player"))
-            end,
-            nocombat = true
-        },
-        {
-            type = "blank",
-        },
-        {
-            type = "button",
-            name = "Toggle External Anchor",
-            desc = "Toggle the external anchor frame.",
-            func = function(self)
-                if SAPUI.externals_anchor:IsShown() then
-                    SAPUI.externals_anchor:Hide()
-                else
-                    SAPUI.externals_anchor:Show()
-                end
-            end,
-            nocombat = true
-        },
     }
 
     local weakaura_options1_table = {
@@ -1656,29 +906,6 @@ Press 'Enter' to hear the TTS]],
             nocombat = true,
             spacement = true
         },
-        --
-        --{
-        --    type = "button",
-        --    name = "Anchor Auras 1080p",
-        --    desc = "Import WeakAura Anchors required for all Northern Sky WeakAuras, scaled for a 1080p Monitor",
-        --    func = function(self)
-        --        ImportWeakAura("anchor_weakaura_1080")
-        --    end,
-        --    nocombat = true,
-        --    spacement = true
-        --},
-
-        --{
-        --    type = "button",
-        --    name = "External Alert",
-        --    desc = "Import WeakAura External Alert required for the external macro.",
-        --    func = function(self)
-        --        ImportWeakAura("external_weakaura")
-        --    end,
-        --    nocombat = true,
-        --    spacement = true
-        --},
-
 
         {
             type = "button",
@@ -1700,39 +927,7 @@ Press 'Enter' to hear the TTS]],
             get = function() return "Raid Auras" end,
             text_template = DF:GetTemplate("font", "ORANGE_FONT_TEMPLATE"),
         },
-        --{
-        --    type = "button",
-        --    name = "Manaforge Raid WA",
-        --    desc = "Import Manaforge Omega WeakAuras",
-        --    func = function(self)
-        --        local popup = DF:CreateSimplePanel(UIParent, 300, 60, "Manaforge Omega WA", "ManaforgeWAPopup")
-        --        popup:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
-        --        popup:SetFrameLevel(100)
-        --
-        --        popup.text_entry = DF:CreateTextEntry(popup, function() end, 280, 20)
-        --        popup.text_entry:SetTemplate(options_button_template)
-        --        popup.text_entry:SetPoint("TOP", popup, "TOP", 0, -30)
-        --        popup.text_entry:SetText(SAP:GetWeakAuraLink("Manaforge"))
-        --        popup.text_entry.editbox:SetJustifyH("CENTER")
-        --
-        --        -- Disable editing the text technically
-        --        popup.text_entry:SetScript("OnTextChanged", function(_)
-        --            popup.text_entry:SetText(SAP:GetWeakAuraLink("Manaforge"))
-        --            popup.text_entry.editbox:HighlightText()
-        --        end)
-        --
-        --        popup.text_entry:SetScript("OnEditFocusGained", function(_)
-        --            popup.text_entry.editbox:HighlightText()
-        --        end)
-        --        popup:Show()
-        --        popup.text_entry:SetFocus()
-        --
-        --    end,
-        --    nocombat = true,
-        --    spacement = true
-        --},
-        
-        
+
         {
             type = "button",
             name = "Liberation Raid WA",
@@ -1778,36 +973,13 @@ Press 'Enter' to hear the TTS]],
     DF:BuildMenu(general_tab, general_options1_table, 10, -100, window_height - 10, false, options_text_template,
         options_dropdown_template, options_switch_template, true, options_slider_template, options_button_template,
         general_callback)
-    --DF:BuildMenu(nicknames_tab, nicknames_options1_table, 10, -100, window_height - 10, false, options_text_template,
-    --    options_dropdown_template, options_switch_template, true, options_slider_template, options_button_template,
-    --    nicknames_callback)
-    --DF:BuildMenu(externals_tab, externals_options1_table, 10, -100, window_height - 10, false, options_text_template,
-    --    options_dropdown_template, options_switch_template, true, options_slider_template, options_button_template,
-    --    externals_callback)
     DF:BuildMenu(weakaura_tab, weakaura_options1_table, 10, -100, window_height - 10, false, options_text_template,
         options_dropdown_template, options_switch_template, true, options_slider_template, options_button_template,
         weakaura_callback)
 
-    -- Add SUF Setup guide tooltip button thingy
-
-    --SAPUI.suf_setup_guide_popup = BuildSUFSetupGuidePopup()
-
-    --local help_i_texture = [[Interface\common\help-i]]
-    --local SUF_Toggle = nicknames_tab:GetWidgetById("SUF-Toggle")
-    --local suf_help_button = DF:CreateButton(nicknames_tab, function()
-    --    if SAPUI.suf_setup_guide_popup and not SAPUI.suf_setup_guide_popup:IsShown() then
-    --        SAPUI.suf_setup_guide_popup:Show()
-    --    else
-    --        SAPUI.suf_setup_guide_popup:Hide()
-    --    end
-    --end, 20, 20, "")
-    --suf_help_button:SetIcon(help_i_texture)
-    --suf_help_button:SetPoint("LEFT", SUF_Toggle.hasLabel, "RIGHT", 0, 0)
-
     -- Set right click functions for clearing keybinding on keybind buttons
     local PAMacroButton = general_tab:GetWidgetById("MACRO NS PA Macro")
-    --local ExternalMacroButton = externals_tab:GetWidgetById("MACRO NS Ext Macro")
-    --local InnervateMacroButton = externals_tab:GetWidgetById("MACRO NS Innervate")
+
     if PAMacroButton then
         PAMacroButton:SetClickFunction(clearKeybinding, PAMacroButton.param1, PAMacroButton.param2, "RightButton")
     end
@@ -1820,105 +992,20 @@ Press 'Enter' to hear the TTS]],
 
     -- Build version check UI
     SAPUI.version_scrollbox = BuildVersionCheckUI(versions_tab)
-    SAPUI.nickname_frame = BuildNicknameEditUI()
 
     -- Version Number in status bar
     local versionTitle = C_AddOns.GetAddOnMetadata("SAP_Raid", "Title")
     local verisonNumber = C_AddOns.GetAddOnMetadata("SAP_Raid", "Version")
-    local statusBarText = versionTitle .. " v" .. verisonNumber .. " | |cFFFFFFFF" .. (authorsString) .. "|r"
+    local statusBarText = versionTitle .. " v" .. verisonNumber
     SAPUI.StatusBar.authorName:SetText(statusBarText)
 end
 
-function SAP:DisplayExternal(spellId, unit)
-    local text = ""
-    if spellId == "NoInnervate" then        
-        local spellIcon = C_Spell.GetSpellInfo(29166).iconID
-        SAPUI.external_frame.texture:SetTexture(spellIcon)
-        text = "|cffff0000NO INNERVATE|r"
-    elseif spellId then
-        local spellIcon = C_Spell.GetSpellInfo(spellId).iconID
-        SAPUI.external_frame.texture:SetTexture(spellIcon)
-        local giver = SAP_API:Shorten(unit, 8)
-        text = "From: " .. giver
-    else
-        SAPUI.external_frame.texture:SetTexture(237555)
-        text = "|cffff0000NO EXTERNAL|r"
-    end
-
-    SAPUI.external_frame.text:SetText(text)
-    SAPUI.external_frame:Show()
-
-    C_Timer.After(4, function()
-        SAPUI.external_frame:Hide()
-    end)
-end
-
-function SAPUI:LoadExternalsAnchorPosition()
-    SAPRT.SAPUI.externals_anchor.settings = SAPRT.SAPUI.externals_anchor.settings or {
-        anchorPoint = {
-            "CENTER", "UIParent", "CENTER", 0, 150
-        },
-        width = 70,
-        height = 70
-    }
-    if not SAPRT.SAPUI.externals_anchor.settings.anchorPoint or not SAPRT.SAPUI.externals_anchor.settings.width or not SAPRT.SAPUI.externals_anchor.settings.height then
-        SAP:Print("No externals anchor settings found.... THIS SHOULD NOT HAPPEN")
-        return
-    end
-    SAPUI.externals_anchor:SetPoint(unpack(SAPRT.SAPUI.externals_anchor.settings.anchorPoint))
-    SAPUI.externals_anchor:SetSize(SAPRT.SAPUI.externals_anchor.settings.width, SAPRT.SAPUI.externals_anchor.settings.height)
-end
-
-function SAPUI:SaveExternalsAnchorPosition()
-    local anchorPoint = { SAPUI.externals_anchor:GetPoint() }
-    anchorPoint[2] = "UIParent"
-
-    local width, height = SAPUI.externals_anchor:GetSize()
-    SAPRT.SAPUI.externals_anchor.settings = {
-        anchorPoint = anchorPoint,
-        width = width,
-        height = height
-    }
-end
-
-function SAPUI:ResetExternalsAnchorPosition()
-    SAPUI.externals_anchor:ClearAllPoints()
-    SAPUI.externals_anchor:SetPoint("CENTER", UIParent, "CENTER", 0, 150)
-    SAPUI.externals_anchor:SetSize(70, 70)
-    SAPRT.SAPUI.externals_anchor.settings.anchorPoint = { "CENTER", UIParent, "CENTER", 0, 150 }
-end
 function SAPUI:ToggleOptions()
     if SAPUI:IsShown() then
         SAPUI:Hide()
     else
         SAPUI:Show()
     end
-end
-
-function SAP:NickNamesSyncPopup(unit, nicknametable)
-    local popup = DF:CreateSimplePanel(UIParent, 300, 120, "Sync Nicknames", "SyncNicknamesPopup", {
-        DontRightClickClose = true
-    })
-    popup:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
-
-    local label = DF:CreateLabel(popup, SAP_API:Shorten(unit) .. " is attempting to sync their nicknames with you.", 11)
-
-    label:SetPoint("TOPLEFT", popup, "TOPLEFT", 10, -30)
-    label:SetPoint("BOTTOMRIGHT", popup, "BOTTOMRIGHT", -10, 40)
-    label:SetJustifyH("CENTER")
-
-    local cancel_button = DF:CreateButton(popup, function() popup:Hide() end, 130, 20, "Cancel")
-    cancel_button:SetPoint("BOTTOMLEFT", popup, "BOTTOMLEFT", 10, 10)
-    cancel_button:SetTemplate(options_button_template)
-
-    local accept_button = DF:CreateButton(popup, function() 
-        SAP:SyncNickNamesAccept(nicknametable)
-        popup:Hide() 
-    end, 130, 20, "Accept")
-    accept_button:SetPoint("BOTTOMRIGHT", popup, "BOTTOMRIGHT", -10, 10)
-    accept_button:SetTemplate(options_button_template)
-
-    return popup
 end
 
 function SAP:WAImportPopup(unit, str)

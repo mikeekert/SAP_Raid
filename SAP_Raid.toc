@@ -13,15 +13,11 @@ Libs\libs.xml
 
 # Main Files
 SAP_Raid.lua
-Media.lua
 Functions.lua
-AuraResize.lua
 Comms.lua
-NickNames.lua
+Media.lua
 EventHandler.lua
-Externals.lua
 VersionCheck.lua
-SetupManager.lua
 WeakAuras/Imports.lua
 WeakAuras/Links.lua
 

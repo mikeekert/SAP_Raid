@@ -16,8 +16,8 @@ function SAP:IterateGroupMembers(reversed, forceParty)
     end
 end
 
-function SAP_API:Version() -- old version check function from the database WA, for compatibility reasons
-    return 14
+function SAP_API:Version()
+    return 1
 end
 
 function SAP:Print(...)

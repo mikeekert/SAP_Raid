@@ -2,10 +2,6 @@ local _, SAP = ... -- Internal namespace
 local AceComm = LibStub("AceComm-3.0")
 local LibSerialize = LibStub("LibSerialize")
 local LibDeflate = LibStub("LibDeflate")
-local allowedcomms = {
-    ["SAP_NICKNAMES_COMMS"] = true,
-    ["SAP_NICKNAMES_SYNC"] = true,
-}
 
 local del = ":"
 function SAP_API:Broadcast(event, channel, ...) -- only used for weakauras, everything in the addon uses the internal NSI function instead.
