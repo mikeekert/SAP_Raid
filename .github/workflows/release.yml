@@ -27,6 +27,7 @@ jobs:
           zip -r SAP_Raid.zip SAP_Raid/
 
       - name: Upload Release Asset
+        if: startsWith(github.ref, 'refs/tags/')
         uses: softprops/action-gh-release@v2
         with:
           files: package/SAP_Raid.zip
