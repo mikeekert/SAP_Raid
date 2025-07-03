@@ -8,17 +8,26 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: Prepare Addon Folder
+        run: |
+          mkdir package
+          mkdir package/SAP_Raid
+          shopt -s extglob
+          cp -r !(package|.git|.github) package/SAP_Raid/
+
       - name: Create ZIP
         run: |
+          cd package
           zip -r SAP_Raid.zip SAP_Raid/
 
       - name: Upload Release Asset
         uses: softprops/action-gh-release@v2
         with:
-          files: SAP_Raid.zip
+          files: package/SAP_Raid.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
