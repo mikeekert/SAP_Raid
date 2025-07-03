@@ -2,7 +2,7 @@ local _, SAP = ... -- Internal namespace
 local f = CreateFrame("Frame")
 f:RegisterEvent("GROUP_ROSTER_UPDATE")
 f:SetScript("OnEvent", function(self, e, ...)
-    NSI:ArrangeGroups()
+    SAP:ArrangeGroups()
 end)
 SAP.Groups = {}
 SAP.Groups.Processing = false
@@ -108,7 +108,7 @@ local spectable = {
 
 -- for testing default: /run SAP_API:SplitGroupInit(false, true, false)
 -- for testing split: /run SAP_API:SplitGroupInit(false, false, false)
-function NSI:SortGroup(Flex, default, odds) -- default == tank, melee, ranged, healer
+function SAP:SortGroup(Flex, default, odds) -- default == tank, melee, ranged, healer
     local units = {}
     local lastgroup = Flex and 6 or 4
     local total = {["ALL"] = 0, ["TANK"] = 0, ["HEALER"] = 0, ["DAMAGER"] = 0}
@@ -142,7 +142,7 @@ function NSI:SortGroup(Flex, default, odds) -- default == tank, melee, ranged, h
     SAP.Groups.total = total["ALL"]
     if default then
         SAP.Groups.units = units
-        NSI:ArrangeGroups(true)
+        SAP:ArrangeGroups(true)
     else
         local sides = {["left"] = {}, ["right"] = {}}
         local classes = {["left"] = {}, ["right"] = {}}
@@ -223,7 +223,7 @@ function NSI:SortGroup(Flex, default, odds) -- default == tank, melee, ranged, h
                 if count > 20 then count = 26 end
             end
             SAP.Groups.units = units
-            NSI:ArrangeGroups(true)
+            SAP:ArrangeGroups(true)
         else            
             units = {}
             local count = 1
@@ -240,17 +240,17 @@ function NSI:SortGroup(Flex, default, odds) -- default == tank, melee, ranged, h
                 count = count+1
             end
             SAP.Groups.units = units
-            NSI:ArrangeGroups(true)
+            SAP:ArrangeGroups(true)
         end
         
     end    
 end
 
-function NSI:ArrangeGroups(firstcall)
+function SAP:ArrangeGroups(firstcall)
     if not firstcall and not SAP.Groups.Processing then return end
     local now = GetTime()
     if firstcall then 
-        NSI:Print("Split Table Data:", SAP.Groups.units)
+        SAP:Print("Split Table Data:", SAP.Groups.units)
         SAP.Groups.Processing = true
         SAP.Groups.Processed = 0
         SAP.Groups.ProcessStart = now
@@ -322,7 +322,7 @@ function NSI:ArrangeGroups(firstcall)
             else -- character is already in the correct position
                 v.processed = true
                 SAP.Groups.Processed = SAP.Groups.Processed+1
-                NSI:ArrangeGroups()
+                SAP:ArrangeGroups()
                 break
             end
         end        
@@ -331,6 +331,6 @@ end
 
 -- Change to NSI once integrated into the UI
 function SAP_API:SplitGroupInit(Flex, default, odds)
-    NSI:Broadcast("SAP_API_SPEC_REQUEST", "RAID", "nilcheck")
-    C_Timer.After(2, function() NSI:SortGroup(Flex, default, odds) end)
+    SAP:Broadcast("SAP_API_SPEC_REQUEST", "RAID", "nilcheck")
+    C_Timer.After(2, function() SAP:SortGroup(Flex, default, odds) end)
 end

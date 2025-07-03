@@ -42,7 +42,7 @@
     GetText(addonId, phraseId[, silent])
         get a text from a registered addonId and phraseId, return a localized string and the languageId where the string was found, otherwise return the phraseId
         @addonId: an identifier, can be any table or string, will be used when getting the table with phrase translations, example: "DetailsLocalization", "Details", "PlaterLoc", _G.Plater
-        @phraseId: any string to identify the a translated text, example: phraseId: "OPTIONS_FRAME_WIDTH" text: "Adjust the Width of the frame."
+        @phraseId: any string to identify the a translated text, example: phraseId: "options_FRAME_WIDTH" text: "Adjust the Width of the frame."
         @silent: if true won't error on invalid phrase text and instead use the phraseId as the text, it will still error on invalid addonId
 
     ShowOptionsHelp()
@@ -95,7 +95,7 @@
         @addonId: an identifier, can be any table or string, will be used when getting the table with phrase translations, example: "DetailsLocalization", "Details", "PlaterLoc", _G.Plater
         @table: a lua table
         @key: any value except nil or boolean
-        @phraseId: any string to identify the a translated text, example: token: "OPTIONS_FRAME_WIDTH" text: "Adjust the Width of the frame."
+        @phraseId: any string to identify the a translated text, example: token: "options_FRAME_WIDTH" text: "Adjust the Width of the frame."
         @silent: if true won't error on invalid phrase text or table already registered, it will still error on invalid addonId, table, key and phraseId
         @vararg: arguments to pass for format(text, ...)
 
@@ -1198,7 +1198,7 @@ end
 
 
 --@addonId: an identifier, can be any table or string, will be used when getting the table with phrase translations, example: "DetailsLocalization", "Details", "PlaterLoc", _G.Plater
---@phraseId: any string to identify the a translated text, example: phraseId: "OPTIONS_FRAME_WIDTH" text: "Adjust the Width of the frame."
+--@phraseId: any string to identify the a translated text, example: phraseId: "options_FRAME_WIDTH" text: "Adjust the Width of the frame."
 --@silent: if true won't error on invalid phrase text and instead use the phraseId as the text, it will still error on invalid addonId
 function DF.Language.GetText(addonId, phraseId, silent)
     if (not isValid_AddonID(addonId)) then
@@ -1228,7 +1228,7 @@ end
 
 --@addonId: an identifier, can be any table or string, will be used when getting the table with phrase translations, example: "DetailsLocalization", "Details", "PlaterLoc", _G.Plater
 --@object: any UIObject or table with SetText method
---@phraseId: any string to identify the a translated text, example: token: "OPTIONS_FRAME_WIDTH" text: "Adjust the Width of the frame."
+--@phraseId: any string to identify the a translated text, example: token: "options_FRAME_WIDTH" text: "Adjust the Width of the frame."
 --@silent: if true won't error on invalid phrase text and instead use the phraseId as the text, it will still error on invalid addonId and object
 --@vararg: arguments to pass for format(text, ...)
 function DF.Language.RegisterObject(addonId, object, phraseId, silent, ...)
@@ -1305,7 +1305,7 @@ end
 --@addonId: an identifier, can be any table or string, will be used when getting the table with phrase translations, example: "DetailsLocalization", "Details", "PlaterLoc", _G.Plater
 --@table: a lua table
 --@key: any value except nil or boolean
---@phraseId: any string to identify the a translated text, example: token: "OPTIONS_FRAME_WIDTH" text: "Adjust the Width of the frame."
+--@phraseId: any string to identify the a translated text, example: token: "options_FRAME_WIDTH" text: "Adjust the Width of the frame."
 --@silent: if true won't error on invalid phrase text or table already registered, it will still error on invalid addonId, table, key and phraseId
 --@vararg: arguments to pass for format(text, ...)
 function DF.Language.RegisterTableKey(addonId, table, key, phraseId, silent, ...) --~RegisterTableKey
@@ -1622,7 +1622,7 @@ function DF.Language.CreateLanguageSelector(addonId, parent, callback, selectedL
         return resultTable
     end
 
-    local languageSelector = DF:CreateDropDown(parent, buildOptionsFunc, selectedLanguage or getCurrentLanguageId(addonNamespaceTable), 120, 20, nil, nil, DF:GetTemplate("dropdown", "OPTIONS_DROPDOWN_TEMPLATE"))
+    local languageSelector = DF:CreateDropDown(parent, buildOptionsFunc, selectedLanguage or getCurrentLanguageId(addonNamespaceTable), 120, 20, nil, nil, DF:GetTemplate("dropdown", "options_DROPDOWN_TEMPLATE"))
     languageSelector:SetAddonID(addonId)
     languageSelector:SetFixedParameter(addonId)
 

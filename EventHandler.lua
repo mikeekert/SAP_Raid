@@ -10,18 +10,18 @@ f:RegisterEvent("PLAYER_LOGIN")
 f:RegisterEvent("PLAYER_REGEN_ENABLED")
 
 f:SetScript("OnEvent", function(self, e, ...)
-    NSI:EventHandler(e, true, false, ...)
+    SAP:EventHandler(e, true, false, ...)
 end)
 
-function NSI:EventHandler(e, wowevent, internal, ...) -- internal checks whether the event comes from addon comms. We don't want to allow blizzard events to be fired manually
+function SAP:EventHandler(e, wowevent, internal, ...) -- internal checks whether the event comes from addon comms. We don't want to allow blizzard events to be fired manually
     if e == "ADDON_LOADED" and wowevent then
         local name = ...
-        if name == "NorthernSkyRaidTools" then
+        if name == "SAP-Raid" then
             if not SAPRT then SAPRT = {} end
-            if not SAPRT.NSUI then SAPRT.NSUI = {scale = 1} end
-            if not SAPRT.NSUI.externals_anchor then SAPRT.NSUI.externals_anchor = {} end
-            -- if not SAPRT.NSUI.main_frame then SAPRT.NSUI.main_frame = {} end
-            -- if not SAPRT.NSUI.external_frame then SAPRT.NSUI.external_frame = {} end
+            if not SAPRT.SAPUI then SAPRT.SAPUI = {scale = 1} end
+            if not SAPRT.SAPUI.externals_anchor then SAPRT.SAPUI.externals_anchor = {} end
+            -- if not SAPRT.SAPUI.main_frame then SAPRT.SAPUI.main_frame = {} end
+            -- if not SAPRT.SAPUI.external_frame then SAPRT.SAPUI.external_frame = {} end
             if not SAPRT.NickNames then SAPRT.NickNames = {} end
             if not SAPRT.Settings then SAPRT.Settings = {} end
             SAPRT.Settings["MyNickName"] = SAPRT.Settings["MyNickName"] or nil
@@ -54,14 +54,14 @@ function NSI:EventHandler(e, wowevent, internal, ...) -- internal checks whether
             SAPRT.Settings["Debug"] = SAPRT.Settings["Debug"] or false
             SAPRT.Settings["DebugLogs"] = SAPRT.Settings["DebugLogs"] or false
             SAPRT.Settings["VersionCheckPresets"] = SAPRT.Settings["VersionCheckPresets"] or {}
-            SAPRT.NSUI.AutoComplete = SAPRT.NSUI.AutoComplete or {}
-            SAPRT.NSUI.AutoComplete["WA"] = SAPRT.NSUI.AutoComplete["WA"] or {}
-            SAPRT.NSUI.AutoComplete["Addon"] = SAPRT.NSUI.AutoComplete["Addon"] or {}
+            SAPRT.SAPUI.AutoComplete = SAPRT.SAPUI.AutoComplete or {}
+            SAPRT.SAPUI.AutoComplete["WA"] = SAPRT.SAPUI.AutoComplete["WA"] or {}
+            SAPRT.SAPUI.AutoComplete["Addon"] = SAPRT.SAPUI.AutoComplete["Addon"] or {}
 
             SAP.BlizzardNickNamesHook = false
             SAP.MRTNickNamesHook = false
             SAP.OmniCDNickNamesHook = false
-            NSI:InitNickNames()
+            SAP:InitNickNames()
         end
     elseif e == "PLAYER_LOGIN" and wowevent then
         local pafound = false
@@ -72,7 +72,7 @@ function NSI:EventHandler(e, wowevent, internal, ...) -- internal checks whether
             local macroname = C_Macro.GetMacroName(i)
             if not macroname then break end
             macrocount = i
-            if macroname == "NS PA Macro" then
+            if macroname == "SAP PA Macro" then
                 local macrotext = "/run SAP_API:PrivateAura();"
                 if SAPRT.Settings["PASelfPing"] then
                     macrotext = macrotext.."\n/ping [@player] Warning;"
@@ -80,14 +80,14 @@ function NSI:EventHandler(e, wowevent, internal, ...) -- internal checks whether
                 if SAPRT.Settings["PAExtraAction"] then
                     macrotext = macrotext.."\n/click ExtraActionButton1"
                 end
-                EditMacro(i, "NS PA Macro", 132288, macrotext, false)
+                EditMacro(i, "SAP PA Macro", 132288, macrotext, false)
                 pafound = true
-            elseif macroname == "NS Ext Macro" then
+            elseif macroname == "SAP Ext Macro" then
                 local macrotext = SAPRT.Settings["ExternalSelfPing"] and "/run SAP_API:ExternalRequest();\n/ping [@player] Assist;" or "/run SAP_API:ExternalRequest();"
-                EditMacro(i, "NS Ext Macro", 135966, macrotext, false)
+                EditMacro(i, "SAP Ext Macro", 135966, macrotext, false)
                 extfound = true
-            elseif macroname == "NS Innervate" then
-                EditMacro(i, "NS Innervate", 136048, "/run SAP_API:InnervateRequest();", false)
+            elseif macroname == "SAP Innervate" then
+                EditMacro(i, "SAP Innervate", 136048, "/run SAP_API:InnervateRequest();", false)
                 innervatefound = true
             end
             if pafound and extfound and innervatefound then break end
@@ -106,33 +106,33 @@ function NSI:EventHandler(e, wowevent, internal, ...) -- internal checks whether
             if SAPRT.Settings["LIQUID_MACRO"] then
                 macrotext = macrotext.."\n/run WeakAuras.ScanEvents(\"LIQUID_PRIVATE_AURA_MACRO\", true)"
             end
-            CreateMacro("NS PA Macro", 132288, macrotext, false)
+            CreateMacro("SAP PA Macro", 132288, macrotext, false)
         end
         if macrocount >= 120 and not extfound then 
             print("You reached the global Macro cap so the External Macro could not be created")
         elseif not extfound then
             macrocount = macrocount+1
             local macrotext = SAPRT.Settings["ExternalSelfPing"] and "/run SAP_API:ExternalRequest();\n/ping [@player] Assist;" or "/run SAP_API:ExternalRequest();"
-            CreateMacro("NS Ext Macro", 135966, macrotext, false)
+            CreateMacro("SAP Ext Macro", 135966, macrotext, false)
         end
         if macrocount >= 120 and not inenrvatefound then
             print("You reached the global Macro cap so the Innervate Macro could not be created")
         elseif not innervatefound then
             macrocount = macrocount+1
-            CreateMacro("NS Innervate", 136048, "/run SAP_API:InnervateRequest();", false)
+            CreateMacro("SAP Innervate", 136048, "/run SAP_API:InnervateRequest();", false)
         end
-        if SAPRT.Settings["MyNickName"] then NSI:SendNickName("Any") end -- only send nickname if it exists. If user has ever interacted with it it will create an empty string instead which will serve as deleting the nickname
+        if SAPRT.Settings["MyNickName"] then SAP:SendNickName("Any") end -- only send nickname if it exists. If user has ever interacted with it it will create an empty string instead which will serve as deleting the nickname
         if SAPRT.Settings["GlobalNickNames"] then -- add own nickname if not already in database (for new characters)
             local name, realm = UnitName("player")
             if not realm then
                 realm = GetNormalizedRealmName()
             end
             if (not SAPRT.NickNames[name.."-"..realm]) or (SAPRT.Settings["MyNickName"] ~= SAPRT.NickNames[name.."-"..realm]) then
-                NSI:NewNickName("player", SAPRT.Settings["MyNickName"], name, realm)
+                SAP:NewNickName("player", SAPRT.Settings["MyNickName"], name, realm)
             end
         end
         SAP.SAPUI:Init()
-        NSI:InitLDB()
+        SAP:InitLDB()
         if WeakAuras.GetData("Northern Sky Externals") then
             print("lease uninstall the |cFF00FFFFPNorthern Sky Externals Weakaura|r to prevent conflicts with the Northern Sky Raid Tools Addon.")
         end
@@ -141,13 +141,13 @@ function NSI:EventHandler(e, wowevent, internal, ...) -- internal checks whether
         end
     elseif e == "READY_CHECK" and (wowevent or SAPRT.Settings["Debug"]) then
         if WeakAuras.CurrentEncounter then return end
-        if NSI:Difficultycheck() or SAPRT.Settings["Debug"] then -- only care about note comparison in normal, heroic&mythic raid
+        if SAP:Difficultycheck() or SAPRT.Settings["Debug"] then -- only care about note comparison in normal, heroic&mythic raid
             local hashed = C_AddOns.IsAddOnLoaded("MRT") and SAP_API:GetHash(SAP_API:GetNote()) or ""
-            NSI:Broadcast("MRT_NOTE", "RAID", hashed)   
+            SAP:Broadcast("MRT_NOTE", "RAID", hashed)
         end
     elseif e == "GROUP_FORMED" and (wowevent or SAPRT.Settings["Debug"]) then
         if WeakAuras.CurrentEncounter then return end
-        if SAPRT.Settings["MyNickName"] then NSI:SendNickName("Any", true) end -- only send nickname if it exists. If user has ever interacted with it it will create an empty string instead which will serve as deleting the nickname
+        if SAPRT.Settings["MyNickName"] then SAP:SendNickName("Any", true) end -- only send nickname if it exists. If user has ever interacted with it it will create an empty string instead which will serve as deleting the nickname
 
     elseif e == "MRT_NOTE" and SAPRT.Settings["MRTNoteComparison"] and (internal or SAPRT.Settings["Debug"]) then
         if WeakAuras.CurrentEncounter then return end
@@ -166,41 +166,41 @@ function NSI:EventHandler(e, wowevent, internal, ...) -- internal checks whether
                 if SAP.Externals.Automated[v.spellId] then
                     local key = SAP.Externals.Automated[v.spellId]
                     local num = (key and SAP.Externals.Amount[key..v.spellId])
-                    NSI:EventHandler("NS_EXTERNAL_REQ", false, true, unit, key, num, false, "skip", v.expirationTime)
+                    SAP:EventHandler("SAP_EXTERNAL_REQ", false, true, unit, key, num, false, "skip", v.expirationTime)
                 end
             end
         end
-    elseif e == "NSI_VERSION_CHECK" and (internal or SAPRT.Settings["Debug"]) then
+    elseif e == "SAP_VERSION_CHECK" and (internal or SAPRT.Settings["Debug"]) then
         if WeakAuras.CurrentEncounter then return end
         local unit, ver, duplicate = ...        
-        NSI:VersionResponse({name = UnitName(unit), version = ver, duplicate = duplicate})
-    elseif e == "NSI_VERSION_REQUEST" and (internal or SAPRT.Settings["Debug"]) then
+        SAP:VersionResponse({name = UnitName(unit), version = ver, duplicate = duplicate})
+    elseif e == "SAP_VERSION_REQUEST" and (internal or SAPRT.Settings["Debug"]) then
         if WeakAuras.CurrentEncounter then return end
         local unit, type, name = ...        
         if UnitExists(unit) and UnitIsUnit("player", unit) then return end -- don't send to yourself
         if UnitExists(unit) and (UnitIsGroupLeader(unit) or UnitIsGroupAssistant(unit)) then
-            local u, ver, duplicate = NSI:GetVersionNumber(type, name, unit)
-            NSI:Broadcast("NSI_VERSION_CHECK", "WHISPER", unit, ver, duplicate)
+            local u, ver, duplicate = SAP:GetVersionNumber(type, name, unit)
+            SAP:Broadcast("SAP_VERSION_CHECK", "WHISPER", unit, ver, duplicate)
         end
-    elseif e == "NSI_NICKNAMES_COMMS" and (internal or SAPRT.Settings["Debug"]) then
+    elseif e == "SAP_NICKNAMES_COMMS" and (internal or SAPRT.Settings["Debug"]) then
         if WeakAuras.CurrentEncounter then return end
         local unit, nickname, name, realm, requestback, channel = ...
         if UnitExists(unit) and UnitIsUnit("player", unit) then return end -- don't add new nickname if it's yourself because already adding it to the database when you edit it
-        if requestback and (UnitInRaid(unit) or UnitInParty(unit)) then NSI:SendNickName(channel, false) end -- send nickname back to the person who requested it
-        NSI:NewNickName(unit, nickname, name, realm, channel)
+        if requestback and (UnitInRaid(unit) or UnitInParty(unit)) then SAP:SendNickName(channel, false) end -- send nickname back to the person who requested it
+        SAP:NewNickName(unit, nickname, name, realm, channel)
 
     elseif e == "PLAYER_REGEN_ENABLED" and (wowevent or SAPRT.Settings["Debug"]) then
         C_Timer.After(1, function()
             if SAP.SyncNickNamesStore then
-                NSI:EventHandler("NSI_NICKNAMES_SYNC", false, true, SAP.SyncNickNamesStore.unit, SAP.SyncNickNamesStore.nicknametable, SAP.SyncNickNamesStore.channel)
+                SAP:EventHandler("SAP_NICKNAMES_SYNC", false, true, SAP.SyncNickNamesStore.unit, SAP.SyncNickNamesStore.nicknametable, SAP.SyncNickNamesStore.channel)
                 SAP.SyncNickNamesStore = nil
             end
             if SAP.WAString and SAP.WAString.unit and SAP.WAString.string then
-                NSI:EventHandler("NSI_WA_SYNC", false, true, SAP.WAString.unit, SAP.WAString.string)
+                SAP:EventHandler("SAP_WA_SYNC", false, true, SAP.WAString.unit, SAP.WAString.string)
                 SAP.WAString = nil
             end
         end)
-    elseif e == "NSI_NICKNAMES_SYNC" and (internal or SAPRT.Settings["Debug"]) then
+    elseif e == "SAP_NICKNAMES_SYNC" and (internal or SAPRT.Settings["Debug"]) then
         local unit, nicknametable, channel = ...
         local setting = SAPRT.Settings["NickNamesSyncAccept"]
         if (setting == 3 or (setting == 2 and channel == "GUILD") or (setting == 1 and channel == "RAID") and (not C_ChallengeMode.IsChallengeModeActive())) then 
@@ -208,10 +208,10 @@ function NSI:EventHandler(e, wowevent, internal, ...) -- internal checks whether
             if UnitAffectingCombat("player") or WeakAuras.CurrentEncounter then
                 SAP.SyncNickNamesStore = {unit = unit, nicknametable = nicknametable, channel = channel}
             else
-                NSI:NickNamesSyncPopup(unit, nicknametable)    
+                SAP:NickNamesSyncPopup(unit, nicknametable)
             end
         end
-    elseif e == "NSI_WA_SYNC" and (internal or SAPRT.Settings["Debug"]) then
+    elseif e == "SAP_WA_SYNC" and (internal or SAPRT.Settings["Debug"]) then
         local unit, str = ...
         local setting = SAPRT.Settings["WeakAurasImportAccept"]
         if setting == 3 then return end
@@ -220,21 +220,21 @@ function NSI:EventHandler(e, wowevent, internal, ...) -- internal checks whether
                 if UnitAffectingCombat("player") or WeakAuras.CurrentEncounter then
                     SAP.WAString = {unit = unit, string = str}
                 else
-                    NSI:WAImportPopup(unit, str)
+                    SAP:WAImportPopup(unit, str)
                 end
             end
         end
 
-    elseif e == "SAP_API_SPEC" then -- Should technically rename to "NSI_SPEC" but need to keep this open for the global broadcast to be compatible with the database WA
+    elseif e == "SAP_API_SPEC" then -- Should technically rename to "SAP_SPEC" but need to keep this open for the global broadcast to be compatible with the database WA
         local unit, spec = ...
         SAP.specs = SAP.specs or {}
         SAP.specs[unit] = tonumber(spec)
     elseif e == "SAP_API_SPEC_REQUEST" then
         local specid = GetSpecializationInfo(GetSpecialization())
         SAP_API:Broadcast("SAP_API_SPEC", "RAID", specid)
-    elseif e == "ENCOUNTER_START" and ((wowevent and NSI:Difficultycheck()) or SAPRT.Settings["Debug"]) then -- allow sending fake encounter_start if in debug mode, only send spec info in mythic, heroic and normal raids
+    elseif e == "ENCOUNTER_START" and ((wowevent and SAP:Difficultycheck()) or SAPRT.Settings["Debug"]) then -- allow sending fake encounter_start if in debug mode, only send spec info in mythic, heroic and normal raids
         SAP.specs = {}
-        for u in NSI:IterateGroupMembers() do
+        for u in SAP:IterateGroupMembers() do
             if UnitIsVisible(u) then
                 SAP.specs[u] = WeakAuras.SpecForUnit(u)
             end
@@ -247,24 +247,24 @@ function NSI:EventHandler(e, wowevent, internal, ...) -- internal checks whether
         end)
         SAP.MacroPresses = {}
         SAP.Externals:Init()
-    elseif e == "ENCOUNTER_END" and ((wowevent and NSI:Difficultycheck()) or SAPRT.Settings["Debug"]) then
+    elseif e == "ENCOUNTER_END" and ((wowevent and SAP:Difficultycheck()) or SAPRT.Settings["Debug"]) then
         local _, encounterName = ...
         if SAPRT.Settings["DebugLogs"] then
-            if SAP.MacroPresses and next(SAP.MacroPresses) then NSI:Print("Macro Data for Encounter: "..encounterName, SAP.MacroPresses) end
-            if SAP.AssignedExternals and next(SAP.AssignedExternals) then NSI:Print("Assigned Externals for Encounter: "..encounterName, SAP.AssignedExternals) end
+            if SAP.MacroPresses and next(SAP.MacroPresses) then SAP:Print("Macro Data for Encounter: "..encounterName, SAP.MacroPresses) end
+            if SAP.AssignedExternals and next(SAP.AssignedExternals) then SAP:Print("Assigned Externals for Encounter: "..encounterName, SAP.AssignedExternals) end
             SAP.AssignedExternals = {}
             SAP.MacroPresses = {}
         end        
         C_Timer.After(1, function()
             if SAP.SyncNickNamesStore then
-                NSI:EventHandler("NSI_NICKNAMES_SYNC", false, true, SAP.SyncNickNamesStore.unit, SAP.SyncNickNamesStore.nicknametable, SAP.SyncNickNamesStore.channel)
+                SAP:EventHandler("SAP_NICKNAMES_SYNC", false, true, SAP.SyncNickNamesStore.unit, SAP.SyncNickNamesStore.nicknametable, SAP.SyncNickNamesStore.channel)
                 SAP.SyncNickNamesStore = nil
             end
             if SAP.WAString and SAP.WAString.unit and SAP.WAString.string then
-                NSI:EventHandler("NSI_WA_SYNC", false, true, SAP.WAString.unit, SAP.WAString.string)
+                SAP:EventHandler("SAP_WA_SYNC", false, true, SAP.WAString.unit, SAP.WAString.string)
             end
         end)
-    elseif e == "NS_EXTERNAL_REQ" and ... and UnitIsUnit(SAP.Externals.target, "player") then -- only accept scanevent if you are the "server"
+    elseif e == "SAP_EXTERNAL_REQ" and ... and UnitIsUnit(SAP.Externals.target, "player") then -- only accept scanevent if you are the "server"
         local unitID, key, num, req, range, expirationTime = ...
         local dead = SAP_API:DeathCheck(unitID)
         SAP.MacroPresses = SAP.MacroPresses or {}
@@ -278,10 +278,10 @@ function NSI:EventHandler(e, wowevent, internal, ...) -- internal checks whether
             formattedrange = range
         end
         table.insert(SAP.MacroPresses["Externals"], {unit = SAP_API:Shorten(unitID, 8), time = Round(GetTime()-SAP.Externals.pull), dead = dead, key = key, num = num, automated = not req, rangetable = formattedrange})
-        if NSI:Difficultycheck(true) and not dead then -- block incoming requests from dead people
+        if SAP:Difficultycheck(true) and not dead then -- block incoming requests from dead people
             SAP.Externals:Request(unitID, key, num, req, range, false, expirationTime)
         end
-    elseif e == "NS_INNERVATE_REQ" and ... and UnitIsUnit(SAP.Externals.target, "player") then -- only accept scanevent if you are the "server"
+    elseif e == "SAP_INNERVATE_REQ" and ... and UnitIsUnit(SAP.Externals.target, "player") then -- only accept scanevent if you are the "server"
         local unitID, key, num, req, range, expirationTime = ...
         local dead = SAP_API:DeathCheck(unitID)
         SAP.MacroPresses = SAP.MacroPresses or {}
@@ -295,24 +295,24 @@ function NSI:EventHandler(e, wowevent, internal, ...) -- internal checks whether
             formattedrange = range
         end
         table.insert(SAP.MacroPresses["Innervate"], {unit = SAP_API:Shorten(unitID, 8), time = Round(GetTime()-SAP.Externals.pull), dead = dead, key = key, num = num, rangetable = formattedrange})
-        if NSI:Difficultycheck(true) and not dead then -- block incoming requests from dead people
+        if SAP:Difficultycheck(true) and not dead then -- block incoming requests from dead people
             SAP.Externals:Request(unitID, "", 1, true, range, true, expirationTime)
         end
-    elseif e == "NS_EXTERNAL_YES" and ... then
+    elseif e == "SAP_EXTERNAL_YES" and ... then
         local _, unit, spellID = ...
-        NSI:DisplayExternal(spellID, unit)
-    elseif e == "NS_EXTERNAL_NO" then        
+        SAP:DisplayExternal(spellID, unit)
+    elseif e == "SAP_EXTERNAL_NO" then
         local unit, innervate = ...      
         if innervate == "Innervate" then
-            NSI:DisplayExternal("NoInnervate")
+            SAP:DisplayExternal("NoInnervate")
         else
-            NSI:DisplayExternal()
+            SAP:DisplayExternal()
         end
-    elseif e == "NS_EXTERNAL_GIVE" and ... then
+    elseif e == "SAP_EXTERNAL_GIVE" and ... then
         local _, unit, spellID = ...
         local hyperlink = C_Spell.GetSpellLink(spellID)
         WeakAuras.ScanEvents("CHAT_MSG_WHISPER", hyperlink, unit)
-    elseif e == "NS_PAMACRO" and (internal or SAPRT.Settings["Debug"]) then
+    elseif e == "SAP_PAMACRO" and (internal or SAPRT.Settings["Debug"]) then
         local unitID = ...
         if unitID and UnitExists(unitID) and SAPRT.Settings["DebugLogs"] then
             SAP.MacroPresses = SAP.MacroPresses or {}
@@ -329,7 +329,7 @@ local unit = ...
 local cname = SAP_API:Shorten(unit, 8)
 print(cname, "pressed Macro")
 DebugPrint(cname, "pressed Macro", GetTime())
--- WeakAuras.ScanEvents("NS_MACRO_RECEIVE", unit) add this to another aura    ]]
+-- WeakAuras.ScanEvents("SAP_MACRO_RECEIVE", unit) add this to another aura    ]]
 
     --[[ add custom option for this
 elseif e == "MRT_NOTE_UPDATE" then

@@ -1521,7 +1521,7 @@ function DF:AddClassIconToText(text, playerName, englishClassName, useSpec, icon
 		local specString = ""
 		local L, R, T, B = unpack(Details.class_specs_coords[spec])
 		if (L) then
-			specString = "|TInterface\\AddOns\\Details\\images\\spec_icons_normal:" .. size .. ":" .. size .. ":0:0:512:512:" .. (L * 512) .. ":" .. (R * 512) .. ":" .. (T * 512) .. ":" .. (B * 512) .. "|t"
+			specString = "|TInterface\\AddOns\\Details\\images\\spec_icoSAP_normal:" .. size .. ":" .. size .. ":0:0:512:512:" .. (L * 512) .. ":" .. (R * 512) .. ":" .. (T * 512) .. ":" .. (B * 512) .. "|t"
 			return specString .. " " .. text
 		end
 	end
@@ -2009,7 +2009,7 @@ function DF:GetAvailableSpells()
     local tabEnd = offset + numSpells
     for entryOffset = offset, tabEnd - 1 do
         local spellType, spellId = GetSpellBookItemInfo(entryOffset, SPELLBOOK_BANK_PLAYER)
-        local spellData = LIB_OPEN_RAID_COOLDOWNS_INFO[spellId]
+        local spellData = LIB_OPEN_RAID_COOLDOWSAP_INFO[spellId]
         if (spellData) then
             local raceId = spellData.raceid
             if (raceId) then
@@ -3079,16 +3079,16 @@ function detailsFramework:SetTemplate(frame, template)
 end
 
 --DF.font_templates ["ORANGE_FONT_TEMPLATE"] = {color = "orange", size = 11, font = "Accidental Presidency"}
---DF.font_templates ["OPTIONS_FONT_TEMPLATE"] = {color = "yellow", size = 12, font = "Accidental Presidency"}
+--DF.font_templates ["options_FONT_TEMPLATE"] = {color = "yellow", size = 12, font = "Accidental Presidency"}
 --DF.font_templates["ORANGE_FONT_TEMPLATE"] = {color = "orange", size = 10, font = DF:GetBestFontForLanguage()}
 DF.font_templates["ORANGE_FONT_TEMPLATE"] = {color = {1, 0.8235, 0, 1}, size = 11, font = DF:GetBestFontForLanguage()}
---DF.font_templates["OPTIONS_FONT_TEMPLATE"] = {color = "yellow", size = 9.6, font = DF:GetBestFontForLanguage()}
-DF.font_templates["OPTIONS_FONT_TEMPLATE"] = {color = {1, 1, 1, 0.9}, size = 9.6, font = DF:GetBestFontForLanguage()}
+--DF.font_templates["options_FONT_TEMPLATE"] = {color = "yellow", size = 9.6, font = DF:GetBestFontForLanguage()}
+DF.font_templates["options_FONT_TEMPLATE"] = {color = {1, 1, 1, 0.9}, size = 9.6, font = DF:GetBestFontForLanguage()}
 DF.font_templates["SMALL_SILVER"] = {color = "silver", size = 9, font = DF:GetBestFontForLanguage()}
 --~templates
 --dropdowns
 DF.dropdown_templates = DF.dropdown_templates or {}
-DF.dropdown_templates["OPTIONS_DROPDOWN_TEMPLATE"] = {
+DF.dropdown_templates["options_DROPDOWN_TEMPLATE"] = {
 	backdrop = {
 		edgeFile = [[Interface\Buttons\WHITE8X8]],
 		edgeSize = 1,
@@ -3108,7 +3108,7 @@ DF.dropdown_templates["OPTIONS_DROPDOWN_TEMPLATE"] = {
 	dropiconpoints = {-2, -3},
 }
 
-DF.dropdown_templates["OPTIONS_DROPDOWNDARK_TEMPLATE"] = {
+DF.dropdown_templates["options_DROPDOWNDARK_TEMPLATE"] = {
 	backdrop = {
 		edgeFile = [[Interface\Buttons\WHITE8X8]],
 		edgeSize = 1,
@@ -3151,7 +3151,7 @@ DF.dropdown_templates["OLD_DROPDOWN_TEMPLATE"] = {
 
 --switches
 DF.switch_templates = DF.switch_templates or {}
-DF.switch_templates["OPTIONS_CHECKBOX_TEMPLATE"] = {
+DF.switch_templates["options_CHECKBOX_TEMPLATE"] = {
 	backdrop = {edgeFile = [[Interface\Buttons\WHITE8X8]], edgeSize = 1, bgFile = [[Interface\Tooltips\UI-Tooltip-Background]], tileSize = 64, tile = true},
 	backdropcolor = {1, 1, 1, .5},
 	backdropbordercolor = {0, 0, 0, 1},
@@ -3162,7 +3162,7 @@ DF.switch_templates["OPTIONS_CHECKBOX_TEMPLATE"] = {
 	onenterbordercolor = {1, 1, 1, 1},
 }
 
-DF.switch_templates["OPTIONS_CIRCLECHECKBOX_TEMPLATE"] = {
+DF.switch_templates["options_CIRCLECHECKBOX_TEMPLATE"] = {
 	width = 18,
 	height = 18,
 	is_checkbox = true, --will call SetAsCheckBox()
@@ -3178,7 +3178,7 @@ DF.switch_templates["OPTIONS_CIRCLECHECKBOX_TEMPLATE"] = {
 	},
 }
 
-DF.switch_templates["OPTIONS_CHECKBOX_BRIGHT_TEMPLATE"] = {
+DF.switch_templates["options_CHECKBOX_BRIGHT_TEMPLATE"] = {
 	backdrop = {edgeFile = [[Interface\Buttons\WHITE8X8]], edgeSize = 1, bgFile = [[Interface\Tooltips\UI-Tooltip-Background]], tileSize = 64, tile = true},
 	backdropcolor = {1, 1, 1, .5},
 	backdropbordercolor = {0, 0, 0, 1},
@@ -3191,13 +3191,13 @@ DF.switch_templates["OPTIONS_CHECKBOX_BRIGHT_TEMPLATE"] = {
 
 --buttons
 DF.button_templates = DF.button_templates or {}
-DF.button_templates["OPTIONS_BUTTON_TEMPLATE"] = {
+DF.button_templates["options_button_template"] = {
 	backdrop = {edgeFile = [[Interface\Buttons\WHITE8X8]], edgeSize = 1, bgFile = [[Interface\Tooltips\UI-Tooltip-Background]], tileSize = 64, tile = true},
 	backdropcolor = {1, 1, 1, .5},
 	backdropbordercolor = {0, 0, 0, 1},
 }
 
-DF.button_templates["OPTIONS_CIRCLEBUTTON_TEMPLATE"] = {
+DF.button_templates["options_CIRCLEBUTTON_TEMPLATE"] = {
 	rounded_corner = {
 		color = {.075, .075, .075, 1},
 		border_color = {.2, .2, .2, 1},
@@ -3205,7 +3205,7 @@ DF.button_templates["OPTIONS_CIRCLEBUTTON_TEMPLATE"] = {
 	},
 }
 
-DF.button_templates["OPTIONS_BUTTON_GOLDENBORDER_TEMPLATE"] = {
+DF.button_templates["options_BUTTON_GOLDENBORDER_TEMPLATE"] = {
 	backdrop = {edgeFile = [[Interface\Buttons\WHITE8X8]], edgeSize = 1, bgFile = [[Interface\Tooltips\UI-Tooltip-Background]], tileSize = 64, tile = true},
 	backdropcolor = {1, 1, 1, .5},
 	backdropbordercolor = {1, 0.785, 0, 1},
@@ -3227,7 +3227,7 @@ DF.button_templates["OPAQUE_DARK"] = {
 
 --sliders
 DF.slider_templates = DF.slider_templates or {}
-DF.slider_templates["OPTIONS_SLIDER_TEMPLATE"] = {
+DF.slider_templates["options_SLIDER_TEMPLATE"] = {
 	backdrop = {edgeFile = [[Interface\Buttons\WHITE8X8]], edgeSize = 1, bgFile = [[Interface\Tooltips\UI-Tooltip-Background]], tileSize = 64, tile = true},
 
 	--original color wow10:
@@ -3248,7 +3248,7 @@ DF.slider_templates["OPTIONS_SLIDER_TEMPLATE"] = {
 	thumbcolor = {.8, .8, .8, 0.5},
 }
 
-DF.slider_templates["OPTIONS_SLIDERDARK_TEMPLATE"] = {
+DF.slider_templates["options_SLIDERDARK_TEMPLATE"] = {
 	backdrop = {edgeFile = [[Interface\Buttons\WHITE8X8]], edgeSize = 1, bgFile = [[Interface\Tooltips\UI-Tooltip-Background]], tileSize = 64, tile = true},
 
 	backdropcolor = {0.05, 0.05, 0.05, .7},

@@ -567,7 +567,7 @@ C_Timer.After(1, function()
     frame:SetBorderCornerColor(.2, .2, .2, .5)
     frame:SetRoundness(0)
 
-    local radiusSlider = DF:CreateSlider(frame, 120, 14, 0, 15, 1, frame.cornerRoundness, false, "RadiusBar", nil, nil, DF:GetTemplate("slider", "OPTIONS_SLIDER_TEMPLATE"))
+    local radiusSlider = DF:CreateSlider(frame, 120, 14, 0, 15, 1, frame.cornerRoundness, false, "RadiusBar", nil, nil, DF:GetTemplate("slider", "options_SLIDER_TEMPLATE"))
     radiusSlider:SetHook("OnValueChange", function(self, fixedValue, value)
         value = floor(value)
         if (frame.cornerRoundness == value) then

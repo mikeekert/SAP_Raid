@@ -205,11 +205,11 @@ local aura_panel_defaultoptions = {
 	height = 400,
 	row_height = 18,
 	width = 230,
-	button_text_template = "OPTIONS_FONT_TEMPLATE"
+	button_text_template = "options_FONT_TEMPLATE"
 }
 
 function DF:CreateAuraConfigPanel(parent, name, db, changeCallback, options, texts)
-	local options_dropdown_template = DF:GetTemplate("dropdown", "OPTIONS_DROPDOWN_TEMPLATE")
+	local options_dropdown_template = DF:GetTemplate("dropdown", "options_DROPDOWN_TEMPLATE")
 
 	local newAuraPanel = CreateFrame("frame", name, parent, "BackdropTemplate")
 	newAuraPanel.db = db
@@ -268,7 +268,7 @@ function DF:CreateAuraConfigPanel(parent, name, db, changeCallback, options, tex
 	newAuraPanel.desc_label:SetPoint("left", methodSelectionBackground, "left", 130, 0)
 	newAuraPanel.desc_label:SetJustifyV("top")
 
-	local automaticTrackingCheckbox = DF:CreateSwitch(methodSelectionBackground, onSwitchTrackingMethod, newAuraPanel.db.aura_tracker.track_method == 0x1, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, DF:GetTemplate("switch", "OPTIONS_CHECKBOX_BRIGHT_TEMPLATE"))
+	local automaticTrackingCheckbox = DF:CreateSwitch(methodSelectionBackground, onSwitchTrackingMethod, newAuraPanel.db.aura_tracker.track_method == 0x1, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, DF:GetTemplate("switch", "options_CHECKBOX_BRIGHT_TEMPLATE"))
 	automaticTrackingCheckbox.Method = 0x1
 	automaticTrackingCheckbox:SetAsCheckBox()
 	automaticTrackingCheckbox:SetSize(24, 24)
@@ -277,7 +277,7 @@ function DF:CreateAuraConfigPanel(parent, name, db, changeCallback, options, tex
 	local automaticTrackingLabel = DF:CreateLabel(methodSelectionBackground, "Automatic")
 	automaticTrackingLabel:SetPoint("left", automaticTrackingCheckbox, "right", 2, 0)
 
-	local manualTrackingCheckbox = DF:CreateSwitch(methodSelectionBackground, onSwitchTrackingMethod, newAuraPanel.db.aura_tracker.track_method == 0x2, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, DF:GetTemplate("switch", "OPTIONS_CHECKBOX_BRIGHT_TEMPLATE"))
+	local manualTrackingCheckbox = DF:CreateSwitch(methodSelectionBackground, onSwitchTrackingMethod, newAuraPanel.db.aura_tracker.track_method == 0x2, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, DF:GetTemplate("switch", "options_CHECKBOX_BRIGHT_TEMPLATE"))
 	manualTrackingCheckbox.Method = 0x2
 	manualTrackingCheckbox:SetAsCheckBox()
 	manualTrackingCheckbox:SetSize(24, 24)
@@ -340,8 +340,8 @@ function DF:CreateAuraConfigPanel(parent, name, db, changeCallback, options, tex
 
 	--black list
 		--create labels
-		local buffBlacklistLabel = self:CreateLabel(blacklistAddBackground, texts.MANUAL_ADD_BLACKLIST_BUFF, DF:GetTemplate("font", "OPTIONS_FONT_TEMPLATE"))
-		local debuffBlacklistLabel = self:CreateLabel(blacklistAddBackground, texts.MANUAL_ADD_BLACKLIST_DEBUFF, DF:GetTemplate("font", "OPTIONS_FONT_TEMPLATE"))
+		local buffBlacklistLabel = self:CreateLabel(blacklistAddBackground, texts.MANUAL_ADD_BLACKLIST_BUFF, DF:GetTemplate("font", "options_FONT_TEMPLATE"))
+		local debuffBlacklistLabel = self:CreateLabel(blacklistAddBackground, texts.MANUAL_ADD_BLACKLIST_DEBUFF, DF:GetTemplate("font", "options_FONT_TEMPLATE"))
 
 		local buffNameBlacklistEntry = self:CreateTextEntry(blacklistAddBackground, function()end, textEntryWidth, 20, "AddBuffBlacklistTextBox", _, _, options_dropdown_template)
 		buffNameBlacklistEntry:SetHook("OnEditFocusGained", setAutoCompleteWordList)
@@ -410,7 +410,7 @@ function DF:CreateAuraConfigPanel(parent, name, db, changeCallback, options, tex
 				DF:QuickDispatch(changeCallback)
 			end
 
-		end, textEntryWidth/2 -3, 20, "By Name", nil, nil, nil, nil, nil, nil, DF:GetTemplate("button", "OPTIONS_BUTTON_TEMPLATE"), DF:GetTemplate("font", options.button_text_template))
+		end, textEntryWidth/2 -3, 20, "By Name", nil, nil, nil, nil, nil, nil, DF:GetTemplate("button", "options_button_template"), DF:GetTemplate("font", options.button_text_template))
 
 		local addBuffIDToBacklistButton = self:CreateButton(blacklistAddBackground, function()
 			local text = buffNameBlacklistEntry.text
@@ -455,7 +455,7 @@ function DF:CreateAuraConfigPanel(parent, name, db, changeCallback, options, tex
 				DF:QuickDispatch(changeCallback)
 			end
 
-		end, textEntryWidth/2 -3, 20, "By ID", nil, nil, nil, nil, nil, nil, DF:GetTemplate("button", "OPTIONS_BUTTON_TEMPLATE"), DF:GetTemplate("font", options.button_text_template))
+		end, textEntryWidth/2 -3, 20, "By ID", nil, nil, nil, nil, nil, nil, DF:GetTemplate("button", "options_button_template"), DF:GetTemplate("font", options.button_text_template))
 
 		local addDebuffNameToBacklistButton = self:CreateButton(blacklistAddBackground, function()
 			local text = debuffNameBlacklistEntry.text
@@ -492,7 +492,7 @@ function DF:CreateAuraConfigPanel(parent, name, db, changeCallback, options, tex
 
 				DF:QuickDispatch(changeCallback)
 			end
-		end, textEntryWidth/2 -3, 20, "By Name", nil, nil, nil, nil, nil, nil, DF:GetTemplate("button", "OPTIONS_BUTTON_TEMPLATE"), DF:GetTemplate("font", options.button_text_template))
+		end, textEntryWidth/2 -3, 20, "By Name", nil, nil, nil, nil, nil, nil, DF:GetTemplate("button", "options_button_template"), DF:GetTemplate("font", options.button_text_template))
 
 		local addDebuffIDToBacklistButton = self:CreateButton(blacklistAddBackground, function()
 			local text = debuffNameBlacklistEntry.text
@@ -536,12 +536,12 @@ function DF:CreateAuraConfigPanel(parent, name, db, changeCallback, options, tex
 
 				DF:QuickDispatch(changeCallback)
 			end
-		end, textEntryWidth/2 -3, 20, "By ID", nil, nil, nil, nil, nil, nil, DF:GetTemplate("button", "OPTIONS_BUTTON_TEMPLATE"), DF:GetTemplate("font", options.button_text_template))
+		end, textEntryWidth/2 -3, 20, "By ID", nil, nil, nil, nil, nil, nil, DF:GetTemplate("button", "options_button_template"), DF:GetTemplate("font", options.button_text_template))
 
 
 	--track list
-		local buffTracklistLabel = self:CreateLabel(tracklistAddBackground, texts.MANUAL_ADD_TRACKLIST_BUFF, DF:GetTemplate("font", "OPTIONS_FONT_TEMPLATE"))
-		local debuffTracklistLabel = self:CreateLabel(tracklistAddBackground, texts.MANUAL_ADD_TRACKLIST_DEBUFF, DF:GetTemplate("font", "OPTIONS_FONT_TEMPLATE"))
+		local buffTracklistLabel = self:CreateLabel(tracklistAddBackground, texts.MANUAL_ADD_TRACKLIST_BUFF, DF:GetTemplate("font", "options_FONT_TEMPLATE"))
+		local debuffTracklistLabel = self:CreateLabel(tracklistAddBackground, texts.MANUAL_ADD_TRACKLIST_DEBUFF, DF:GetTemplate("font", "options_FONT_TEMPLATE"))
 
 		local buffNameTracklistEntry = self:CreateTextEntry(tracklistAddBackground, function()end, textEntryWidth, 20, "AddBuffTracklistTextBox", _, _, options_dropdown_template)
 		buffNameTracklistEntry:SetHook("OnEditFocusGained", setAutoCompleteWordList)
@@ -576,7 +576,7 @@ function DF:CreateAuraConfigPanel(parent, name, db, changeCallback, options, tex
 
 				DF:QuickDispatch(changeCallback)
 			end
-		end, textEntryWidth/2 -3, 20, "By Name", nil, nil, nil, nil, nil, nil, DF:GetTemplate("button", "OPTIONS_BUTTON_TEMPLATE"), DF:GetTemplate("font", options.button_text_template))
+		end, textEntryWidth/2 -3, 20, "By Name", nil, nil, nil, nil, nil, nil, DF:GetTemplate("button", "options_button_template"), DF:GetTemplate("font", options.button_text_template))
 
 		local addDebuffIDToTracklistButton = self:CreateButton(tracklistAddBackground, function()
 			local text = debuffNameTracklistEntry.text
@@ -619,7 +619,7 @@ function DF:CreateAuraConfigPanel(parent, name, db, changeCallback, options, tex
 
 				DF:QuickDispatch(changeCallback)
 			end
-		end, textEntryWidth/2 -3, 20, "By ID", nil, nil, nil, nil, nil, nil, DF:GetTemplate("button", "OPTIONS_BUTTON_TEMPLATE"), DF:GetTemplate("font", options.button_text_template))
+		end, textEntryWidth/2 -3, 20, "By ID", nil, nil, nil, nil, nil, nil, DF:GetTemplate("button", "options_button_template"), DF:GetTemplate("font", options.button_text_template))
 
 		local addBuffNameToTracklistButton = self:CreateButton(tracklistAddBackground, function()
 			local text = buffNameTracklistEntry.text
@@ -644,7 +644,7 @@ function DF:CreateAuraConfigPanel(parent, name, db, changeCallback, options, tex
 				DF:QuickDispatch(changeCallback)
 			end
 
-		end, textEntryWidth/2 -3, 20, "By Name", nil, nil, nil, nil, nil, nil, DF:GetTemplate("button", "OPTIONS_BUTTON_TEMPLATE"), DF:GetTemplate("font", options.button_text_template))
+		end, textEntryWidth/2 -3, 20, "By Name", nil, nil, nil, nil, nil, nil, DF:GetTemplate("button", "options_button_template"), DF:GetTemplate("font", options.button_text_template))
 
 		local addBuffIDToTracklistButton = self:CreateButton(tracklistAddBackground, function()
 			local text = buffNameTracklistEntry.text
@@ -689,7 +689,7 @@ function DF:CreateAuraConfigPanel(parent, name, db, changeCallback, options, tex
 				--callback the addon
 				DF:QuickDispatch(changeCallback)
 			end
-		end, textEntryWidth/2 -3, 20, "By ID", nil, nil, nil, nil, nil, nil, DF:GetTemplate("button", "OPTIONS_BUTTON_TEMPLATE"), DF:GetTemplate("font", options.button_text_template))
+		end, textEntryWidth/2 -3, 20, "By ID", nil, nil, nil, nil, nil, nil, DF:GetTemplate("button", "options_button_template"), DF:GetTemplate("font", options.button_text_template))
 
 	--anchors:
 		blacklistAddBackground:SetPoint("topleft", auraPanel_Auto, "topleft", 0, y)
@@ -895,12 +895,12 @@ function DF:CreateAuraConfigPanel(parent, name, db, changeCallback, options, tex
 	newAuraPanel.debuffs_added = debuffs_added
 
 	local buffs_added_name = DF:CreateLabel(buffs_added, "Buffs", 12, "silver")
-	buffs_added_name:SetTemplate(DF:GetTemplate("font", "OPTIONS_FONT_TEMPLATE"))
+	buffs_added_name:SetTemplate(DF:GetTemplate("font", "options_FONT_TEMPLATE"))
 	buffs_added_name:SetPoint("bottomleft", buffs_added, "topleft", 0, 2)
 	buffs_added.Title = buffs_added_name
 
 	local debuffs_added_name = DF:CreateLabel(debuffs_added, "Debuffs", 12, "silver")
-	debuffs_added_name:SetTemplate(DF:GetTemplate("font", "OPTIONS_FONT_TEMPLATE"))
+	debuffs_added_name:SetTemplate(DF:GetTemplate("font", "options_FONT_TEMPLATE"))
 	debuffs_added_name:SetPoint("bottomleft", debuffs_added, "topleft", 0, 2)
 	debuffs_added.Title = debuffs_added_name
 
@@ -965,7 +965,7 @@ function DF:CreateAuraConfigPanel(parent, name, db, changeCallback, options, tex
 			buffs_added:Refresh()
 		end
 
-	end, 100, 20, "Add Buff", nil, nil, nil, nil, nil, nil, DF:GetTemplate("button", "OPTIONS_BUTTON_TEMPLATE"))
+	end, 100, 20, "Add Buff", nil, nil, nil, nil, nil, nil, DF:GetTemplate("button", "options_button_template"))
 
 	local add_debuff_button = self:CreateButton(auraPanel_Manual, function()
 		local text = new_debuff_entry.text
@@ -1013,7 +1013,7 @@ function DF:CreateAuraConfigPanel(parent, name, db, changeCallback, options, tex
 
 			debuffs_added:Refresh()
 		end
-	end, 100, 20, "Add Debuff", nil, nil, nil, nil, nil, nil, DF:GetTemplate("button", "OPTIONS_BUTTON_TEMPLATE"))
+	end, 100, 20, "Add Debuff", nil, nil, nil, nil, nil, nil, DF:GetTemplate("button", "options_button_template"))
 
 	local multiple_spells_label = DF:CreateLabel(buffs_added, "You can add multiple auras at once by separating them with ';'.\nExample: Fireball; Frostbolt; Flamestrike", 10, "gray")
 	multiple_spells_label:SetSize(350, 24)
@@ -1033,7 +1033,7 @@ function DF:CreateAuraConfigPanel(parent, name, db, changeCallback, options, tex
 		export_box:SetFocus(true)
 		export_box:HighlightText()
 
-	end, 120, 20, "Export Buffs", nil, nil, nil, nil, nil, nil, DF:GetTemplate("button", "OPTIONS_BUTTON_TEMPLATE"))
+	end, 120, 20, "Export Buffs", nil, nil, nil, nil, nil, nil, DF:GetTemplate("button", "options_button_template"))
 
 	local export_debuff_button = self:CreateButton(auraPanel_Manual, function()
 		local str = ""
@@ -1048,7 +1048,7 @@ function DF:CreateAuraConfigPanel(parent, name, db, changeCallback, options, tex
 		export_box:SetFocus(true)
 		export_box:HighlightText()
 
-	end, 120, 20, "Export Debuffs", nil, nil, nil, nil, nil, nil, DF:GetTemplate("button", "OPTIONS_BUTTON_TEMPLATE"))
+	end, 120, 20, "Export Debuffs", nil, nil, nil, nil, nil, nil, DF:GetTemplate("button", "options_button_template"))
 
 	new_buff_entry:SetPoint("topleft", auraPanel_Manual, "topleft", 480, y)
 	new_buff_string:SetPoint("bottomleft", new_buff_entry, "topleft", 0, 2)

@@ -134,9 +134,9 @@ end
 function SAP.Externals:extracheck(unit, unitID, key, spellID) -- additional check if the person can actually give the external, like checking if they are in range / on the same side / stunned
     -- unit = giver, unitID = receiver, key = prioname
     local enc = WeakAuras.CurrentEncounter and WeakAuras.CurrentEncounter.id
-    if key == "Kyveza" and spellID == Bop and NSI:UnitAura(unitID, 437343) then -- do not assign BoP if the person already has queensbane because at that point it was requested too late
+    if key == "Kyveza" and spellID == Bop and SAP:UnitAura(unitID, 437343) then -- do not assign BoP if the person already has queensbane because at that point it was requested too late
         return false
-    elseif key == "Condemnation" and spellID == sac and NSI:UnitAura(unitID, 438974) then -- do not assign sac if that pally also has the mechanic
+    elseif key == "Condemnation" and spellID == sac and SAP:UnitAura(unitID, 438974) then -- do not assign sac if that pally also has the mechanic
         return false
     else
         return true -- need to return false if it should not be assigned
@@ -201,31 +201,31 @@ end
 -- /run SAP_API:ExternalRequest()
 function SAP_API:ExternalRequest(key, num) -- optional arguments
     local now = GetTime()
-    if NSI:EncounterCheck() and ((not SAP.Externals.lastrequest) or (SAP.Externals.lastrequest < now - 4)) and not SAP_API:DeathCheck("player") then -- spam, encounter and death protection
+    if SAP:EncounterCheck() and ((not SAP.Externals.lastrequest) or (SAP.Externals.lastrequest < now - 4)) and not SAP_API:DeathCheck("player") then -- spam, encounter and death protection
         SAP.Externals.lastrequest = now
         key = key or "default"
         num = num or 1
         local range = {}
 
-        for u in NSI:IterateGroupMembers() do
+        for u in SAP:IterateGroupMembers() do
             local r = select(2, WeakAuras.GetRange(u)) or 60
             range[UnitGUID(u)] = {range = r, name = SAP_API:Shorten(u, 12)}
         end
-        SAP_API:Broadcast("NS_EXTERNAL_REQ", "WHISPER", SAP.Externals.target, key, num, true, range, 0)    -- request external
+        SAP_API:Broadcast("SAP_EXTERNAL_REQ", "WHISPER", SAP.Externals.target, key, num, true, range, 0)    -- request external
     end
 end
 
 -- /run SAP_API:Innervate:Request()
 function SAP_API:InnervateRequest()
     local now = GetTime()
-    if NSI:EncounterCheck() and ((not SAP.Externals.lastrequest2) or (SAP.Externals.lastrequest2 < now - 4)) and not SAP_API:DeathCheck("player") then -- spam, encounter and death protection
+    if SAP:EncounterCheck() and ((not SAP.Externals.lastrequest2) or (SAP.Externals.lastrequest2 < now - 4)) and not SAP_API:DeathCheck("player") then -- spam, encounter and death protection
         SAP.Externals.lastrequest2 = now
         local range = {}
-        for u in NSI:IterateGroupMembers() do
+        for u in SAP:IterateGroupMembers() do
             local r = select(2, WeakAuras.GetRange(u)) or 60
             range[UnitGUID(u)] = {range = r, name = SAP_API:Shorten(u, 12)}
         end
-        NSI:Broadcast("NS_INNERVATE_REQ", "WHISPER", SAP.Externals.target, key, num, true, range, 0)    -- request external
+        SAP:Broadcast("SAP_INNERVATE_REQ", "WHISPER", SAP.Externals.target, key, num, true, range, 0)    -- request external
     end
 end
 
@@ -259,7 +259,7 @@ function SAP.Externals:Request(unitID, key, num, req, range, innervate, expirati
             if assigned then count = count+1 end
             if count >= 1 then return end
         end        
-        SAP_API:Broadcast("NS_EXTERNAL_NO", "WHISPER", unitID, "Innervate")
+        SAP_API:Broadcast("SAP_EXTERNAL_NO", "WHISPER", unitID, "Innervate")
         return
     end
     if key == "default" then
@@ -267,7 +267,7 @@ function SAP.Externals:Request(unitID, key, num, req, range, innervate, expirati
     end
     if SAP.Externals.check[key] then -- see if an immunity or other assigned self cd's are available first
         for i, spellID in ipairs(SAP.Externals.check[key]) do
-            if (spellID ~= 1022 and spellID ~= 204018 and spellID ~= 633 and spellID ~= 204018) or not NSI:UnitAura(unitID, 25771) then -- check forebearance
+            if (spellID ~= 1022 and spellID ~= 204018 and spellID ~= 633 and spellID ~= 204018) or not SAP:UnitAura(unitID, 25771) then -- check forebearance
                 local check = unitID..spellID
                 if SAP.Externals.ready[check] then return end
             end
@@ -326,7 +326,7 @@ function SAP.Externals:Request(unitID, key, num, req, range, innervate, expirati
     -- continue with default prio if nothing was found yet
     if not SAP.Externals.prio[key] then key = "default" end -- if no specific prio was found, use default prio
     if SAP.Externals.SkipDefault[key] then
-        SAP_API:Broadcast("NS_EXTERNAL_NO", "WHISPER", unitID, "nilcheck")
+        SAP_API:Broadcast("SAP_EXTERNAL_NO", "WHISPER", unitID, "nilcheck")
         return
     end
     for i, spellID in ipairs(SAP.Externals.prio[key]) do -- go through spellid's in prio order
@@ -357,7 +357,7 @@ function SAP.Externals:Request(unitID, key, num, req, range, innervate, expirati
         end
     end
     -- No External Left
-    SAP_API:Broadcast("NS_EXTERNAL_NO", "WHISPER", unitID, "nilcheck")
+    SAP_API:Broadcast("SAP_EXTERNAL_NO", "WHISPER", unitID, "nilcheck")
 end
 
 function SAP.Externals:AssignExternal(unitID, key, num, req, range, unit, spellID, sender, allowCD) -- unitID = requester, unit = unit that shall give the external
@@ -383,15 +383,15 @@ function SAP.Externals:AssignExternal(unitID, key, num, req, range, unit, spellI
             and not (spellID == Sac and yourself) -- no self sac
             and not (UnitIsDead(unit)) -- only doing normal death check instead of also checking for angel form because angel form can still give the external
             and not (yourself and req) -- don't assign own external if it was specifically requested, only on automation
-            and not (NSI:UnitAura(unitID, 25771) and (spellID == Bop or spellID == Spellbop or spellID == LoH)) --Forebearance check
+            and not (SAP:UnitAura(unitID, 25771) and (spellID == Bop or spellID == Spellbop or spellID == LoH)) --Forebearance check
             and not blocked -- spell isn't specifically blocked for this key
             and not SAP.Externals.assigned[spellID] -- same spellid isn't already assigned unless it stacks
     then
         table.insert(SAP.AssignedExternals, {automated = not req, receiver = SAP_API:Shorten(unitID), giver = SAP_API:Shorten(unit), spellID = spellID, key = key, time = Round(now-SAP.Externals.pull)}) -- for debug printing later
         SAP.Externals.requested[k] = now -- set spell to requested
-        SAP_API:Broadcast("NS_EXTERNAL_LIST", "RAID", unit, sender, spellID) -- send List Data
-        SAP_API:Broadcast("NS_EXTERNAL_GIVE", "WHISPER", unit, sender, spellID) -- send External Alert
-        SAP_API:Broadcast("NS_EXTERNAL_YES", "WHISPER", unitID, giver, spellID) -- send Confirmation
+        SAP_API:Broadcast("SAP_EXTERNAL_LIST", "RAID", unit, sender, spellID) -- send List Data
+        SAP_API:Broadcast("SAP_EXTERNAL_GIVE", "WHISPER", unit, sender, spellID) -- send External Alert
+        SAP_API:Broadcast("SAP_EXTERNAL_YES", "WHISPER", unitID, giver, spellID) -- send Confirmation
         if not SAP.Externals.stacks[spellID] then
             SAP.Externals.assigned[spellID] = true
         end
@@ -404,7 +404,7 @@ end
 function SAP.Externals:Init()
     SAP.Externals.target = "raid1"
     SAP.Externals.pull = GetTime()
-    for u in NSI:IterateGroupMembers() do
+    for u in SAP:IterateGroupMembers() do
         if UnitIsVisible(u) and (UnitIsGroupLeader(u) or UnitIsGroupAssistant(u)) then
             SAP.Externals.target = u
             break

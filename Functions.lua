@@ -1,7 +1,7 @@
 local _, SAP = ... -- Internal namespace
 
 -- Function from WeakAuras, thanks rivers
-function NSI:IterateGroupMembers(reversed, forceParty)
+function SAP:IterateGroupMembers(reversed, forceParty)
     local unit = (not forceParty and IsInRaid()) and 'raid' or 'party'
     local numGroupMembers = unit == 'party' and GetNumSubgroupMembers() or GetNumGroupMembers()
     local i = reversed and numGroupMembers or (unit == 'party' and 0 or 1)
@@ -21,7 +21,7 @@ function SAP_API:Version() -- old version check function from the database WA, f
     return 14
 end
 
-function NSI:Print(...)
+function SAP:Print(...)
     if SAPRT.Settings["DebugLogs"] then
         if DevTool then
             local t = {...}
@@ -123,26 +123,26 @@ function SAP_API:GetNote() -- Get rid of extra spaces and color coding. Also con
     return SAP.Note
 end
 
-function NSI:UnitAura(unit, spellID) -- simplify aura checking for myself
+function SAP:UnitAura(unit, spellID) -- simplify aura checking for myself
     if unit and UnitExists(unit) and spellID then
         local spell = C_Spell.GetSpellInfo(spellID)
         return spell and C_UnitAuras.GetAuraDataBySpellName(unit, spell.name)
     end
 end
 
-function NSI:Difficultycheck(encountercheck) -- check if current difficulty is a Normal/Heroic/Mythic raid and also allow checking if we are currently in an encounter
+function SAP:Difficultycheck(encountercheck) -- check if current difficulty is a Normal/Heroic/Mythic raid and also allow checking if we are currently in an encounter
     local difficultyID = select(3, GetInstanceInfo()) or 0
-    return SAPRT.Settings["Debug"] or ((difficultyID == 14 or difficultyID == 15 or difficultyID == 16) and ((not encountercheck) or NSI:EncounterCheck()))
+    return SAPRT.Settings["Debug"] or ((difficultyID == 14 or difficultyID == 15 or difficultyID == 16) and ((not encountercheck) or SAP:EncounterCheck()))
 end
 
-function NSI:EncounterCheck()
+function SAP:EncounterCheck()
     return WeakAuras.CurrentEncounter or SAPRT.Settings["Debug"]
 end
 
 -- this one is public as I want to use it in WeakAuras as well
 function SAP_API:DeathCheck(unit)
     if unit and UnitExists(unit) then
-        return (UnitIsDead(unit) and not UnitIsFeignDeath(unit)) or NSI:UnitAura(unit, 27827)
+        return (UnitIsDead(unit) and not UnitIsFeignDeath(unit)) or SAP:UnitAura(unit, 27827)
     end
 end
 
@@ -177,13 +177,13 @@ function SAP_API:PrivateAura()
     local now = GetTime()
     if (not SAP_API.LastPAMacro) or SAP_API.LastPAMacro < now-4 then -- putting this into global SAP_API namespace to allow auras to reset it if ever required
         SAP_API.LastPAMacro = now
-        WeakAuras.ScanEvents("NS_PA_MACRO", true) -- this is for backwards compatibility
-        NSI:Broadcast("NS_PAMACRO", "RAID", "nilcheck") -- this will be used going forward, slightly different wording to prevent issues with old auras
+        WeakAuras.ScanEvents("SAP_PA_MACRO", true) -- this is for backwards compatibility
+        SAP:Broadcast("SAP_PAMACRO", "RAID", "nilcheck") -- this will be used going forward, slightly different wording to prevent issues with old auras
     end
 end
 
-function NSI:SendWAString(str)
+function SAP:SendWAString(str)
     if str and str ~= "" and type(str) == "string" then
-        NSI:Broadcast("NSI_WA_SYNC", "RAID", str)
+        SAP:Broadcast("SAP_WA_SYNC", "RAID", str)
     end
 end

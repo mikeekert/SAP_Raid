@@ -254,7 +254,7 @@ LIB_OPEN_RAID_MELEE_SPECS = {
 --/dump GetTalentInfo (talentTier, talentColumn, 1)
 --example: to get the second talent of the last talent line, use: /dump GetTalentInfo (7, 2, 1)
 
-LIB_OPEN_RAID_COOLDOWNS_INFO = {
+LIB_OPEN_RAID_COOLDOWSAP_INFO = {
 
 	-- Filter Types:
 	-- 1 attack cooldown
@@ -549,17 +549,17 @@ LIB_OPEN_RAID_COOLDOWNS_INFO = {
 	[121471] = 	{cooldown = 180, 	duration = 20, 		specs = {261}, 			talent =false, charges = 1, class = "ROGUE", type = 1},  --Shadow Blades
 }
 
-LIB_OPEN_RAID_COOLDOWNS_BY_SPEC = {};
-for spellID,spellData in pairs(LIB_OPEN_RAID_COOLDOWNS_INFO) do
+LIB_OPEN_RAID_COOLDOWSAP_BY_SPEC = {};
+for spellID,spellData in pairs(LIB_OPEN_RAID_COOLDOWSAP_INFO) do
 	for _,specID in ipairs(spellData.specs) do
-		LIB_OPEN_RAID_COOLDOWNS_BY_SPEC[specID] = LIB_OPEN_RAID_COOLDOWNS_BY_SPEC[specID] or {};
-		LIB_OPEN_RAID_COOLDOWNS_BY_SPEC[specID][spellID] = spellData.type;
+		LIB_OPEN_RAID_COOLDOWSAP_BY_SPEC[specID] = LIB_OPEN_RAID_COOLDOWSAP_BY_SPEC[specID] or {};
+		LIB_OPEN_RAID_COOLDOWSAP_BY_SPEC[specID][spellID] = spellData.type;
 	end
 end
 
 -- DF Evoker
-LIB_OPEN_RAID_COOLDOWNS_BY_SPEC[1467] = {};
-LIB_OPEN_RAID_COOLDOWNS_BY_SPEC[1468] = {};
+LIB_OPEN_RAID_COOLDOWSAP_BY_SPEC[1467] = {};
+LIB_OPEN_RAID_COOLDOWSAP_BY_SPEC[1468] = {};
 
 --[=[
 Spell customizations:
@@ -616,32 +616,32 @@ end
 --interrupt list using proxy from cooldown list
 --this list should be expansion and combatlog safe
 LIB_OPEN_RAID_SPELL_INTERRUPT = {
-	[6552] = LIB_OPEN_RAID_COOLDOWNS_INFO[6552], --Pummel
+	[6552] = LIB_OPEN_RAID_COOLDOWSAP_INFO[6552], --Pummel
 
-	[2139] = LIB_OPEN_RAID_COOLDOWNS_INFO[2139], --Counterspell
+	[2139] = LIB_OPEN_RAID_COOLDOWSAP_INFO[2139], --Counterspell
 
-	[15487] = LIB_OPEN_RAID_COOLDOWNS_INFO[15487], --Silence (shadow) Last Word Talent to reduce cooldown in 15 seconds
+	[15487] = LIB_OPEN_RAID_COOLDOWSAP_INFO[15487], --Silence (shadow) Last Word Talent to reduce cooldown in 15 seconds
 
-	[1766] = LIB_OPEN_RAID_COOLDOWNS_INFO[1766], --Kick
+	[1766] = LIB_OPEN_RAID_COOLDOWSAP_INFO[1766], --Kick
 
-	[96231] = LIB_OPEN_RAID_COOLDOWNS_INFO[96231], --Rebuke (protection and retribution)
+	[96231] = LIB_OPEN_RAID_COOLDOWSAP_INFO[96231], --Rebuke (protection and retribution)
 
-	[116705] = LIB_OPEN_RAID_COOLDOWNS_INFO[116705], --Spear Hand Strike (brewmaster and windwalker)
+	[116705] = LIB_OPEN_RAID_COOLDOWSAP_INFO[116705], --Spear Hand Strike (brewmaster and windwalker)
 
-	[57994] = LIB_OPEN_RAID_COOLDOWNS_INFO[57994], --Wind Shear
+	[57994] = LIB_OPEN_RAID_COOLDOWSAP_INFO[57994], --Wind Shear
 
-	[47528] = LIB_OPEN_RAID_COOLDOWNS_INFO[47528], --Mind Freeze
+	[47528] = LIB_OPEN_RAID_COOLDOWSAP_INFO[47528], --Mind Freeze
 
-	[106839] = LIB_OPEN_RAID_COOLDOWNS_INFO[106839], --Skull Bash (feral, guardian)
-	[78675] = LIB_OPEN_RAID_COOLDOWNS_INFO[78675], --Solar Beam (balance)
+	[106839] = LIB_OPEN_RAID_COOLDOWSAP_INFO[106839], --Skull Bash (feral, guardian)
+	[78675] = LIB_OPEN_RAID_COOLDOWSAP_INFO[78675], --Solar Beam (balance)
 
-	[147362] = LIB_OPEN_RAID_COOLDOWNS_INFO[147362], --Counter Shot (beast mastery, marksmanship)
-	[187707] = LIB_OPEN_RAID_COOLDOWNS_INFO[187707], --Muzzle (survival)
+	[147362] = LIB_OPEN_RAID_COOLDOWSAP_INFO[147362], --Counter Shot (beast mastery, marksmanship)
+	[187707] = LIB_OPEN_RAID_COOLDOWSAP_INFO[187707], --Muzzle (survival)
 
-	[183752] = LIB_OPEN_RAID_COOLDOWNS_INFO[183752], --Disrupt
+	[183752] = LIB_OPEN_RAID_COOLDOWSAP_INFO[183752], --Disrupt
 
-	[19647] = LIB_OPEN_RAID_COOLDOWNS_INFO[19647], --Spell Lock (pet felhunter ability)
-	[89766] = LIB_OPEN_RAID_COOLDOWNS_INFO[89766], --Axe Toss (pet felguard ability)
+	[19647] = LIB_OPEN_RAID_COOLDOWSAP_INFO[19647], --Spell Lock (pet felhunter ability)
+	[89766] = LIB_OPEN_RAID_COOLDOWSAP_INFO[89766], --Axe Toss (pet felguard ability)
 }
 
 --override list of spells with more than one effect, example: multiple types of polymorph

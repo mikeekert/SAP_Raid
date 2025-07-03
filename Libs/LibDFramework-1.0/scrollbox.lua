@@ -345,7 +345,7 @@ detailsFramework.ScrollBoxFunctions = {
 ---@field height number?
 ---@field line_amount number?
 ---@field line_height number?
----@field columns_per_line number?
+---@field columSAP_per_line number?
 ---@field auto_amount boolean?
 ---@field no_scroll boolean?
 ---@field vertical_padding number?
@@ -357,7 +357,7 @@ local grid_scrollbox_options = {
 	height = 400,
 	line_amount = 10,
 	line_height = 30,
-    columns_per_line = 4,
+    columSAP_per_line = 4,
 	no_scroll = false,
     vertical_padding = 1,
     no_backdrop = false,
@@ -390,7 +390,7 @@ function detailsFramework:CreateGridScrollBox(parent, name, refreshFunc, data, c
 	local lineHeight = type(options.line_height) == "number" and options.line_height or grid_scrollbox_options.line_height
 	---@cast lineHeight number
 
-    local columnsPerLine = options.columns_per_line or grid_scrollbox_options.columns_per_line
+    local columnsPerLine = options.columSAP_per_line or grid_scrollbox_options.columSAP_per_line
 	local autoAmount = options.auto_amount
 	local noScroll = options.no_scroll
 	local noBackdrop = options.no_backdrop
@@ -527,7 +527,7 @@ function detailsFramework:CreateMenuWithGridScrollBox(parent, name, refreshMeFun
 
 	--create a line
     local createButton = function(line, lineIndex, columnIndex)
-        local width = gridScrollBoxOptions.width / gridScrollBoxOptions.columns_per_line - 5
+        local width = gridScrollBoxOptions.width / gridScrollBoxOptions.columSAP_per_line - 5
         local height = gridScrollBoxOptions.line_height
         if (not height) then
             height = 30

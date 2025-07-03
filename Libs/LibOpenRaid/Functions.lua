@@ -258,9 +258,9 @@ local getSpellCustomFiltersFromCache = function(spellId)
     return result
 end
 
---LIB_OPEN_RAID_COOLDOWNS_INFO store all registered cooldowns in the file ThingsToMantain_<game version>
+--LIB_OPEN_RAID_COOLDOWSAP_INFO store all registered cooldowns in the file ThingsToMantain_<game version>
 function openRaidLib.CooldownManager.GetAllRegisteredCooldowns()
-    return LIB_OPEN_RAID_COOLDOWNS_INFO
+    return LIB_OPEN_RAID_COOLDOWSAP_INFO
 end
 
 function openRaidLib.CooldownManager.GetCooldownInfo(spellId)

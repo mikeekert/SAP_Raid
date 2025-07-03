@@ -653,7 +653,7 @@ local getSpellListAsHashTableFromSpellBook = function()
     local tabEnd = offset + numSpells
     for entryOffset = offset, tabEnd - 1 do
         local spellType, spellId = GetSpellBookItemInfo(entryOffset, spellBookPlayerEnum)
-        local spellData = LIB_OPEN_RAID_COOLDOWNS_INFO[spellId] --from the cooldowns table
+        local spellData = LIB_OPEN_RAID_COOLDOWSAP_INFO[spellId] --from the cooldowns table
         if (spellData) then
             local raceId = spellData.raceid
             if (raceId) then
@@ -774,7 +774,7 @@ local updateCooldownAvailableList = function()
     local spellBookSpellList = getSpellListAsHashTableFromSpellBook()
 
     --build a list of all spells assigned as cooldowns for the player class
-    for spellID, spellData in pairs(LIB_OPEN_RAID_COOLDOWNS_INFO) do
+    for spellID, spellData in pairs(LIB_OPEN_RAID_COOLDOWSAP_INFO) do
         --type 10 is an item cooldown and does not have a class or race id
 
         local passRaceId = false
@@ -924,7 +924,7 @@ end
 ---@return number buffDuration
 function openRaidLib.CooldownManager.GetPlayerCooldownStatus(spellId)
     --check if is a charge spell
-    local spellData = LIB_OPEN_RAID_COOLDOWNS_INFO[spellId]
+    local spellData = LIB_OPEN_RAID_COOLDOWSAP_INFO[spellId]
     if (spellData) then
         local buffDuration = getAuraDuration(spellId)
         local chargesAvailable, chargesTotal, start, duration = GetSpellCharges(spellId)

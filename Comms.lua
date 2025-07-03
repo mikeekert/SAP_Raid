@@ -3,8 +3,8 @@ local AceComm = LibStub("AceComm-3.0")
 local LibSerialize = LibStub("LibSerialize")
 local LibDeflate = LibStub("LibDeflate")
 local allowedcomms = {
-    ["NSI_NICKNAMES_COMMS"] = true,
-    ["NSI_NICKNAMES_SYNC"] = true,
+    ["SAP_NICKNAMES_COMMS"] = true,
+    ["SAP_NICKNAMES_SYNC"] = true,
 }
 
 local del = ":"
@@ -36,13 +36,13 @@ function SAP_API:Broadcast(event, channel, ...) -- only used for weakauras, ever
         end
     end
     if channel == "WHISPER" then -- create "fake" whisper addon msg that actually just uses RAID instead and will be checked on receive
-        AceComm:SendCommMessage("NSWA_MSG2", message, "RAID")
+        AceComm:SendCommMessage("SAPWA_MSG2", message, "RAID")
     else
-        AceComm:SendCommMessage("NSWA_MSG", message, channel)
+        AceComm:SendCommMessage("SAPWA_MSG", message, channel)
     end
 end
 
-function NSI:Broadcast(event, channel, ...) -- using internal broadcast function for anything inside the addon to prevent users to send stuff they shouldn't be sending
+function SAP:Broadcast(event, channel, ...) -- using internal broadcast function for anything inside the addon to prevent users to send stuff they shouldn't be sending
     local message = event
     local argTable = {...}
     local target = ""
@@ -71,9 +71,9 @@ function NSI:Broadcast(event, channel, ...) -- using internal broadcast function
         end
     end
     if channel == "WHISPER" then -- create "fake" whisper addon msg that actually just uses RAID instead and will be checked on receive
-        AceComm:SendCommMessage("NSI_WHISPER", message, "RAID")
+        AceComm:SendCommMessage("SAP_WHISPER", message, "RAID")
     else
-        AceComm:SendCommMessage("NSI_MSG", message, channel)
+        AceComm:SendCommMessage("SAP_MSG", message, channel)
     end
 end
 
@@ -125,16 +125,16 @@ local function ReceiveComm(text, chan, sender, whisper, internal)
                 tonext = tonext..functionArg..del -- if argtype wasn't given then this is part of a table that was falsely split by the delimeter so we're stitching it back together
             end
         end
-        NSI:EventHandler(event, false, internal, unpack(formattedArgTable))
+        SAP:EventHandler(event, false, internal, unpack(formattedArgTable))
         WeakAuras.ScanEvents(event, unpack(formattedArgTable))
     end
 end
 
 
-AceComm:RegisterComm("NSWA_MSG", function(_, text, chan, sender) ReceiveComm(text, chan, sender, false, false) end)
-AceComm:RegisterComm("NSWA_MSG2", function(_, text, chan, sender) ReceiveComm(text, chan, sender, true, false) end)
-AceComm:RegisterComm("NSI_MSG", function(_, text, chan, sender) ReceiveComm(text, chan, sender, false, true) end)
-AceComm:RegisterComm("NSI_WHISPER", function(_, text, chan, sender) ReceiveComm(text, chan, sender, true, true) end)
+AceComm:RegisterComm("SAPWA_MSG", function(_, text, chan, sender) ReceiveComm(text, chan, sender, false, false) end)
+AceComm:RegisterComm("SAPWA_MSG2", function(_, text, chan, sender) ReceiveComm(text, chan, sender, true, false) end)
+AceComm:RegisterComm("SAP_MSG", function(_, text, chan, sender) ReceiveComm(text, chan, sender, false, true) end)
+AceComm:RegisterComm("SAP_WHISPER", function(_, text, chan, sender) ReceiveComm(text, chan, sender, true, true) end)
 
 
--- SAP_API:Broadcast("NS_EVENTNAME", channel, targetunitID if whisper, arg1, arg2, arg3)
+-- SAP_API:Broadcast("SAP_EVENTNAME", channel, targetunitID if whisper, arg1, arg2, arg3)

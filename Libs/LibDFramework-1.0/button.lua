@@ -551,7 +551,7 @@ detailsFramework:Mixin(ButtonMetaFunctions, detailsFramework.ScriptHookMixin)
 --custom textures
 	function ButtonMetaFunctions:InstallCustomTexture()
 		--function deprecated, now just set a the standard template
-		self:SetTemplate(detailsFramework:GetTemplate("button", "OPTIONS_BUTTON_TEMPLATE"))
+		self:SetTemplate(detailsFramework:GetTemplate("button", "options_button_template"))
 	end
 
 ------------------------------------------------------------------------------------------------------------
@@ -1208,7 +1208,7 @@ end
 		colorPickButton.color_texture = colorTexture
 
 		if (not buttonTemplate) then
-			colorPickButton:SetTemplate(detailsFramework:GetTemplate("button", "OPTIONS_BUTTON_TEMPLATE"))
+			colorPickButton:SetTemplate(detailsFramework:GetTemplate("button", "options_button_template"))
 		else
 			colorPickButton:SetTemplate(buttonTemplate)
 		end
@@ -1431,13 +1431,13 @@ function detailsFramework:CreateTabButton(parent, frameName)
 
 	tabButton.SelectedTexture:SetAllPoints(tabButton.MiddleTexture)
 
-	tabButton.leftTextureName = "Options_Tab_Left"
-	tabButton.rightTextureName = "Options_Tab_Right"
-	tabButton.middleTextureName = "Options_Tab_Middle"
+	tabButton.leftTextureName = "options_Tab_Left"
+	tabButton.rightTextureName = "options_Tab_Right"
+	tabButton.middleTextureName = "options_Tab_Middle"
 
-	tabButton.leftTextureSelectedName = "Options_Tab_Active_Left"
-	tabButton.rightTextureSelectedName = "Options_Tab_Active_Right"
-	tabButton.middleTextureSelectedName = "Options_Tab_Active_Middle"
+	tabButton.leftTextureSelectedName = "options_Tab_Active_Left"
+	tabButton.rightTextureSelectedName = "options_Tab_Active_Right"
+	tabButton.middleTextureSelectedName = "options_Tab_Active_Middle"
 
 	tabButton.LeftTexture:SetAtlas(tabButton.leftTextureName)
 	tabButton.LeftTexture:SetWidth(2)

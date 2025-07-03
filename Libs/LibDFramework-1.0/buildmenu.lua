@@ -859,7 +859,7 @@ local parseOptionsTable = function(menuOptions)
     local bAlignAsPairs = menuOptions.align_as_pairs
     local nAlignAsPairsLength = menuOptions.align_as_pairs_string_space or 160
     local nAlignAsPairsSpacing = menuOptions.align_as_pairs_spacing or 20
-    local bAttachSliderButtonsToLeft = menuOptions.slider_buttons_to_left
+    local bAttachSliderButtonsToLeft = menuOptions.slider_buttoSAP_to_left
 
     --if a scrollbox is passed, the height can be ignored
     --the scrollBox child will be used as the parent, and the height of the child will be resized to fit the widgets

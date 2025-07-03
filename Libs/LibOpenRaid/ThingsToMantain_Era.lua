@@ -131,21 +131,21 @@ LIB_OPEN_RAID_MELEE_SPECS = {
 --/dump GetTalentInfo (talentTier, talentColumn, 1)
 --example: to get the second talent of the last talent line, use: /dump GetTalentInfo (7, 2, 1)
 
-LIB_OPEN_RAID_COOLDOWNS_INFO = {
+LIB_OPEN_RAID_COOLDOWSAP_INFO = {
 
 }
 
-LIB_OPEN_RAID_COOLDOWNS_BY_SPEC = {};
-for spellID,spellData in pairs(LIB_OPEN_RAID_COOLDOWNS_INFO) do
+LIB_OPEN_RAID_COOLDOWSAP_BY_SPEC = {};
+for spellID,spellData in pairs(LIB_OPEN_RAID_COOLDOWSAP_INFO) do
 	for _,specID in ipairs(spellData.specs) do
-		LIB_OPEN_RAID_COOLDOWNS_BY_SPEC[specID] = LIB_OPEN_RAID_COOLDOWNS_BY_SPEC[specID] or {};
-		LIB_OPEN_RAID_COOLDOWNS_BY_SPEC[specID][spellID] = spellData.type;
+		LIB_OPEN_RAID_COOLDOWSAP_BY_SPEC[specID] = LIB_OPEN_RAID_COOLDOWSAP_BY_SPEC[specID] or {};
+		LIB_OPEN_RAID_COOLDOWSAP_BY_SPEC[specID][spellID] = spellData.type;
 	end
 end
 
 -- DF Evoker
-LIB_OPEN_RAID_COOLDOWNS_BY_SPEC[1467] = {};
-LIB_OPEN_RAID_COOLDOWNS_BY_SPEC[1468] = {};
+LIB_OPEN_RAID_COOLDOWSAP_BY_SPEC[1467] = {};
+LIB_OPEN_RAID_COOLDOWSAP_BY_SPEC[1468] = {};
 
 --[=[
 Spell customizations:

@@ -1098,7 +1098,7 @@ local create_panel_entry = function(self, row)
 
 	editbox.editbox.current_bordercolor = {1, 1, 1, 0.1}
 
-	editbox:SetTemplate(detailsFramework:GetTemplate("dropdown", "OPTIONS_DROPDOWN_TEMPLATE"))
+	editbox:SetTemplate(detailsFramework:GetTemplate("dropdown", "options_DROPDOWN_TEMPLATE"))
 	editbox:SetBackdropColor(.2, .2, .2, 0.7)
 
 	table.insert(row.entry_available, editbox)
@@ -1110,7 +1110,7 @@ local create_panel_checkbox = function(self, row)
 
 	local switch = detailsFramework:NewSwitch (row, nil, "$parentCheckBox" .. row.checkbox_total, nil, 20, 20, nil, nil, false)
 	switch:SetAsCheckBox()
-	switch:SetTemplate(detailsFramework:GetTemplate("switch", "OPTIONS_CHECKBOX_TEMPLATE"))
+	switch:SetTemplate(detailsFramework:GetTemplate("switch", "options_CHECKBOX_TEMPLATE"))
 
 	table.insert(row.checkbox_available, switch)
 end
@@ -1652,7 +1652,7 @@ function detailsFramework:IconPick (callback, close_when_select, param1, param2)
 
 		detailsFramework.IconPickFrame.search = detailsFramework:NewTextEntry(detailsFramework.IconPickFrame, nil, "$parentSearchBox", nil, 140, 20)
 		detailsFramework.IconPickFrame.search:SetPoint("left", detailsFramework.IconPickFrame.searchLabel, "right", 2, 0)
-		detailsFramework.IconPickFrame.search:SetTemplate(detailsFramework:GetTemplate("dropdown", "OPTIONS_DROPDOWN_TEMPLATE"))
+		detailsFramework.IconPickFrame.search:SetTemplate(detailsFramework:GetTemplate("dropdown", "options_DROPDOWN_TEMPLATE"))
 
 		detailsFramework.IconPickFrame.search:SetHook("OnTextChanged", function()
 			detailsFramework.IconPickFrame.searching = detailsFramework.IconPickFrame.search:GetText()
@@ -1673,7 +1673,7 @@ function detailsFramework:IconPick (callback, close_when_select, param1, param2)
 		detailsFramework.IconPickFrame.customIcon:SetPoint("bottomleft", detailsFramework.IconPickFrame, "bottomleft", 12, 16)
 		detailsFramework.IconPickFrame.customIcon.fontsize = 12
 
-		detailsFramework.IconPickFrame.customIconEntry = detailsFramework:CreateTextEntry(detailsFramework.IconPickFrame, function()end, 200, 20, "CustomIconEntry", _, _, detailsFramework:GetTemplate("dropdown", "OPTIONS_DROPDOWN_TEMPLATE"))
+		detailsFramework.IconPickFrame.customIconEntry = detailsFramework:CreateTextEntry(detailsFramework.IconPickFrame, function()end, 200, 20, "CustomIconEntry", _, _, detailsFramework:GetTemplate("dropdown", "options_DROPDOWN_TEMPLATE"))
 		detailsFramework.IconPickFrame.customIconEntry:SetPoint("left", detailsFramework.IconPickFrame.customIcon, "right", 2, 0)
 
 		detailsFramework.IconPickFrame.customIconEntry:SetHook("OnTextChanged", function()
@@ -1707,7 +1707,7 @@ function detailsFramework:IconPick (callback, close_when_select, param1, param2)
 			end
 		end
 
-		detailsFramework.IconPickFrame.customIconAccept = detailsFramework:CreateButton(detailsFramework.IconPickFrame, accept_custom_icon, 82, 20, "Accept", nil, nil, nil, nil, nil, nil, detailsFramework:GetTemplate("button", "OPTIONS_BUTTON_TEMPLATE"), detailsFramework:GetTemplate("font", "ORANGE_FONT_TEMPLATE"))
+		detailsFramework.IconPickFrame.customIconAccept = detailsFramework:CreateButton(detailsFramework.IconPickFrame, accept_custom_icon, 82, 20, "Accept", nil, nil, nil, nil, nil, nil, detailsFramework:GetTemplate("button", "options_button_template"), detailsFramework:GetTemplate("font", "ORANGE_FONT_TEMPLATE"))
 		detailsFramework.IconPickFrame.customIconAccept:SetPoint("left", detailsFramework.IconPickFrame.customIconEntry, "right", 2, 0)
 
 		--fill with icons
@@ -2052,7 +2052,7 @@ local SimplePanel_frame_backdrop_border_color = {0, 0, 0, 1}
 ---@field thumb texture
 function detailsFramework:CreateScaleBar(frame, config, bNoRightClick) --~scale
 	---@type df_scalebar
-	local scaleBar, text = detailsFramework:CreateSlider(frame, 120, 14, 0.6, 1.6, 0.1, config.scale, true, "ScaleBar", nil, "Scale:", detailsFramework:GetTemplate("slider", "OPTIONS_SLIDER_TEMPLATE"), detailsFramework:GetTemplate("font", "ORANGE_FONT_TEMPLATE"))
+	local scaleBar, text = detailsFramework:CreateSlider(frame, 120, 14, 0.6, 1.6, 0.1, config.scale, true, "ScaleBar", nil, "Scale:", detailsFramework:GetTemplate("slider", "options_SLIDER_TEMPLATE"), detailsFramework:GetTemplate("font", "ORANGE_FONT_TEMPLATE"))
 	scaleBar.thumb:SetWidth(24)
 	scaleBar:SetValueStep(0.05)
 	scaleBar:SetObeyStepOnDrag(true)
@@ -2524,8 +2524,8 @@ function detailsFramework:ShowPromptPanel(message, trueCallback, falseCallback, 
 		prompt:SetJustifyH("center")
 		promptFrame.prompt = prompt
 
-		local button_text_template = detailsFramework:GetTemplate("font", "OPTIONS_FONT_TEMPLATE")
-		local options_dropdown_template = detailsFramework:GetTemplate("dropdown", "OPTIONS_DROPDOWN_TEMPLATE")
+		local button_text_template = detailsFramework:GetTemplate("font", "options_FONT_TEMPLATE")
+		local options_dropdown_template = detailsFramework:GetTemplate("dropdown", "options_DROPDOWN_TEMPLATE")
 
 		local buttonTrue = detailsFramework:CreateButton(promptFrame, nil, 60, 20, "Yes", nil, nil, nil, nil, nil, nil, options_dropdown_template)
 		buttonTrue:SetPoint("bottomright", promptFrame, "bottomright", -5, 5)
@@ -2631,8 +2631,8 @@ function detailsFramework:ShowTextPromptPanel(message, callback)
 		prompt:SetSize(360, 36)
 		promptFrame.prompt = prompt
 
-		local button_text_template = detailsFramework:GetTemplate("font", "OPTIONS_FONT_TEMPLATE")
-		local options_dropdown_template = detailsFramework:GetTemplate("dropdown", "OPTIONS_DROPDOWN_TEMPLATE")
+		local button_text_template = detailsFramework:GetTemplate("font", "options_FONT_TEMPLATE")
+		local options_dropdown_template = detailsFramework:GetTemplate("dropdown", "options_DROPDOWN_TEMPLATE")
 
 		local textbox = detailsFramework:CreateTextEntry(promptFrame, function()end, 380, 20, "textbox", nil, nil, options_dropdown_template)
 		textbox:SetPoint("topleft", promptFrame, "topleft", 10, -60)
@@ -3693,7 +3693,7 @@ local simple_list_box_GetOrCreateWidget = function(self)
 	local index = self.nextWidget
 	local widget = self.widgets [index]
 	if (not widget) then
-		widget = detailsFramework:CreateButton(self, function()end, self.options.width, self.options.row_height, "", nil, nil, nil, nil, nil, nil, detailsFramework:GetTemplate("button", "OPTIONS_BUTTON_TEMPLATE"))
+		widget = detailsFramework:CreateButton(self, function()end, self.options.width, self.options.row_height, "", nil, nil, nil, nil, nil, nil, detailsFramework:GetTemplate("button", "options_button_template"))
 		widget:SetHook("OnEnter", simple_list_box_onenter)
 		widget:SetHook("OnLeave", simple_list_box_onleave)
 		widget.textcolor = self.options.textcolor
@@ -3845,7 +3845,7 @@ function detailsFramework:CreateSimpleListBox(parent, name, title, emptyText, li
 	scroll:SetSize(scroll.options.width + 2, scroll.options.height)
 
 	local name = detailsFramework:CreateLabel(scroll, title, 12, "silver")
-	name:SetTemplate(detailsFramework:GetTemplate("font", "OPTIONS_FONT_TEMPLATE"))
+	name:SetTemplate(detailsFramework:GetTemplate("font", "options_FONT_TEMPLATE"))
 	name:SetPoint("bottomleft", scroll, "topleft", 0, 2)
 	scroll.Title = name
 
@@ -4440,7 +4440,7 @@ detailsFramework.RadioGroupCoreFunctions = {
 
 	CreateCheckbox = function(self)
 		local checkbox = detailsFramework:CreateSwitch(self, function()end, false)
-		checkbox:SetTemplate(detailsFramework:GetTemplate("switch", "OPTIONS_CHECKBOX_BRIGHT_TEMPLATE"))
+		checkbox:SetTemplate(detailsFramework:GetTemplate("switch", "options_CHECKBOX_BRIGHT_TEMPLATE"))
 		checkbox:SetAsCheckBox()
 
 		local extraSpaceToClick = CreateFrame("button", "$parentExtraSpaceToClick", checkbox.widget)
@@ -4859,7 +4859,7 @@ local default_datascroll_options = {
 	backdrop_border_color = {0.1, 0.1, 0.1, .2},
 
 	title_template = "ORANGE_FONT_TEMPLATE",
-	text_tempate = "OPTIONS_FONT_TEMPLATE",
+	text_tempate = "options_FONT_TEMPLATE",
 
 	create_line_func = detailsFramework.DataScrollFunctions.CreateLine,
 	update_line_func = detailsFramework.DataScrollFunctions.UpdateLine,
@@ -5009,7 +5009,7 @@ function detailsFramework:BuildStatusbarAuthorInfo(f, addonBy, authorsNameString
 	local discordLabel = detailsFramework:CreateLabel(f, "Discord: ")
 	discordLabel.textcolor = "silver"
 
-	local options_dropdown_template = detailsFramework:GetTemplate("dropdown", "OPTIONS_DROPDOWN_TEMPLATE")
+	local options_dropdown_template = detailsFramework:GetTemplate("dropdown", "options_DROPDOWN_TEMPLATE")
 	local discordTextEntry = detailsFramework:CreateTextEntry(f, function()end, 200, 18, "DiscordTextBox", _, _, options_dropdown_template)
 	discordTextEntry:SetText("https://discord.gg/AGSzAZX")
 	discordTextEntry:SetFrameLevel(5000)
@@ -5174,8 +5174,8 @@ function detailsFramework:ShowErrorMessage (errorMessage, titleText)
 		errorLabel:SetSize(360, 66)
 		f.errorLabel = errorLabel
 
-		local button_text_template = detailsFramework:GetTemplate("font", "OPTIONS_FONT_TEMPLATE")
-		local options_dropdown_template = detailsFramework:GetTemplate("dropdown", "OPTIONS_DROPDOWN_TEMPLATE")
+		local button_text_template = detailsFramework:GetTemplate("font", "options_FONT_TEMPLATE")
+		local options_dropdown_template = detailsFramework:GetTemplate("dropdown", "options_DROPDOWN_TEMPLATE")
 
 		local closeButton = detailsFramework:CreateButton(f, nil, 60, 20, "close", nil, nil, nil, nil, nil, nil, options_dropdown_template)
 		closeButton:SetPoint("bottom", f, "bottom", 0, 5)
@@ -5313,7 +5313,7 @@ detailsFramework.ListboxFunctions = {
 			local headerColumn = listBox.headerTable[i]
 
 			if (headerColumn.isDelete) then
-				local deleteButton = detailsFramework:CreateButton(line, detailsFramework.ListboxFunctions.deleteEntry, 20, self.lineHeight, "X", listBox.data, index, nil, nil, nil, nil, detailsFramework:GetTemplate("button", "OPTIONS_BUTTON_TEMPLATE"), detailsFramework:GetTemplate("font", "ORANGE_FONT_TEMPLATE"))
+				local deleteButton = detailsFramework:CreateButton(line, detailsFramework.ListboxFunctions.deleteEntry, 20, self.lineHeight, "X", listBox.data, index, nil, nil, nil, nil, detailsFramework:GetTemplate("button", "options_button_template"), detailsFramework:GetTemplate("font", "ORANGE_FONT_TEMPLATE"))
 				line.deleteButton = deleteButton
 				line:AddFrameToHeaderAlignment(deleteButton)
 
@@ -5323,7 +5323,7 @@ detailsFramework.ListboxFunctions = {
 				line:AddFrameToHeaderAlignment(indexText)
 
 			elseif (headerColumn.text) then
-				local template = detailsFramework.table.copy({}, detailsFramework:GetTemplate("dropdown", "OPTIONS_DROPDOWN_TEMPLATE"))
+				local template = detailsFramework.table.copy({}, detailsFramework:GetTemplate("dropdown", "options_DROPDOWN_TEMPLATE"))
 				template.backdropcolor = {.1, .1, .1, .7}
 				template.backdropbordercolor = {.2, .2, .2, .6}
 
@@ -5457,7 +5457,7 @@ function detailsFramework:CreateListBox(parent, name, data, options, headerTable
 		scrollBox:Refresh()
 
 	--add line button
-		local addLineButton = detailsFramework:CreateButton(frameCanvas, detailsFramework.ListboxFunctions.addEntry, 80, 20, "Add", nil, nil, nil, nil, nil, nil, detailsFramework:GetTemplate("button", "OPTIONS_BUTTON_TEMPLATE"), detailsFramework:GetTemplate("font", "ORANGE_FONT_TEMPLATE"))
+		local addLineButton = detailsFramework:CreateButton(frameCanvas, detailsFramework.ListboxFunctions.addEntry, 80, 20, "Add", nil, nil, nil, nil, nil, nil, detailsFramework:GetTemplate("button", "options_button_template"), detailsFramework:GetTemplate("font", "ORANGE_FONT_TEMPLATE"))
 		addLineButton:SetPoint("topleft", scrollBox, "bottomleft", 0, -4)
 
 	return frameCanvas

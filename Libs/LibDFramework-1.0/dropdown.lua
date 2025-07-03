@@ -1708,7 +1708,7 @@ function DF:CreateDropdownButton(parent, name)
 	DF:SetFontSize(text, 10)
 	newButton.label = text
 
-	local rightButton = DF:CreateButton(newButton, function()end, 16, 16, "", 0, 0, "", "rightButton", "$parentRightButton", nil, DF:GetTemplate("dropdown", "OPTIONS_DROPDOWN_TEMPLATE"))
+	local rightButton = DF:CreateButton(newButton, function()end, 16, 16, "", 0, 0, "", "rightButton", "$parentRightButton", nil, DF:GetTemplate("dropdown", "options_DROPDOWN_TEMPLATE"))
 	rightButton:SetPoint("right", newButton, "right", -2, 0)
 	rightButton:Hide()
 

@@ -293,7 +293,7 @@ local editObjectDefaultOptions = {
     use_colon = false,
     can_move = true,
     use_guide_lines = true,
-    text_template = detailsFramework:GetTemplate("font", "OPTIONS_FONT_TEMPLATE"),
+    text_template = detailsFramework:GetTemplate("font", "options_FONT_TEMPLATE"),
 }
 
 
@@ -921,7 +921,7 @@ detailsFramework.EditorMixin = {
         menuOptions.align_as_pairs = true
         menuOptions.align_as_pairs_length = 150
         menuOptions.widget_width = 180
-        menuOptions.slider_buttons_to_left = true
+        menuOptions.slider_buttoSAP_to_left = true
 
         local optionsFrame = self:GetOptionsFrame()
         local canvasScrollBox = self:GetCanvasScrollBox()
@@ -936,11 +936,11 @@ detailsFramework.EditorMixin = {
         optionsFrame:SetHeight(optionsFrameHeight)
 
         --templates
-        local options_text_template = self.options.text_template or detailsFramework:GetTemplate("font", "OPTIONS_FONT_TEMPLATE")
-        local options_dropdown_template = detailsFramework:GetTemplate("dropdown", "OPTIONS_DROPDOWN_TEMPLATE")
-        local options_switch_template = detailsFramework:GetTemplate("switch", "OPTIONS_CHECKBOX_TEMPLATE")
-        local options_slider_template = detailsFramework:GetTemplate("slider", "OPTIONS_SLIDER_TEMPLATE")
-        local options_button_template = detailsFramework:GetTemplate("button", "OPTIONS_BUTTON_TEMPLATE")
+        local options_text_template = self.options.text_template or detailsFramework:GetTemplate("font", "options_FONT_TEMPLATE")
+        local options_dropdown_template = detailsFramework:GetTemplate("dropdown", "options_DROPDOWN_TEMPLATE")
+        local options_switch_template = detailsFramework:GetTemplate("switch", "options_CHECKBOX_TEMPLATE")
+        local options_slider_template = detailsFramework:GetTemplate("slider", "options_SLIDER_TEMPLATE")
+        local options_button_template = detailsFramework:GetTemplate("button", "options_button_template")
 
         --~build ~menu ~volatile
         detailsFramework:BuildMenuVolatile(optionsFrame, menuOptions, 2, -2, maxHeight, bUseColon, options_text_template, options_dropdown_template, options_switch_template, bSwitchIsCheckbox, options_slider_template, options_button_template)
@@ -1305,7 +1305,7 @@ local editorDefaultOptions = {
     object_list_height = 420,
     object_list_lines = 20,
     object_list_line_height = 20,
-    text_template = detailsFramework:GetTemplate("font", "OPTIONS_FONT_TEMPLATE"),
+    text_template = detailsFramework:GetTemplate("font", "options_FONT_TEMPLATE"),
 }
 
 function detailsFramework:CreateEditor(parent, name, options)

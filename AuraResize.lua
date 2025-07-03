@@ -4,18 +4,18 @@ SAP.auraData = {}
 SAP.AuraSizeData = {}
 local SharedMedia = LibStub("LibSharedMedia-3.0")
 SAP.auranames = {
-    ["Icons"] = "NS Icon Anchor",  
-    ["Bars"] = "NS Bar Anchor",  
-    ["Overview"] = "NS Overview Anchor",  
-    ["Tank Icons"] = "NS Tank Debuff Anchor",
-    ["CoTank Icons"] = "NS CoTank Debuff Anchor",
-    ["Texts"] = "NS Text Anchor",  
-    ["TankTexts"] = "NS Tank Text Anchor",
-    ["Assignment"] = "NS Assignment Anchor",  
-    ["Circle"] = "NS Circle Anchor",  
-    ["Big Icons"] = "NS Big Icon Anchor",  
-    ["Big Bars"] = "NS Big Bar Anchor",
-    ["Tank Bars"] = "NS Tank Bar Anchor",
+    ["Icons"] = "SAP Icon Anchor",
+    ["Bars"] = "SAP Bar Anchor",
+    ["Overview"] = "SAP Overview Anchor",
+    ["Tank Icons"] = "SAP Tank Debuff Anchor",
+    ["CoTank Icons"] = "SAP CoTank Debuff Anchor",
+    ["Texts"] = "SAP Text Anchor",
+    ["TankTexts"] = "SAP Tank Text Anchor",
+    ["Assignment"] = "SAP Assignment Anchor",
+    ["Circle"] = "SAP Circle Anchor",
+    ["Big Icons"] = "SAP Big Icon Anchor",
+    ["Big Bars"] = "SAP Big Bar Anchor",
+    ["Tank Bars"] = "SAP Tank Bar Anchor",
 }
 
 function SAP_API:AnchorSettings(type) -- call this when someone edits anchors to fix options preview
@@ -38,15 +38,7 @@ function SAP_API:AuraPosition(type, pos, reg)
             local space = anchorData.space
             local Xoffset = 0
             local Yoffset = 0
-            -- old code that doesn't seem to be neccesary anymore after changing anchors to individual aura instead of the group but keeping it here just in case
-           --[[ if WeakAuras.IsOptionsOpen() then
-                local height = reg[1].region.height
-                if reg[1].region.regionType == "text" then
-                    height = SAP.AuraSizeData[type] or height
-                end
-                Xoffset = -reg[1].region.width*directionX
-                Yoffset = height*directionY*-1
-            end     ]]                   
+
             local max = anchorData.limit            
             max = #reg <= max and #reg or max
             for i =1, max do

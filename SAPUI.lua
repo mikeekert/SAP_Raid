@@ -6,29 +6,27 @@ local WA = _G["WeakAuras"]
 
 local window_width = 800
 local window_height = 515
-local expressway = [[Interface\AddOns\NorthernSkyRaidTools\Media\Fonts\Expressway.TTF]]
+local expressway = [[Interface\AddOns\SAP-Raid\Media\Fonts\Expressway.TTF]]
 
-local authorsString = "By Reloe & Rav"
+local authorsString = "SAP"
 
-local options_text_template = DF:GetTemplate("font", "OPTIONS_FONT_TEMPLATE")
-local options_dropdown_template = DF:GetTemplate("dropdown", "OPTIONS_DROPDOWN_TEMPLATE")
-local options_switch_template = DF:GetTemplate("switch", "OPTIONS_CHECKBOX_TEMPLATE")
-local options_slider_template = DF:GetTemplate("slider", "OPTIONS_SLIDER_TEMPLATE")
-local options_button_template = DF:GetTemplate("button", "OPTIONS_BUTTON_TEMPLATE")
+local options_text_template = DF:GetTemplate("font", "options_FONT_TEMPLATE")
+local options_dropdown_template = DF:GetTemplate("dropdown", "options_DROPDOWN_TEMPLATE")
+local options_switch_template = DF:GetTemplate("switch", "options_CHECKBOX_TEMPLATE")
+local options_slider_template = DF:GetTemplate("slider", "options_SLIDER_TEMPLATE")
+local options_button_template = DF:GetTemplate("button", "options_button_template")
 
-local NSUI_panel_options = {
+local SAPUI_panel_options = {
     UseStatusBar = true
 }
-local NSUI = DF:CreateSimplePanel(UIParent, window_width, window_height, "|cFF00FFFFNorthern Sky|r Raid Tools", "NSUI",
-    NSUI_panel_options)
+local SAPUI = DF:CreateSimplePanel(UIParent, window_width, window_height, "|cFF00FFFFSAP|r Raid Tools", "SAPUI",
+    SAPUI_panel_options)
 SAPUI:SetPoint("CENTER")
 SAPUI:SetFrameStrata("HIGH")
--- local statusbar_text = DF:CreateLabel(NSUI.StatusBar, "Northern Sky x |cFF00FFFFbird|r")
--- statusbar_text:SetPoint("left", NSUI.StatusBar, "left", 2, 0)
-DF:BuildStatusbarAuthorInfo(NSUI.StatusBar, _, "x |cFF00FFFFbird|r")
-NSUI.StatusBar.discordTextEntry:SetText("https://discord.gg/3B6QHURmBy")
+DF:BuildStatusbarAuthorInfo(SAPUI.StatusBar, _, "x |cFF00FFFFtemporary|r")
+SAPUI.StatusBar.discordTextEntry:SetText("hello world")
 
-NSUI.OptionsChanged = {
+SAPUI.OptionsChanged = {
     ["general"] = {},
     ["nicknames"] = {},
     ["externals"] = {},
@@ -43,7 +41,7 @@ local function PASelfPingChanged()
         local macroname = C_Macro.GetMacroName(i)
         if not macroname then break end
         macrocount = i
-        if macroname == "NS PA Macro" then
+        if macroname == "SAP PA Macro" then
             pafound = true
             local macrotext = "/run SAP_API:PrivateAura();"
             if SAPRT.Settings["PASelfPing"] then
@@ -55,7 +53,7 @@ local function PASelfPingChanged()
             if SAPRT.Settings["LIQUID_MACRO"] then
                 macrotext = macrotext.."\n/run WeakAuras.ScanEvents(\"LIQUID_PRIVATE_AURA_MACRO\", true)"
             end
-             EditMacro(i, "NS PA Macro", 132288, macrotext, false)
+             EditMacro(i, "SAP PA Macro", 132288, macrotext, false)
             return
         end
     end
@@ -70,7 +68,7 @@ local function PASelfPingChanged()
         if SAPRT.Settings["PAExtraAction"] then
             macrotext = macrotext.."\n/click ExtraActionButton1"
         end
-        CreateMacro("NS PA Macro", 132288, macrotext, false)
+        CreateMacro("SAP PA Macro", 132288, macrotext, false)
     end
 end
 
@@ -82,11 +80,11 @@ local function ExternalSelfPingChanged()
         local macroname = C_Macro.GetMacroName(i)
         if not macroname then break end
         macrocount = i
-        if macroname == "NS Ext Macro" then
+        if macroname == "SAP Ext Macro" then
             extfound = true
             local macrotext = SAPRT.Settings["ExternalSelfPing"] and "/run SAP_API:ExternalRequest();\n/ping [@player] Assist;" or
                 "/run SAP_API:ExternalRequest();"
-            EditMacro(i, "NS Ext Macro", 135966, macrotext, false)
+            EditMacro(i, "SAP Ext Macro", 135966, macrotext, false)
             extfound = true
             return
         end
@@ -96,7 +94,7 @@ local function ExternalSelfPingChanged()
     elseif not extfound then
         macrocount = macrocount+1
         local macrotext = SAPRT.Settings["ExternalSelfPing"] and "/run SAP_API:ExternalRequest();\n/ping [@player] Assist;" or "/run SAP_API:ExternalRequest();"
-        CreateMacro("NS Ext Macro", 135966, macrotext, false)
+        CreateMacro("SAP Ext Macro", 135966, macrotext, false)
     end
 end
 
@@ -176,12 +174,12 @@ local function BuildVersionCheckUI(parent)
     component_name_entry:SetTemplate(options_button_template)
     component_name_entry:SetPoint("LEFT", component_name_label, "RIGHT", 5, 0)
     component_name_entry:SetHook("OnEditFocusGained", function(self)
-        component_name_entry.WAAutoCompleteList = SAPRT.NSUI.AutoComplete["WA"] or {}
-        component_name_entry.AddonAutoCompleteList = SAPRT.NSUI.AutoComplete["Addon"] or {}
-        local component_type = component_type_dropdown:GetValue()
-        if component_type == "WA" then
+        component_name_entry.WAAutoCompleteList = SAPRT.SAPUI.AutoComplete["WA"] or {}
+        component_name_entry.AddonAutoCompleteList = SAPRT.SAPUI.AutoComplete["Addon"] or {}
+        local _component_type = component_type_dropdown:GetValue()
+        if _component_type == "WA" then
             component_name_entry:SetAsAutoComplete("WAAutoCompleteList", _, true)
-        elseif component_type == "Addon" then
+        elseif _component_type == "Addon" then
             component_name_entry:SetAsAutoComplete("AddonAutoCompleteList", _, true)
         end
     end)
@@ -372,20 +370,20 @@ local function BuildVersionCheckUI(parent)
     version_check_button:SetScript("OnClick", function(self)
         
         local text = component_name_entry:GetText()
-        local component_type = component_type_dropdown:GetValue()
-        if text and text ~= ""  and not tContains(SAPRT.NSUI.AutoComplete[component_type], text) then
-            tinsert(SAPRT.NSUI.AutoComplete[component_type], text)
+        local _component_type = component_type_dropdown:GetValue()
+        if text and text ~= ""  and not tContains(SAPRT.SAPUI.AutoComplete[_component_type], text) then
+            tinsert(SAPRT.AutoComplete[_component_type], text)
         end
 
-        if not text or text == "" and component_type ~= "Note" then return end
+        if not text or text == "" and _component_type ~= "Note" then return end
         
         local now = GetTime()
         if SAP.LastVersionCheck and SAP.LastVersionCheck > now-2 then return end -- don't let user spam requests
         SAP.LastVersionCheck = now
         version_check_scrollbox:WipeData()
-        local userData, url = NSI:RequestVersionNumber(component_type, text)
+        local userData, url = SAP:RequestVersionNumber(_component_type, text)
         if userData then
-            SAP.VersionCheckData = { version = userData.version, type = component_type, name = text, url = url, lastclick = {} }
+            SAP.VersionCheckData = { version = userData.version, type = _component_type, name = text, url = url, lastclick = {} }
             version_check_scrollbox:AddData(userData, url)
         end
     end)
@@ -449,17 +447,17 @@ local function BuildVersionCheckUI(parent)
 
                 local label = presetData[1]
                 local value = presetData[2]
-                local component_type = value[1]
-                local component_name = value[2]
+                local _component_type = value[1]
+                local _component_name = value[2]
 
                 line.index = index
 
                 line.value = value
-                line.component_type = component_type
-                line.component_name = component_name
+                line.component_type = _component_type
+                line.component_name = _component_name
 
-                line.type:SetText(component_type)
-                line.name:SetText(component_name)
+                line.type:SetText(_component_type)
+                line.name:SetText(_component_name)
             end
         end
     end
@@ -603,7 +601,7 @@ local function BuildNicknameEditUI()
         
         -- Nickname text
         line.nicknameEntry = DF:CreateTextEntry(line, function(self, _, value) 
-            NSI:AddNickName(line.player, line.realm, string.sub(value, 1, 12)) 
+            SAP:AddNickName(line.player, line.realm, string.sub(value, 1, 12))
             line.nicknameEntry.text = string.sub(value, 1, 12)
             parent:MasterRefresh()
         end, 120, 20)
@@ -612,7 +610,7 @@ local function BuildNicknameEditUI()
         
         -- Delete button
         line.deleteButton = DF:CreateButton(line, function()
-            NSI:AddNickName(line.player, line.realm, "")
+            SAP:AddNickName(line.player, line.realm, "")
             self:SetData(SAPRT.NickNames)
             self:MasterRefresh()
         end, 12, 12)
@@ -676,7 +674,7 @@ local function BuildNicknameEditUI()
             if not realm then
                 realm = GetNormalizedRealmName()
             end
-            NSI:AddNickName(player, realm, nickname)
+            SAP:AddNickName(player, realm, nickname)
             new_player_entry:SetText("")
             new_nickname_entry:SetText("")
             nicknames_edit_scrollbox:MasterRefresh()
@@ -685,7 +683,7 @@ local function BuildNicknameEditUI()
     add_button:SetPoint("LEFT", new_nickname_entry, "RIGHT", 10, 0)
     add_button:SetTemplate(options_button_template)
 
-    local sync_button = DF:CreateButton(nicknames_edit_frame, function() NSI:SyncNickNames() end, 225, 20, "Sync Nicknames")
+    local sync_button = DF:CreateButton(nicknames_edit_frame, function() SAP:SyncNickNames() end, 225, 20, "Sync Nicknames")
     sync_button:SetPoint("BOTTOMLEFT", nicknames_edit_frame, "BOTTOMLEFT", 10, 10)
     sync_button:SetTemplate(options_button_template)
 
@@ -705,7 +703,7 @@ local function BuildNicknameEditUI()
 
         popup.import_confirm_button = DF:CreateButton(popup, function()
             local import_string = popup.import_text_box:GetText()
-            NSI:ImportNickNames(import_string)
+            SAP:ImportNickNames(import_string)
             popup.import_text_box:SetText("")
             popup:Hide()
             nicknames_edit_scrollbox:MasterRefresh()
@@ -732,11 +730,11 @@ end
 
 function SAPUI:Init()
     -- Create the scale bar
-    DF:CreateScaleBar(NSUI, SAPRT.NSUI)
-    SAPUI:SetScale(SAPRT.NSUI.scale)
+    DF:CreateScaleBar(SAPUI, SAPRT.SAPUI)
+    SAPUI:SetScale(SAPRT.SAPUI.scale)
 
     -- Create the tab container
-    local tabContainer = DF:CreateTabContainer(NSUI, "Northern Sky", "NSUI_TabsTemplate", {
+    local tabContainer = DF:CreateTabContainer(SAPUI, "Northern Sky", "SAPUI_TabsTemplate", {
         { name = "General",   text = "General" },
         { name = "Nicknames", text = "Nicknames" },
         { name = "Externals", text = "Externals" },
@@ -749,24 +747,24 @@ function SAPUI:Init()
         backdrop_border_color = { 0.1, 0.1, 0.1, 0.4 }
     })
     -- Position the tab container within the main frame
-    -- tabContainer:SetPoint("TOP", NSUI, "TOP", 0, 0)
-    tabContainer:SetPoint("CENTER", NSUI, "CENTER", 0, 0)
+    -- tabContainer:SetPoint("TOP", SAPUI, "TOP", 0, 0)
+    tabContainer:SetPoint("CENTER", SAPUI, "CENTER", 0, 0)
 
     local general_tab = tabContainer:GetTabFrameByName("General")
     local nicknames_tab = tabContainer:GetTabFrameByName("Nicknames")
     local externals_tab = tabContainer:GetTabFrameByName("Externals")
-    local versions_tab = tabContainer:GetTabFrameByName("Versions")
+    local versioSAP_tab = tabContainer:GetTabFrameByName("Versions")
     local weakaura_tab = tabContainer:GetTabFrameByName("WeakAuras")
 
     -- generic text display
-    local generic_display = CreateFrame("Frame", "NSUIGenericDisplay", UIParent, "BackdropTemplate")
+    local generic_display = CreateFrame("Frame", "SAPUIGenericDisplay", UIParent, "BackdropTemplate")
     generic_display:SetPoint("CENTER", UIParent, "CENTER", 0, 350)
     generic_display:SetSize(300, 100)
     generic_display.text = generic_display:CreateFontString(nil, "OVERLAY")
     generic_display.text:SetFont(expressway, 20, "OUTLINE")
     generic_display.text:SetPoint("CENTER", generic_display, "CENTER", 0, 0)
     generic_display:Hide()
-    NSUI.generic_display = generic_display
+    SAPUI.generic_display = generic_display
     -- externals anchor frame
     local externals_anchor_panel_options = {
         NoCloseButton = true,
@@ -774,7 +772,7 @@ function SAPUI:Init()
         DontRightClickClose = true
     }
     local externals_anchor = CreateFrame("Frame", "ExternalsAnchor", UIParent, "BackdropTemplate")
-    NSUI.externals_anchor = externals_anchor
+    SAPUI.externals_anchor = externals_anchor
     externals_anchor:SetClampedToScreen(true)
     externals_anchor:SetMovable(true)
     externals_anchor:SetBackdrop({
@@ -795,7 +793,7 @@ function SAPUI:Init()
 
     local externals_anchor_text = externals_anchor:CreateFontString(nil, "OVERLAY", "GameFontNormal")
     externals_anchor_text:SetPoint("CENTER", externals_anchor, "CENTER", 0, 0)
-    externals_anchor_text:SetText("NS_EXT")
+    externals_anchor_text:SetText("SAP_EXT")
     externals_anchor.text = externals_anchor_text
 
     externals_anchor:SetScript("OnMouseDown", function(self, button)
@@ -812,13 +810,13 @@ function SAPUI:Init()
     externals_anchor:Hide()
 
     local external_frame = CreateFrame("Frame", "ExternalsFrame", UIParent)
-    external_frame:SetPoint("BOTTOMLEFT", NSUI.externals_anchor, "BOTTOMLEFT", 0, 0)
-    external_frame:SetPoint("TOPRIGHT", NSUI.externals_anchor, "TOPRIGHT", 0, 0)
+    external_frame:SetPoint("BOTTOMLEFT", SAPUI.externals_anchor, "BOTTOMLEFT", 0, 0)
+    external_frame:SetPoint("TOPRIGHT", SAPUI.externals_anchor, "TOPRIGHT", 0, 0)
     local external_frame_text = external_frame:CreateFontString(nil, "OVERLAY")
-    external_frame_text:SetFont([[Interface\AddOns\NorthernSkyRaidTools\Media\Fonts\Expressway.TTF]], 20, "OUTLINE")
+    external_frame_text:SetFont([[Interface\AddOns\SAP-Raid\Media\Fonts\Expressway.TTF]], 20, "OUTLINE")
     external_frame_text:SetTextColor(1, 1, 1, 1)
     external_frame_text:SetPoint("CENTER", external_frame, "TOP", 0, 10)
-    external_frame_text:SetText("NS_EXT")
+    external_frame_text:SetText("SAP_EXT")
     external_frame.text = external_frame_text
     local external_frame_texture = external_frame:CreateTexture("ExternalsFrameTexture", "OVERLAY")
     external_frame_texture:SetPoint("TOPLEFT", external_frame, "TOPLEFT", 0, 0)
@@ -826,7 +824,7 @@ function SAPUI:Init()
     external_frame_texture:SetColorTexture(1, 0, 1, 0.5)
     external_frame.texture = external_frame_texture
     external_frame:Hide()
-    NSUI.external_frame = external_frame
+    SAPUI.external_frame = external_frame
 
     -- dummy default variables until cvars are implemented
     local enableSUFNicknames = false
@@ -896,10 +894,10 @@ function SAPUI:Init()
         end
 
         local displayName = (macroName == "MACRO NS Ext Macro" and "External Macro") or (macroName == "MACRO NS PA Macro" and "Private Aura Macro") or (macroName == "MACRO NS Innervate" and "Innervate Macro") or "Macro"
-        local keybindingFrame = DF:CreateSimplePanel(NSUI, 300, 75, "Keybinding: " .. displayName, "KeybindingFrame", {
+        local keybindingFrame = DF:CreateSimplePanel(SAPUI, 300, 75, "Keybinding: " .. displayName, "KeybindingFrame", {
             DontRightClickClose = true
         })
-        keybindingFrame:SetPoint("CENTER", NSUI, "CENTER", 0, 0)
+        keybindingFrame:SetPoint("CENTER", SAPUI, "CENTER", 0, 0)
         keybindingFrame:SetFrameStrata("DIALOG")
         local keybindingFrame_text = keybindingFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
         keybindingFrame_text:SetPoint("CENTER", keybindingFrame, "CENTER", 0, 0)
@@ -1025,7 +1023,7 @@ function SAPUI:Init()
     end
 
     
-    local weakauras_importaccept_options = {"Guild only", "Anyone", "None"}    
+    local weakauras_importaccept_options = {"Guild only", "Anyone", "None"}
     local build_weakauras_importaccept_options = function()
         local t = {}
         for i = 1, #weakauras_importaccept_options do
@@ -1052,18 +1050,18 @@ function SAPUI:Init()
         text:SetJustifyH("CENTER")
 
         local confirmButton = DF:CreateButton(popup, function()
-            NSI:WipeNickNames()
-            NSUI.nickname_frame.scrollbox:MasterRefresh()
+            SAP:WipeNickNames()
+            SAPUI.nickname_frame.scrollbox:MasterRefresh()
             popup:Hide()
         end, 100, 30, "Confirm")
         confirmButton:SetPoint("BOTTOMLEFT", popup, "BOTTOM", 5, 10)
-        confirmButton:SetTemplate(DF:GetTemplate("button", "OPTIONS_BUTTON_TEMPLATE"))
+        confirmButton:SetTemplate(DF:GetTemplate("button", "options_button_template"))
 
         local cancelButton = DF:CreateButton(popup, function()
             popup:Hide()
         end, 100, 30, "Cancel")
         cancelButton:SetPoint("BOTTOMRIGHT", popup, "BOTTOM", -5, 10)
-        cancelButton:SetTemplate(DF:GetTemplate("button", "OPTIONS_BUTTON_TEMPLATE"))
+        cancelButton:SetTemplate(DF:GetTemplate("button", "options_button_template"))
         popup:Show()
     end
     -- end of nickname logic
@@ -1071,14 +1069,14 @@ function SAPUI:Init()
     -- WeakAuras imports
     local function ImportWeakAura(name)
         if WA and WA.Import then
-            WA.Import(NSI:GetWeakAura(name))
+            WA.Import(SAP:GetWeakAura(name))
         else
             print("Error:WeakAuras not found")
         end
     end
 
     local function SendWeakAuras()
-        local popup = DF:CreateSimplePanel(NSUI, 300, 150, "Send WeakAura", "NSUISendWeakAurasPopup", {
+        local popup = DF:CreateSimplePanel(SAPUI, 300, 150, "Send WeakAura", "SAPUISendWeakAurasPopup", {
             DontRightClickClose = true
         })
         popup:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
@@ -1093,7 +1091,7 @@ function SAPUI:Init()
 
         popup.import_confirm_button = DF:CreateButton(popup, function()
             local import_string = popup.test_string_text_box:GetText()
-            NSI:SendWAString(import_string)
+            SAP:SendWAString(import_string)
             popup.test_string_text_box:SetText("")
             popup:Hide()
         end, 280, 20, "Send")
@@ -1106,78 +1104,78 @@ function SAPUI:Init()
     -- when any setting is changed, call these respective callback function
     local general_callback = function()
 
-        if NSUI.OptionsChanged.general["PA_MACRO"] then
+        if SAPUI.OptionsChanged.general["PA_MACRO"] then
             PASelfPingChanged()
         end        
-        if NSUI.OptionsChanged.general["DEBUGLOGS"] then
+        if SAPUI.OptionsChanged.general["DEBUGLOGS"] then
             if SAPRT.Settings["DebugLogs"] then -- Add this data if enables this after a wipe as the data exists anyway
-                NSI:Print("Macro Data", SAP.MacroPresses)
-                NSI:Print("Assigned Externals", SAP.AssignedExternals)
+                SAP:Print("Macro Data", SAP.MacroPresses)
+                SAP:Print("Assigned Externals", SAP.AssignedExternals)
                 SAP.AssignedExternals = {}
                 SAP.MacroPresses = {}
             end
         end
-        wipe(NSUI.OptionsChanged["general"])
+        wipe(SAPUI.OptionsChanged["general"])
     end
     local nicknames_callback = function()
 
-        if NSUI.OptionsChanged.nicknames["NICKNAME"] then
-            NSI:NickNameUpdated(SAPRT.Settings["MyNickName"])
+        if SAPUI.OptionsChanged.nicknames["NICKNAME"] then
+            SAP:NickNameUpdated(SAPRT.Settings["MyNickName"])
         end
 
-        if NSUI.OptionsChanged.nicknames["GLOBAL_NICKNAMES"] then
-            NSI:GlobalNickNameUpdate()
+        if SAPUI.OptionsChanged.nicknames["GLOBAL_NICKNAMES"] then
+            SAP:GlobalNickNameUpdate()
         end
 
-        if NSUI.OptionsChanged.nicknames["TRANSLIT"] then
-            NSI:UpdateNickNameDisplay(true)
+        if SAPUI.OptionsChanged.nicknames["TRANSLIT"] then
+            SAP:UpdateNickNameDisplay(true)
         end
 
-        if NSUI.OptionsChanged.nicknames["BLIZZARD_NICKNAMES"] then
-            NSI:BlizzardNickNameUpdated()
+        if SAPUI.OptionsChanged.nicknames["BLIZZARD_NICKNAMES"] then
+            SAP:BlizzardNickNameUpdated()
         end
 
-        if NSUI.OptionsChanged.nicknames["CELL_NICKNAMES"] then
-            NSI:CellNickNameUpdated(true)
+        if SAPUI.OptionsChanged.nicknames["CELL_NICKNAMES"] then
+            SAP:CellNickNameUpdated(true)
         end
 
-        if NSUI.OptionsChanged.nicknames["ELVUI_NICKNAMES"] then
-            NSI:ElvUINickNameUpdated()
+        if SAPUI.OptionsChanged.nicknames["ELVUI_NICKNAMES"] then
+            SAP:ElvUINickNameUpdated()
         end
 
-        if NSUI.OptionsChanged.nicknames["GRID2_NICKNAMES"] then
-            NSI:Grid2NickNameUpdated()
+        if SAPUI.OptionsChanged.nicknames["GRID2_NICKNAMES"] then
+            SAP:Grid2NickNameUpdated()
         end
 
-        if NSUI.OptionsChanged.nicknames["UNHALTED_NICKNAMES"] then
-            NSI:UnhaltedNickNameUpdated()
+        if SAPUI.OptionsChanged.nicknames["UNHALTED_NICKNAMES"] then
+            SAP:UnhaltedNickNameUpdated()
         end
 
-        if NSUI.OptionsChanged.nicknames["MRT_NICKNAMES"] then
-            NSI:MRTNickNameUpdated(true)
+        if SAPUI.OptionsChanged.nicknames["MRT_NICKNAMES"] then
+            SAP:MRTNickNameUpdated(true)
         end
 
-        if NSUI.OptionsChanged.nicknames["WA_NICKNAMES"] then
-            NSI:WeakAurasNickNameUpdated()
+        if SAPUI.OptionsChanged.nicknames["WA_NICKNAMES"] then
+            SAP:WeakAurasNickNameUpdated()
         end
 
-        wipe(NSUI.OptionsChanged["nicknames"])
+        wipe(SAPUI.OptionsChanged["nicknames"])
     end
 
     local externals_callback = function()
-        if NSUI.OptionsChanged.externals["EXTERNAL_MACRO"] then
+        if SAPUI.OptionsChanged.externals["EXTERNAL_MACRO"] then
             ExternalSelfPingChanged()
         end
 
-        wipe(NSUI.OptionsChanged["externals"])
+        wipe(SAPUI.OptionsChanged["externals"])
     end
 
-    local versions_callback = function()
-        wipe(NSUI.OptionsChanged["versions"])
+    local versioSAP_callback = function()
+        wipe(SAPUI.OptionsChanged["versions"])
     end
 
     local weakauras_callback = function()
-        wipe(NSUI.OptionsChanged["WeakAuras"])
+        wipe(SAPUI.OptionsChanged["WeakAuras"])
     end
 
     -- options
@@ -1202,7 +1200,7 @@ function SAPUI:Init()
             desc = "Enables Debug Logging, which prints a bunch of information and adds it to DevTool. This might Error if you do not have the DevTool Addon installed.\nIf enabled after a wipe, it will still add External and Macro data to DevTool",
             get = function() return SAPRT.Settings["DebugLogs"] end,
             set = function(self, fixedparam, value)
-                NSUI.OptionsChanged.general["DEBUGLOGS"] = true
+                SAPUI.OptionsChanged.general["DEBUGLOGS"] = true
                 SAPRT.Settings["DebugLogs"] = value
             end,
         },
@@ -1223,7 +1221,7 @@ function SAPUI:Init()
             desc = "Enables MRT note comparison on ready check.",
             get = function() return SAPRT.Settings["MRTNoteComparison"] end,
             set = function(self, fixedparam, value)
-                NSUI.OptionsChanged.general["MRT_NOTE_COMPARISON"] = true
+                SAPUI.OptionsChanged.general["MRT_NOTE_COMPARISON"] = true
                 SAPRT.Settings["MRTNoteComparison"] = value
             end,
             nocombat = true
@@ -1239,7 +1237,7 @@ function SAPUI:Init()
             desc = "Voice to use for TTS",
             get = function() return SAPRT.Settings["TTSVoice"] end,
             set = function(self, fixedparam, value) 
-                NSUI.OptionsChanged.general["TTS_VOICE"] = true
+                SAPUI.OptionsChanged.general["TTS_VOICE"] = true
                 SAPRT.Settings["TTSVoice"] = value
             end,
             min = 1,
@@ -1279,7 +1277,7 @@ Press 'Enter' to hear the TTS]],
             desc = "Enable TTS",
             get = function() return SAPRT.Settings["TTS"] end,
             set = function(self, fixedparam, value)
-                NSUI.OptionsChanged.general["TTS_ENABLED"] = true
+                SAPUI.OptionsChanged.general["TTS_ENABLED"] = true
                 SAPRT.Settings["TTS"] = value
             end,
         },        
@@ -1298,7 +1296,7 @@ Press 'Enter' to hear the TTS]],
             desc = "Enable a @player ping when the private aura macro is used.",
             get = function() return SAPRT.Settings["PASelfPing"] end,
             set = function(self, fixedparam, value) 
-                NSUI.OptionsChanged.general["PA_MACRO"] = true
+                SAPUI.OptionsChanged.general["PA_MACRO"] = true
                 SAPRT.Settings["PASelfPing"] = value
             end,
             nocombat = true
@@ -1310,7 +1308,7 @@ Press 'Enter' to hear the TTS]],
             desc = "Combine the extra action button with the private aura macro.",
             get = function() return SAPRT.Settings["PAExtraAction"] end,
             set = function(self, fixedparam, value) 
-                NSUI.OptionsChanged.general["PA_MACRO"] = true
+                SAPUI.OptionsChanged.general["PA_MACRO"] = true
                 SAPRT.Settings["PAExtraAction"] = value
             end,
             nocombat = true
@@ -1322,7 +1320,7 @@ Press 'Enter' to hear the TTS]],
             desc = "Add Scan Event for Liquid Private Aura Macro",
             get = function() return SAPRT.Settings["LIQUID_MACRO"] end,
             set = function(self, fixedparam, value) 
-                NSUI.OptionsChanged.general["PA_MACRO"] = true
+                SAPUI.OptionsChanged.general["PA_MACRO"] = true
                 SAPRT.Settings["LIQUID_MACRO"] = value
             end,
             nocombat = true
@@ -1353,7 +1351,7 @@ Press 'Enter' to hear the TTS]],
             desc = "Set your nickname to be seen by others and used in assignments",
             get = function() return SAPRT.Settings["MyNickName"] or "" end,
             set = function(self, fixedparam, value) 
-                NSUI.OptionsChanged.nicknames["NICKNAME"] = true
+                SAPUI.OptionsChanged.nicknames["NICKNAME"] = true
                 SAPRT.Settings["MyNickName"] = string.sub(value, 1, 12)
             end,
             hooks = {
@@ -1371,7 +1369,7 @@ Press 'Enter' to hear the TTS]],
             desc = "Globaly enable nicknames.",
             get = function() return SAPRT.Settings["GlobalNickNames"] end,
             set = function(self, fixedparam, value) 
-                NSUI.OptionsChanged.nicknames["GLOBAL_NICKNAMES"] = true
+                SAPUI.OptionsChanged.nicknames["GLOBAL_NICKNAMES"] = true
                 SAPRT.Settings["GlobalNickNames"] = value
             end,
             nocombat = true
@@ -1384,7 +1382,7 @@ Press 'Enter' to hear the TTS]],
             desc = "Translit Russian Names",
             get = function() return SAPRT.Settings["Translit"] end,
             set = function(self, fixedparam, value) 
-                NSUI.OptionsChanged.nicknames["TRANSLIT"] = true
+                SAPUI.OptionsChanged.nicknames["TRANSLIT"] = true
                 SAPRT.Settings["Translit"] = value
             end,
             nocombat = true
@@ -1443,7 +1441,7 @@ Press 'Enter' to hear the TTS]],
             boxfirst = true,
             get = function() return SAPRT.Settings["Blizzard"] end,
             set = function(self, fixedparam, value)
-                NSUI.OptionsChanged.nicknames["BLIZZARD_NICKNAMES"] = true
+                SAPUI.OptionsChanged.nicknames["BLIZZARD_NICKNAMES"] = true
                 SAPRT.Settings["Blizzard"] = value
             end,
             name = "Enable Blizzard Nicknames",
@@ -1455,7 +1453,7 @@ Press 'Enter' to hear the TTS]],
             boxfirst = true,
             get = function() return SAPRT.Settings["Cell"] end,
             set = function(self, fixedparam, value)
-                NSUI.OptionsChanged.nicknames["CELL_NICKNAMES"] = true
+                SAPUI.OptionsChanged.nicknames["CELL_NICKNAMES"] = true
                 SAPRT.Settings["Cell"] = value
             end,
             name = "Enable Cell Nicknames",
@@ -1467,7 +1465,7 @@ Press 'Enter' to hear the TTS]],
             boxfirst = true,
             get = function() return SAPRT.Settings["Grid2"] end,
             set = function(self, fixedparam, value)
-                NSUI.OptionsChanged.nicknames["GRID2_NICKNAMES"] = true
+                SAPUI.OptionsChanged.nicknames["GRID2_NICKNAMES"] = true
                 SAPRT.Settings["Grid2"] = value
             end,
             name = "Enable Grid2 Nicknames",
@@ -1479,7 +1477,7 @@ Press 'Enter' to hear the TTS]],
             boxfirst = true,
             get = function() return SAPRT.Settings["ElvUI"] end,
             set = function(self, fixedparam, value)
-                NSUI.OptionsChanged.nicknames["ELVUI_NICKNAMES"] = true
+                SAPUI.OptionsChanged.nicknames["ELVUI_NICKNAMES"] = true
                 SAPRT.Settings["ElvUI"] = value
             end,
             name = "Enable ElvUI Nicknames",
@@ -1491,7 +1489,7 @@ Press 'Enter' to hear the TTS]],
             boxfirst = true,
             get = function() return SAPRT.Settings["SuF"] end,
             set = function(self, fixedparam, value)
-                NSUI.OptionsChanged.nicknames["SUF_NICKNAMES"] = true
+                SAPUI.OptionsChanged.nicknames["SUF_NICKNAMES"] = true
                 SAPRT.Settings["SuF"] = value
             end,
             name = "Enable SUF Nicknames",
@@ -1504,7 +1502,7 @@ Press 'Enter' to hear the TTS]],
             boxfirst = true,
             get = function() return SAPRT.Settings["WA"] end,
             set = function(self, fixedparam, value)
-                NSUI.OptionsChanged.nicknames["WA_NICKNAMES"] = true
+                SAPUI.OptionsChanged.nicknames["WA_NICKNAMES"] = true
                 SAPRT.Settings["WA"] = value
             end,
             name = "Enable WeakAuras Nicknames",
@@ -1516,7 +1514,7 @@ Press 'Enter' to hear the TTS]],
             boxfirst = true,
             get = function() return SAPRT.Settings["MRT"] end,
             set = function(self, fixedparam, value)
-                NSUI.OptionsChanged.nicknames["MRT_NICKNAMES"] = true
+                SAPUI.OptionsChanged.nicknames["MRT_NICKNAMES"] = true
                 SAPRT.Settings["MRT"] = value
             end,
             name = "Enable MRT Nicknames",
@@ -1528,7 +1526,7 @@ Press 'Enter' to hear the TTS]],
             boxfirst = true,
             get = function() return SAPRT.Settings["Unhalted"] end,
             set = function(self, fixedparam, value)
-                NSUI.OptionsChanged.nicknames["UNHALTED_NICKNAMES"] = true
+                SAPUI.OptionsChanged.nicknames["UNHALTED_NICKNAMES"] = true
                 SAPRT.Settings["Unhalted"] = value
             end,
             name = "Enable Unhalted UF Nicknames",
@@ -1553,8 +1551,8 @@ Press 'Enter' to hear the TTS]],
             name = "Edit Nicknames",
             desc = "Edit the nicknames database stored locally.",
             func = function(self)
-                if not NSUI.nickname_frame:IsShown() then
-                    NSUI.nickname_frame:Show()
+                if not SAPUI.nickname_frame:IsShown() then
+                    SAPUI.nickname_frame:Show()
                 end
             end,
             nocombat = true
@@ -1570,7 +1568,7 @@ Press 'Enter' to hear the TTS]],
             desc = "Enable a @player ping when the external macro is used.",
             get = function() return SAPRT.Settings["ExternalSelfPing"] end,
             set = function(self, fixedparam, value) 
-                NSUI.OptionsChanged.externals["EXTERNAL_MACRO"] = true
+                SAPUI.OptionsChanged.externals["EXTERNAL_MACRO"] = true
                 SAPRT.Settings["ExternalSelfPing"] = value
             end,
             nocombat = true
@@ -1621,7 +1619,7 @@ Press 'Enter' to hear the TTS]],
             name = "Test External",
             desc = "Simulate recieving an external.",
             func = function(self)
-                NSI:DisplayExternal(237554, GetUnitName("player"))
+                SAP:DisplayExternal(237554, GetUnitName("player"))
             end,
             nocombat = true
         },
@@ -1633,10 +1631,10 @@ Press 'Enter' to hear the TTS]],
             name = "Toggle External Anchor",
             desc = "Toggle the external anchor frame.",
             func = function(self)
-                if NSUI.externals_anchor:IsShown() then
-                    NSUI.externals_anchor:Hide()
+                if SAPUI.externals_anchor:IsShown() then
+                    SAPUI.externals_anchor:Hide()
                 else
-                    NSUI.externals_anchor:Show()
+                    SAPUI.externals_anchor:Show()
                 end
             end,
             nocombat = true
@@ -1717,12 +1715,12 @@ Press 'Enter' to hear the TTS]],
                 popup.text_entry = DF:CreateTextEntry(popup, function() end, 280, 20)
                 popup.text_entry:SetTemplate(options_button_template)
                 popup.text_entry:SetPoint("TOP", popup, "TOP", 0, -30)
-                popup.text_entry:SetText(NSI:GetWeakAuraLink("Manaforge"))
+                popup.text_entry:SetText(SAP:GetWeakAuraLink("Manaforge"))
                 popup.text_entry.editbox:SetJustifyH("CENTER")
 
                 -- Disable editing the text technically
                 popup.text_entry:SetScript("OnTextChanged", function(self)
-                    popup.text_entry:SetText(NSI:GetWeakAuraLink("Manaforge"))
+                    popup.text_entry:SetText(SAP:GetWeakAuraLink("Manaforge"))
                     popup.text_entry.editbox:HighlightText()
                 end)
 
@@ -1795,15 +1793,15 @@ Press 'Enter' to hear the TTS]],
 
     -- Add SUF Setup guide tooltip button thingy
 
-    NSUI.suf_setup_guide_popup = BuildSUFSetupGuidePopup()
+    SAPUI.suf_setup_guide_popup = BuildSUFSetupGuidePopup()
 
     local help_i_texture = [[Interface\common\help-i]]
     local SUF_Toggle = nicknames_tab:GetWidgetById("SUF-Toggle")
     local suf_help_button = DF:CreateButton(nicknames_tab, function()
-        if NSUI.suf_setup_guide_popup and not NSUI.suf_setup_guide_popup:IsShown() then
-            NSUI.suf_setup_guide_popup:Show()
+        if SAPUI.suf_setup_guide_popup and not SAPUI.suf_setup_guide_popup:IsShown() then
+            SAPUI.suf_setup_guide_popup:Show()
         else
-            NSUI.suf_setup_guide_popup:Hide()
+            SAPUI.suf_setup_guide_popup:Hide()
         end
     end, 20, 20, "")
     suf_help_button:SetIcon(help_i_texture)
@@ -1824,62 +1822,62 @@ Press 'Enter' to hear the TTS]],
     end
 
     -- Build version check UI
-    NSUI.version_scrollbox = BuildVersionCheckUI(versions_tab)
-    NSUI.nickname_frame = BuildNicknameEditUI()
+    SAPUI.version_scrollbox = BuildVersionCheckUI(versioSAP_tab)
+    SAPUI.nickname_frame = BuildNicknameEditUI()
 
     -- Version Number in status bar
-    local versionTitle = C_AddOns.GetAddOnMetadata("NorthernSkyRaidTools", "Title")
-    local verisonNumber = C_AddOns.GetAddOnMetadata("NorthernSkyRaidTools", "Version")
+    local versionTitle = C_AddOns.GetAddOnMetadata("SAP-Raid", "Title")
+    local verisonNumber = C_AddOns.GetAddOnMetadata("SAP-Raid", "Version")
     local statusBarText = versionTitle .. " v" .. verisonNumber .. " | |cFFFFFFFF" .. (authorsString) .. "|r"
-    NSUI.StatusBar.authorName:SetText(statusBarText)
+    SAPUI.StatusBar.authorName:SetText(statusBarText)
 end
 
-function NSI:DisplayExternal(spellId, unit)
+function SAP:DisplayExternal(spellId, unit)
     local text = ""
     if spellId == "NoInnervate" then        
         local spellIcon = C_Spell.GetSpellInfo(29166).iconID
-        NSUI.external_frame.texture:SetTexture(spellIcon)
+        SAPUI.external_frame.texture:SetTexture(spellIcon)
         text = "|cffff0000NO INNERVATE|r"
     elseif spellId then
         local spellIcon = C_Spell.GetSpellInfo(spellId).iconID
-        NSUI.external_frame.texture:SetTexture(spellIcon)
+        SAPUI.external_frame.texture:SetTexture(spellIcon)
         local giver = SAP_API:Shorten(unit, 8)
         text = "From: " .. giver
     else
-        NSUI.external_frame.texture:SetTexture(237555)
+        SAPUI.external_frame.texture:SetTexture(237555)
         text = "|cffff0000NO EXTERNAL|r"
     end
 
-    NSUI.external_frame.text:SetText(text)
-    NSUI.external_frame:Show()
+    SAPUI.external_frame.text:SetText(text)
+    SAPUI.external_frame:Show()
 
     C_Timer.After(4, function()
-        NSUI.external_frame:Hide()
+        SAPUI.external_frame:Hide()
     end)
 end
 
 function SAPUI:LoadExternalsAnchorPosition()
-    SAPRT.NSUI.externals_anchor.settings = SAPRT.NSUI.externals_anchor.settings or {
+    SAPRT.SAPUI.externals_anchor.settings = SAPRT.SAPUI.externals_anchor.settings or {
         anchorPoint = {
             "CENTER", "UIParent", "CENTER", 0, 150
         },
         width = 70,
         height = 70
     }
-    if not SAPRT.NSUI.externals_anchor.settings.anchorPoint or not SAPRT.NSUI.externals_anchor.settings.width or not SAPRT.NSUI.externals_anchor.settings.height then
-        NSI:Print("No externals anchor settings found.... THIS SHOULD NOT HAPPEN")
+    if not SAPRT.SAPUI.externals_anchor.settings.anchorPoint or not SAPRT.SAPUI.externals_anchor.settings.width or not SAPRT.SAPUI.externals_anchor.settings.height then
+        SAP:Print("No externals anchor settings found.... THIS SHOULD NOT HAPPEN")
         return
     end
-    NSUI.externals_anchor:SetPoint(unpack(SAPRT.NSUI.externals_anchor.settings.anchorPoint))
-    NSUI.externals_anchor:SetSize(SAPRT.NSUI.externals_anchor.settings.width, SAPRT.NSUI.externals_anchor.settings.height)
+    SAPUI.externals_anchor:SetPoint(unpack(SAPRT.SAPUI.externals_anchor.settings.anchorPoint))
+    SAPUI.externals_anchor:SetSize(SAPRT.SAPUI.externals_anchor.settings.width, SAPRT.SAPUI.externals_anchor.settings.height)
 end
 
 function SAPUI:SaveExternalsAnchorPosition()
-    local anchorPoint = { NSUI.externals_anchor:GetPoint() }
+    local anchorPoint = { SAPUI.externals_anchor:GetPoint() }
     anchorPoint[2] = "UIParent"
 
-    local width, height = NSUI.externals_anchor:GetSize()
-    SAPRT.NSUI.externals_anchor.settings = {
+    local width, height = SAPUI.externals_anchor:GetSize()
+    SAPRT.SAPUI.externals_anchor.settings = {
         anchorPoint = anchorPoint,
         width = width,
         height = height
@@ -1887,10 +1885,10 @@ function SAPUI:SaveExternalsAnchorPosition()
 end
 
 function SAPUI:ResetExternalsAnchorPosition()
-    NSUI.externals_anchor:ClearAllPoints()
-    NSUI.externals_anchor:SetPoint("CENTER", UIParent, "CENTER", 0, 150)
-    NSUI.externals_anchor:SetSize(70, 70)
-    SAPRT.NSUI.externals_anchor.settings.anchorPoint = { "CENTER", UIParent, "CENTER", 0, 150 }
+    SAPUI.externals_anchor:ClearAllPoints()
+    SAPUI.externals_anchor:SetPoint("CENTER", UIParent, "CENTER", 0, 150)
+    SAPUI.externals_anchor:SetSize(70, 70)
+    SAPRT.SAPUI.externals_anchor.settings.anchorPoint = { "CENTER", UIParent, "CENTER", 0, 150 }
 end
 function SAPUI:ToggleOptions()
     if SAPUI:IsShown() then
@@ -1900,7 +1898,7 @@ function SAPUI:ToggleOptions()
     end
 end
 
-function NSI:NickNamesSyncPopup(unit, nicknametable) 
+function SAP:NickNamesSyncPopup(unit, nicknametable)
     local popup = DF:CreateSimplePanel(UIParent, 300, 120, "Sync Nicknames", "SyncNicknamesPopup", {
         DontRightClickClose = true
     })
@@ -1917,7 +1915,7 @@ function NSI:NickNamesSyncPopup(unit, nicknametable)
     cancel_button:SetTemplate(options_button_template)
 
     local accept_button = DF:CreateButton(popup, function() 
-        NSI:SyncNickNamesAccept(nicknametable)
+        SAP:SyncNickNamesAccept(nicknametable)
         popup:Hide() 
     end, 130, 20, "Accept")
     accept_button:SetPoint("BOTTOMRIGHT", popup, "BOTTOMRIGHT", -10, 10)
@@ -1926,7 +1924,7 @@ function NSI:NickNamesSyncPopup(unit, nicknametable)
     return popup
 end
 
-function NSI:WAImportPopup(unit, str) 
+function SAP:WAImportPopup(unit, str)
     local popup = DF:CreateSimplePanel(UIParent, 300, 120, "WA Import", "WAImportPopup", {
         DontRightClickClose = true
     })
@@ -1953,11 +1951,11 @@ function NSI:WAImportPopup(unit, str)
 end
 
 function SAP_API:DisplayText(text, duration)
-    if NSUI and NSUI.generic_display then
-        NSUI.generic_display.text:SetText(text)
-        NSUI.generic_display:Show()
-        C_Timer.After(duration or 4, function() NSUI.generic_display:Hide() end)
+    if SAPUI and SAPUI.generic_display then
+        SAPUI.generic_display.text:SetText(text)
+        SAPUI.generic_display:Show()
+        C_Timer.After(duration or 4, function() SAPUI.generic_display:Hide() end)
     end
 end
 
-SAP.NSUI = NSUI
+SAP.SAPUI = SAPUI

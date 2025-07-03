@@ -2019,7 +2019,7 @@ function AceConfigDialog:AddToBlizOptions(appName, name, parent, ...)
 			end
 		else
 			group:SetName(name or appName, parent)
-			InterfaceOptions_AddCategory(group.frame)
+			Interfaceoptions_AddCategory(group.frame)
 		end
 		return group.frame, group.frame.name
 	else

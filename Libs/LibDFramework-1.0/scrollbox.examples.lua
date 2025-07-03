@@ -41,7 +41,7 @@ local options = {
     --amount of horizontal lines
     line_amount = 12,
     --amount of columns per line
-    columns_per_line = 4,
+    columSAP_per_line = 4,
     --height of each line
     line_height = 30,
     auto_amount = false,

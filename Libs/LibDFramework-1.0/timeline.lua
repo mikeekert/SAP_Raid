@@ -43,7 +43,7 @@ local PixelUtil = PixelUtil or DFPixelUtil
 ---@field slider_backdrop_color number[]
 ---@field slider_backdrop_border_color number[]
 ---@field title_template string "ORANGE_FONT_TEMPLATE"
----@field text_tempate string "OPTIONS_FONT_TEMPLATE"
+---@field text_tempate string "options_FONT_TEMPLATE"
 ---@field on_enter fun(self:df_timeline_line) --line
 ---@field on_leave fun(self:df_timeline_line) --line
 ---@field on_create_line fun(self:df_timeline_line) --line
@@ -93,7 +93,7 @@ local timeline_options = {
 	slider_backdrop_border_color = {0.1, 0.1, 0.1, .2},
 
 	title_template = "ORANGE_FONT_TEMPLATE",
-	text_tempate = "OPTIONS_FONT_TEMPLATE",
+	text_tempate = "options_FONT_TEMPLATE",
 
 	---@param self df_timeline_line
 	on_enter = function(self)

@@ -5,7 +5,7 @@ SAP.specs = {}
 local LDB = LibStub("LibDataBroker-1.1")
 local LDBIcon = LDB and LibStub("LibDBIcon-1.0")
 
-function NSI:InitLDB()
+function SAP:InitLDB()
     if LDB then
         local databroker = LDB:NewDataObject("SAPRT", {
             type = "launcher",

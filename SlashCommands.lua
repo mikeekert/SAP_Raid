@@ -1,20 +1,20 @@
 local _, SAP = ... -- Internal namespace
 
-SLASH_NSUI1 = "/ns"
-SlashCmdList["NSUI"] = function(msg)
+SLASH_SAPUI1 = "/ns"
+SlashCmdList["SAPUI"] = function(msg)
     if msg == "anchor" then
-        if SAP.NSUI.externals_anchor:IsShown() then
-            SAP.NSUI.externals_anchor:Hide()
+        if SAP.SAPUI.externals_anchor:IsShown() then
+            SAP.SAPUI.externals_anchor:Hide()
         else
-            SAP.NSUI.externals_anchor:Show()
+            SAP.SAPUI.externals_anchor:Show()
         end
     elseif msg == "test" then
-        NSI:DisplayExternal(nil, GetUnitName("player"))
+        SAP:DisplayExternal(nil, GetUnitName("player"))
     elseif msg == "wipe" then
         wipe(SAPRT)
         ReloadUI()
     elseif msg == "sync" then
-        NSI:NickNamesSyncPopup(GetUnitName("player"), "yayayaya")
+        SAP:NickNamesSyncPopup(GetUnitName("player"), "yayayaya")
     elseif msg == "display" then
         SAP_API:DisplayText("Display text", 8)
     elseif msg == "debug" then

@@ -52,7 +52,7 @@ local PixelUtil = PixelUtil
 ---@field leftSelectionIndicator texture
 
 --create a template for the tab buttons
-local tabTemplate = detailsFramework.table.copy({}, detailsFramework:GetTemplate("button", "OPTIONS_BUTTON_TEMPLATE"))
+local tabTemplate = detailsFramework.table.copy({}, detailsFramework:GetTemplate("button", "options_button_template"))
 tabTemplate.backdropbordercolor = nil
 
 detailsFramework.TabContainerMixin = {

@@ -686,7 +686,7 @@ end
         ["sendAllPlayerCooldownsFromTalentChange_Schedule"] = 2,
         ["talentChangedCallback_Schedule"] = 20,
         ["sendFullData_Schedule"] = 25,
-        ["sendAllPlayerCooldowns_Schedule"] = 23,
+        ["sendAllPlayerCooldowSAP_Schedule"] = 23,
         ["sendDurability_Schedule"] = 10,
         ["sendAllGearInfo_Schedule"] = 20,
         ["petStatus_Schedule"] = 8,
@@ -2403,10 +2403,10 @@ end
             local timeLeft, charges, startTimeOffset, duration, auraDuration = openRaidLib.CooldownManager.GetPlayerCooldownStatus(spellId) --return 5 values
 
             --check for shared cooldown time - warning: this block of code is duplicated at "openRaidLib.commHandler.RegisterComm(CONST_COMM_COOLDOWNUPDATE_PREFIX"
-            local spellData = LIB_OPEN_RAID_COOLDOWNS_INFO[spellId]
+            local spellData = LIB_OPEN_RAID_COOLDOWSAP_INFO[spellId]
             local sharedCooldownId = spellData and spellData.shareid
             if (sharedCooldownId) then
-                local spellsWithSharedCooldown = LIB_OPEN_RAID_COOLDOWNS_SHARED_ID[sharedCooldownId]
+                local spellsWithSharedCooldown = LIB_OPEN_RAID_COOLDOWSAP_SHARED_ID[sharedCooldownId]
                 for thisSpellId in pairs(spellsWithSharedCooldown) do
                     --don't run for the spell that triggered the shared cooldown
                     if (thisSpellId ~= spellId) then
@@ -2446,7 +2446,7 @@ end
     function openRaidLib.CooldownManager.OnPlayerRess()
         --check if is in group
         if (openRaidLib.IsInGroup()) then
-            openRaidLib.Schedules.NewUniqueTimer(1.0 + math.random(0.0, 6.0), openRaidLib.CooldownManager.SendAllPlayerCooldowns, "CooldownManager", "sendAllPlayerCooldowns_Schedule")
+            openRaidLib.Schedules.NewUniqueTimer(1.0 + math.random(0.0, 6.0), openRaidLib.CooldownManager.SendAllPlayerCooldowns, "CooldownManager", "sendAllPlayerCooldowSAP_Schedule")
         end
     end
 
@@ -2473,7 +2473,7 @@ end
     --check cooldown reset after a raid encounter ends finishing ongoing timeLeft tickers
     function openRaidLib.CooldownManager.CheckCooldownsAfterEncounterEnd()
         openRaidLib.CooldownManager.CleanupCooldownTickers()
-        openRaidLib.Schedules.NewUniqueTimer(1 + math.random(1, 4), openRaidLib.CooldownManager.SendAllPlayerCooldowns, "CooldownManager", "sendAllPlayerCooldowns_Schedule")
+        openRaidLib.Schedules.NewUniqueTimer(1 + math.random(1, 4), openRaidLib.CooldownManager.SendAllPlayerCooldowns, "CooldownManager", "sendAllPlayerCooldowSAP_Schedule")
     end
     function openRaidLib.CooldownManager.OnEncounterEnd()
         --run on next frame
@@ -2481,7 +2481,7 @@ end
     end
 
     function openRaidLib.CooldownManager.OnMythicPlusStart()
-        openRaidLib.Schedules.NewUniqueTimer(0.5, openRaidLib.CooldownManager.SendAllPlayerCooldowns, "CooldownManager", "sendAllPlayerCooldowns_Schedule")
+        openRaidLib.Schedules.NewUniqueTimer(0.5, openRaidLib.CooldownManager.SendAllPlayerCooldowns, "CooldownManager", "sendAllPlayerCooldowSAP_Schedule")
     end
 
     function openRaidLib.CooldownManager.OnPlayerPetChanged()
@@ -2744,10 +2744,10 @@ openRaidLib.commHandler.RegisterComm(CONST_COMM_COOLDOWNUPDATE_PREFIX, function(
     end
 
     --check for shared cooldown time
-    local spellData = LIB_OPEN_RAID_COOLDOWNS_INFO[spellId] --warning this block of code is duplicated at warning: this block of code is duplicated at "openRaidLib.CooldownManager.OnPlayerCast"
+    local spellData = LIB_OPEN_RAID_COOLDOWSAP_INFO[spellId] --warning this block of code is duplicated at warning: this block of code is duplicated at "openRaidLib.CooldownManager.OnPlayerCast"
     local sharedCooldownId = spellData and spellData.shareid
     if (sharedCooldownId) then
-        local spellsWithSharedCooldown = LIB_OPEN_RAID_COOLDOWNS_SHARED_ID[sharedCooldownId]
+        local spellsWithSharedCooldown = LIB_OPEN_RAID_COOLDOWSAP_SHARED_ID[sharedCooldownId]
         for thisSpellId in pairs(spellsWithSharedCooldown) do
             --don't run for the spell that triggered the shared cooldown
             if (thisSpellId ~= spellId) then
@@ -3178,7 +3178,7 @@ openRaidLib.commHandler.RegisterComm(CONST_COMM_COOLDOWNREQUEST_PREFIX, openRaid
 local createLocalCooldownTracker = function()
     local cdTrackerFrame = CreateFrame("frame")
     cdTrackerFrame:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED")
-    local allCooldownsFromLib = LIB_OPEN_RAID_COOLDOWNS_INFO
+    local allCooldownsFromLib = LIB_OPEN_RAID_COOLDOWSAP_INFO
 
     ---@type table<castername, table<castspellid, number>>
     local recentCastedSpells =  {}

@@ -215,9 +215,9 @@ function detailsFramework.SavedVars.CreateProfilePanel(addonObject, frameName, p
     options = options or detailsFramework.table.copy({}, defaultProfilePanelOptions)
     detailsFramework.table.deploy(options, defaultProfilePanelOptions)
 
-    local textentryTemplate, labelTemplate = detailsFramework:GetTemplate("dropdown", "OPTIONS_DROPDOWN_TEMPLATE"), detailsFramework:GetTemplate("font", "OPTIONS_FONT_TEMPLATE")
-    local buttonTemplate = detailsFramework:GetTemplate("button", "OPTIONS_BUTTON_TEMPLATE")
-    local dropdownTemplate = detailsFramework:GetTemplate("dropdown", "OPTIONS_DROPDOWN_TEMPLATE")
+    local textentryTemplate, labelTemplate = detailsFramework:GetTemplate("dropdown", "options_DROPDOWN_TEMPLATE"), detailsFramework:GetTemplate("font", "options_FONT_TEMPLATE")
+    local buttonTemplate = detailsFramework:GetTemplate("button", "options_button_template")
+    local dropdownTemplate = detailsFramework:GetTemplate("dropdown", "options_DROPDOWN_TEMPLATE")
 
     --create a simple frame
     local panelOptions = {}

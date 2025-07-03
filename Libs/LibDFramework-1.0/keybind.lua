@@ -149,9 +149,9 @@ local defaultMouseKeybindsKV = {
 ---@field StopEditingKeybindSettings fun(self:df_keybindframe)
 ---@field SwitchSpec fun(self:button, button:string, newSpecId:number)
 
-detailsFramework:NewColor("BLIZZ_OPTIONS_COLOR", 1, 0.8196, 0, 1)
+detailsFramework:NewColor("BLIZZ_options_COLOR", 1, 0.8196, 0, 1)
 
-local DARK_BUTTON_TEMPLATE = detailsFramework:InstallTemplate("button", "DARK_BUTTON_TEMPLATE", {backdropcolor = {.1, .1, .1, .98}}, "OPTIONS_BUTTON_TEMPLATE")
+local DARK_BUTTON_TEMPLATE = detailsFramework:InstallTemplate("button", "DARK_BUTTON_TEMPLATE", {backdropcolor = {.1, .1, .1, .98}}, "options_button_template")
 
 ---only called from OnUserPressedKeybind() when the a keybindTable is not found for the action
 ---@return df_keybind
@@ -753,7 +753,7 @@ detailsFramework.KeybindMixin = {
 					else
 						line.spellIconTexture:SetDesaturated(false)
 						line.setKeybindButton.widget:SetColor(unpack(roundedCornerPreset.color))
-						detailsFramework:SetFontColor(line.actionNameFontString, "BLIZZ_OPTIONS_COLOR")
+						detailsFramework:SetFontColor(line.actionNameFontString, "BLIZZ_options_COLOR")
 					end
 
 					line.spellIconTexture:SetTexCoord(.1, .9, .1, .9)
@@ -879,11 +879,11 @@ detailsFramework.KeybindMixin = {
 
         detailsFramework:Mixin(line, detailsFramework.HeaderFunctions)
 
-        local options_text_template = detailsFramework:GetTemplate("font", "OPTIONS_FONT_TEMPLATE")
-        local options_dropdown_template = detailsFramework:GetTemplate("dropdown", "OPTIONS_DROPDOWN_TEMPLATE")
-        local options_switch_template = detailsFramework:GetTemplate("switch", "OPTIONS_CHECKBOX_TEMPLATE")
-        local options_slider_template = detailsFramework:GetTemplate("slider", "OPTIONS_SLIDER_TEMPLATE")
-        local options_button_template = detailsFramework:GetTemplate("button", "OPTIONS_BUTTON_TEMPLATE")
+        local options_text_template = detailsFramework:GetTemplate("font", "options_FONT_TEMPLATE")
+        local options_dropdown_template = detailsFramework:GetTemplate("dropdown", "options_DROPDOWN_TEMPLATE")
+        local options_switch_template = detailsFramework:GetTemplate("switch", "options_CHECKBOX_TEMPLATE")
+        local options_slider_template = detailsFramework:GetTemplate("slider", "options_SLIDER_TEMPLATE")
+        local options_button_template = detailsFramework:GetTemplate("button", "options_button_template")
 
 		line.separatorTitleText = line:CreateFontString("$parentSeparatorTitleText", "overlay", "GameFontNormal")
 		line.separatorTitleText:SetPoint("center", line, "center", 0, 0)
@@ -892,7 +892,7 @@ detailsFramework.KeybindMixin = {
 		line.spellIconTexture:SetSize(keyBindFrame.options.line_height - 2, keyBindFrame.options.line_height - 2)
 
 		line.actionNameFontString = line:CreateFontString("$parentName", "overlay", "GameFontNormal")
-		detailsFramework:SetFontColor(line.actionNameFontString, "BLIZZ_OPTIONS_COLOR")
+		detailsFramework:SetFontColor(line.actionNameFontString, "BLIZZ_options_COLOR")
 		detailsFramework:SetFontSize(line.actionNameFontString, 12)
 
 		---@type df_button
@@ -974,11 +974,11 @@ detailsFramework.KeybindMixin = {
 			macroEditBox:SetFocus()
 		end
 
-		local createMacroButton = detailsFramework:CreateButton(self.Header, onClickCreateMacroButton, 200, 32, "Create Macro Keybind", nil, nil, nil, "CreateMacroButton", "$parentCreateMacroButton", 0, DARK_BUTTON_TEMPLATE, detailsFramework:GetTemplate("font", "OPTIONS_FONT_TEMPLATE"))
+		local createMacroButton = detailsFramework:CreateButton(self.Header, onClickCreateMacroButton, 200, 32, "Create Macro Keybind", nil, nil, nil, "CreateMacroButton", "$parentCreateMacroButton", 0, DARK_BUTTON_TEMPLATE, detailsFramework:GetTemplate("font", "options_FONT_TEMPLATE"))
 		createMacroButton:SetPoint("left", self.Header, "left", 2, 0)
 		createMacroButton:SetFrameLevel(self.Header:GetFrameLevel()+10)
 		createMacroButton:SetIcon(136377)
-		createMacroButton:SetTemplate("OPTIONS_CIRCLEBUTTON_TEMPLATE")
+		createMacroButton:SetTemplate("options_CIRCLEBUTTON_TEMPLATE")
 		createMacroButton:SetScale(0.9)
 		createMacroButton:SetFontSize(13)
 
@@ -1315,11 +1315,11 @@ detailsFramework.KeybindMixin = {
 
 	---@param self df_keybindframe
 	CreateEditPanel = function(self) --~edit
-        local options_text_template = detailsFramework:GetTemplate("font", "OPTIONS_FONT_TEMPLATE")
-        local options_dropdown_template = detailsFramework:GetTemplate("dropdown", "OPTIONS_DROPDOWN_TEMPLATE")
-        local options_switch_template = detailsFramework:GetTemplate("switch", "OPTIONS_CHECKBOX_TEMPLATE")
-        local options_slider_template = detailsFramework:GetTemplate("slider", "OPTIONS_SLIDER_TEMPLATE")
-        local options_button_template = detailsFramework:GetTemplate("button", "OPTIONS_BUTTON_TEMPLATE")
+        local options_text_template = detailsFramework:GetTemplate("font", "options_FONT_TEMPLATE")
+        local options_dropdown_template = detailsFramework:GetTemplate("dropdown", "options_DROPDOWN_TEMPLATE")
+        local options_switch_template = detailsFramework:GetTemplate("switch", "options_CHECKBOX_TEMPLATE")
+        local options_slider_template = detailsFramework:GetTemplate("slider", "options_SLIDER_TEMPLATE")
+        local options_button_template = detailsFramework:GetTemplate("button", "options_button_template")
 
 		---@type df_editkeybindframe
 		local editFrame = CreateFrame("frame", "$parentEditPanel", self, "BackdropTemplate")
@@ -1331,7 +1331,7 @@ detailsFramework.KeybindMixin = {
 		local nameText = editFrame:CreateFontString("$parentNameText", "overlay", "GameFontNormal")
 		nameText:SetPoint("topleft", editFrame, "topleft", 10, -10)
 		nameText:SetText("Name:")
-		detailsFramework:SetFontColor(nameText, "BLIZZ_OPTIONS_COLOR")
+		detailsFramework:SetFontColor(nameText, "BLIZZ_options_COLOR")
 
 		local nameEditBoxCallback = function(param1, param2, text)
 			--print("name change", param1, param2, text)
@@ -1347,14 +1347,14 @@ detailsFramework.KeybindMixin = {
 		local iconText = editFrame:CreateFontString("$parentIconText", "overlay", "GameFontNormal")
 		iconText:SetPoint("topleft", nameEditBox.widget, "bottomleft", 0, -10)
 		iconText:SetText("Icon:")
-		detailsFramework:SetFontColor(iconText, "BLIZZ_OPTIONS_COLOR")
+		detailsFramework:SetFontColor(iconText, "BLIZZ_options_COLOR")
 
 		local iconPickerButtonCallback = function(texture)
 			editFrame.iconPickerButton:SetIcon(texture)
 			--self:OnKeybindIconChange(texture)
 		end
 
-		local iconPickerButton = detailsFramework:CreateButton(editFrame, function() detailsFramework:IconPick(iconPickerButtonCallback, true) end, 20, 20, "", nil, nil, nil, "iconPickerButton", "$parentIconPickerButton", 0, DARK_BUTTON_TEMPLATE, detailsFramework:GetTemplate("font", "OPTIONS_FONT_TEMPLATE"))
+		local iconPickerButton = detailsFramework:CreateButton(editFrame, function() detailsFramework:IconPick(iconPickerButtonCallback, true) end, 20, 20, "", nil, nil, nil, "iconPickerButton", "$parentIconPickerButton", 0, DARK_BUTTON_TEMPLATE, detailsFramework:GetTemplate("font", "options_FONT_TEMPLATE"))
 		iconPickerButton:SetPoint("topleft", iconText, "bottomleft", 0, -5)
 		iconPickerButton:SetIcon([[]], nil, nil, nil, {0.1264, 0.2514, 0.5048, 0.7548}, nil, nil, 4)
 		iconPickerButton.tooltip = "pick an icon"
@@ -1363,7 +1363,7 @@ detailsFramework.KeybindMixin = {
 		local editMacroText = editFrame:CreateFontString("$parentEditMacroText", "overlay", "GameFontNormal")
 		editMacroText:SetPoint("topleft", iconPickerButton.widget, "bottomleft", 0, -10)
 		editMacroText:SetText("Macro:")
-		detailsFramework:SetFontColor(editMacroText, "BLIZZ_OPTIONS_COLOR")
+		detailsFramework:SetFontColor(editMacroText, "BLIZZ_options_COLOR")
 
 		---@type df_luaeditor
 		local editMacroEditBox = detailsFramework:NewSpecialLuaEditorEntry(editFrame, self.options.edit_width-35, 200, "editMacroEditBox", "$parentEditMacroEditBox", true)
@@ -1412,7 +1412,7 @@ detailsFramework.KeybindMixin = {
 		end
 
 		--save button
-		local saveButton = detailsFramework:CreateButton(editFrame, saveButtonCallback, 120, 20, "Save", nil, nil, nil, "saveButton", "$parentSaveButton", 0, DARK_BUTTON_TEMPLATE, detailsFramework:GetTemplate("font", "OPTIONS_FONT_TEMPLATE"))
+		local saveButton = detailsFramework:CreateButton(editFrame, saveButtonCallback, 120, 20, "Save", nil, nil, nil, "saveButton", "$parentSaveButton", 0, DARK_BUTTON_TEMPLATE, detailsFramework:GetTemplate("font", "options_FONT_TEMPLATE"))
 		saveButton:SetPoint("topleft", editMacroEditBox, "bottomleft", 0, -10)
 		saveButton:SetIcon([[Interface\BUTTONS\UI-CheckBox-Check]])
 
@@ -1421,7 +1421,7 @@ detailsFramework.KeybindMixin = {
 		end
 
 		--cancel button
-		local cancelButton = detailsFramework:CreateButton(editFrame, cancelButtonCallback, 120, 20, "Cancel", nil, nil, nil, "cancelButton", "$parentCancelButton", 0, DARK_BUTTON_TEMPLATE, detailsFramework:GetTemplate("font", "OPTIONS_FONT_TEMPLATE"))
+		local cancelButton = detailsFramework:CreateButton(editFrame, cancelButtonCallback, 120, 20, "Cancel", nil, nil, nil, "cancelButton", "$parentCancelButton", 0, DARK_BUTTON_TEMPLATE, detailsFramework:GetTemplate("font", "options_FONT_TEMPLATE"))
 		cancelButton:SetPoint("left", saveButton, "right", 10, 0)
 		cancelButton:SetIcon([[Interface\BUTTONS\UI-GROUPLOOT-PASS-DOWN]])
 
@@ -1429,7 +1429,7 @@ detailsFramework.KeybindMixin = {
 		local conditionsText = editFrame:CreateFontString("$parentConditionsText", "overlay", "GameFontNormal")
 		conditionsText:SetPoint("topleft", saveButton.widget, "bottomleft", 0, -40)
 		conditionsText:SetText("Can Load Keybind?")
-		detailsFramework:SetFontColor(conditionsText, "BLIZZ_OPTIONS_COLOR")
+		detailsFramework:SetFontColor(conditionsText, "BLIZZ_options_COLOR")
 
 		local onLoadConditionsChange = function()
 			--no parameters is passed as the modifications are done directly on the keybindTable.conditions
@@ -1442,7 +1442,7 @@ detailsFramework.KeybindMixin = {
 			detailsFramework:OpenLoadConditionsPanel(conditionsSettings, onLoadConditionsChange, {title = "Keybind Load Conditions", name = editFrame.keybindTable.name})
 		end
 
-		local conditionsButton = detailsFramework:CreateButton(editFrame, openConditionsPanel, 160, 20, "Edit Load Conditions", nil, nil, [[]], "conditionsButton", "$parentConditionsButton", 0, DARK_BUTTON_TEMPLATE, detailsFramework:GetTemplate("font", "OPTIONS_FONT_TEMPLATE"))
+		local conditionsButton = detailsFramework:CreateButton(editFrame, openConditionsPanel, 160, 20, "Edit Load Conditions", nil, nil, [[]], "conditionsButton", "$parentConditionsButton", 0, DARK_BUTTON_TEMPLATE, detailsFramework:GetTemplate("font", "options_FONT_TEMPLATE"))
 		conditionsButton:SetPoint("topleft", conditionsText, "bottomleft", 0, -5)
 
 		local conditionsFailLoadReasonText = editFrame:CreateFontString("$parentConditionsFailLoadText", "overlay", "GameFontNormal")
@@ -1456,13 +1456,13 @@ detailsFramework.KeybindMixin = {
 		local deleteMacroText = editFrame:CreateFontString("$parentDeleteMacroText", "overlay", "GameFontNormal")
 		deleteMacroText:SetPoint("topleft", saveButton.widget, "bottomleft", 180, -40)
 		deleteMacroText:SetText("Delete Macro")
-		detailsFramework:SetFontColor(deleteMacroText, "BLIZZ_OPTIONS_COLOR")
+		detailsFramework:SetFontColor(deleteMacroText, "BLIZZ_options_COLOR")
 
 		local onClickDeleteMacroButton = function()
 			self:DeleteMacro()
 		end
 
-		local deleteMacroButton = detailsFramework:CreateButton(editFrame, onClickDeleteMacroButton, 160, 20, "Delete This Macro", nil, nil, [[]], "deleteMacroButton", "$parentDeleteMacroButton", 0, DARK_BUTTON_TEMPLATE, detailsFramework:GetTemplate("font", "OPTIONS_FONT_TEMPLATE"))
+		local deleteMacroButton = detailsFramework:CreateButton(editFrame, onClickDeleteMacroButton, 160, 20, "Delete This Macro", nil, nil, [[]], "deleteMacroButton", "$parentDeleteMacroButton", 0, DARK_BUTTON_TEMPLATE, detailsFramework:GetTemplate("font", "options_FONT_TEMPLATE"))
 		deleteMacroButton:SetPoint("topleft", deleteMacroText, "bottomleft", 0, -5)
 
 		--methods

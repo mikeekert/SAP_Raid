@@ -239,23 +239,23 @@ local CreateImageEditorFrame = function()
 
 		local leftTexCoordButton = DF:NewButton(buttonsBackground, nil, "$parentLeftTexButton", nil, 100, 20, enableTexEdit, "left", nil, nil, "Crop Left", 1)
 		leftTexCoordButton:SetPoint("topright", buttonsBackground, "topright", -8, -10 + yMod)
-		leftTexCoordButton:SetTemplate(DF:GetTemplate("dropdown", "OPTIONS_DROPDOWN_TEMPLATE"))
+		leftTexCoordButton:SetTemplate(DF:GetTemplate("dropdown", "options_DROPDOWN_TEMPLATE"))
 
 		local rightTexCoordButton = DF:NewButton(buttonsBackground, nil, "$parentRightTexButton", nil, 100, 20, enableTexEdit, "right", nil, nil, "Crop Right", 1)
 		rightTexCoordButton:SetPoint("topright", buttonsBackground, "topright", -8, -30 + yMod)
-		rightTexCoordButton:SetTemplate(DF:GetTemplate("dropdown", "OPTIONS_DROPDOWN_TEMPLATE"))
+		rightTexCoordButton:SetTemplate(DF:GetTemplate("dropdown", "options_DROPDOWN_TEMPLATE"))
 
 		local topTexCoordButton = DF:NewButton(buttonsBackground, nil, "$parentTopTexButton", nil, 100, 20, enableTexEdit, "top", nil, nil, "Crop Top", 1)
 		topTexCoordButton:SetPoint("topright", buttonsBackground, "topright", -8, -50 + yMod)
-		topTexCoordButton:SetTemplate(DF:GetTemplate("dropdown", "OPTIONS_DROPDOWN_TEMPLATE"))
+		topTexCoordButton:SetTemplate(DF:GetTemplate("dropdown", "options_DROPDOWN_TEMPLATE"))
 
 		local bottomTexCoordButton = DF:NewButton(buttonsBackground, nil, "$parentBottomTexButton", nil, 100, 20, enableTexEdit, "bottom", nil, nil, "Crop Bottom", 1)
 		bottomTexCoordButton:SetPoint("topright", buttonsBackground, "topright", -8, -70 + yMod)
-		bottomTexCoordButton:SetTemplate(DF:GetTemplate("dropdown", "OPTIONS_DROPDOWN_TEMPLATE"))
+		bottomTexCoordButton:SetTemplate(DF:GetTemplate("dropdown", "options_DROPDOWN_TEMPLATE"))
 
 		local Alpha = DF:NewButton(buttonsBackground, nil, "$parentBottomAlphaButton", nil, 100, 20, alpha, nil, nil, nil, "Alpha", 1)
 		Alpha:SetPoint("topright", buttonsBackground, "topright", -8, -115 + yMod)
-		Alpha:SetTemplate(DF:GetTemplate("dropdown", "OPTIONS_DROPDOWN_TEMPLATE"))
+		Alpha:SetTemplate(DF:GetTemplate("dropdown", "options_DROPDOWN_TEMPLATE"))
 
 	--overlay color
 		local selectedColor = function(default)
@@ -306,7 +306,7 @@ local CreateImageEditorFrame = function()
 
 		local changeColorButton = DF:NewButton(buttonsBackground, nil, "$parentOverlayColorButton", nil, 100, 20, changeColor, nil, nil, nil, "Color", 1)
 		changeColorButton:SetPoint("topright", buttonsBackground, "topright", -8, -95 + yMod)
-		changeColorButton:SetTemplate(DF:GetTemplate("dropdown", "OPTIONS_DROPDOWN_TEMPLATE"))
+		changeColorButton:SetTemplate(DF:GetTemplate("dropdown", "options_DROPDOWN_TEMPLATE"))
 
 		alphaFrame = DF:NewPanel(buttonsBackground, nil, "DetailsFrameworkImageEditAlphaBg", nil, 40, 225)
 		alphaFrame:SetPoint("topleft", buttonsBackground, "topright", 2, 0)
@@ -417,7 +417,7 @@ local CreateImageEditorFrame = function()
 
 	local flipButtonH = DF:NewButton(buttonsBackground, nil, "$parentFlipButton", nil, 100, 20, flip, 1, nil, nil, "Flip H", 1)
 	flipButtonH:SetPoint("topright", buttonsBackground, "topright", -8, -140 + yMod)
-	flipButtonH:SetTemplate(DF:GetTemplate("dropdown", "OPTIONS_DROPDOWN_TEMPLATE"))
+	flipButtonH:SetTemplate(DF:GetTemplate("dropdown", "options_DROPDOWN_TEMPLATE"))
 
 	--select area to crop
 	local dragFrame = CreateFrame("frame", nil, background_frame, "BackdropTemplate")
@@ -537,7 +537,7 @@ local CreateImageEditorFrame = function()
 
 	local acceptButton = DF:NewButton(buttonsBackground, nil, "$parentAcceptButton", nil, 100, 20, editorWindow.accept, nil, nil, nil, "Done", 1)
 	acceptButton:SetPoint("topright", buttonsBackground, "topright", -8, -200)
-	acceptButton:SetTemplate(DF:GetTemplate("dropdown", "OPTIONS_DROPDOWN_TEMPLATE"))
+	acceptButton:SetTemplate(DF:GetTemplate("dropdown", "options_DROPDOWN_TEMPLATE"))
 
 	function DF:RefreshImageEditor()
 		if (edit_texture.maximize) then

@@ -125,7 +125,7 @@ local deprecatedAffixes = {
 	--[160] = true, --Xal'atath's Bargain: Devour
 }
 
-local default_load_conditions_frame_options = {
+local default_load_conditioSAP_frame_options = {
 	title = "Details! Framework: Load Conditions",
 	name = "Object",
 }
@@ -411,7 +411,7 @@ end
 
 function detailsFramework:OpenLoadConditionsPanel(optionsTable, callback, frameOptions)
 	frameOptions = frameOptions or {}
-	detailsFramework.table.deploy(frameOptions, default_load_conditions_frame_options)
+	detailsFramework.table.deploy(frameOptions, default_load_conditioSAP_frame_options)
 
 	detailsFramework:UpdateLoadConditionsTable(optionsTable)
 
@@ -828,7 +828,7 @@ function detailsFramework:OpenLoadConditionsPanel(optionsTable, callback, frameO
 
 		--create the text entry to type the encounter ID
 			local encounterIDLabel = detailsFramework:CreateLabel(loadConditionsFrame, "Encounter ID", detailsFramework:GetTemplate("font", "ORANGE_FONT_TEMPLATE"))
-			local encounterIDEditbox = detailsFramework:CreateTextEntry(loadConditionsFrame, function() loadConditionsFrame.RunCallback() end, 200, 20, "EncounterEditbox", _, _, detailsFramework:GetTemplate("dropdown", "OPTIONS_DROPDOWN_TEMPLATE"))
+			local encounterIDEditbox = detailsFramework:CreateTextEntry(loadConditionsFrame, function() loadConditionsFrame.RunCallback() end, 200, 20, "EncounterEditbox", _, _, detailsFramework:GetTemplate("dropdown", "options_DROPDOWN_TEMPLATE"))
 			encounterIDLabel:SetPoint("topleft", loadConditionsFrame, "topleft", anchorPositions.encounter_ids[1], anchorPositions.encounter_ids[2])
 			encounterIDEditbox:SetPoint("topleft", encounterIDLabel, "bottomleft", 0, -2)
 			encounterIDEditbox.DBKey = "encounter_ids"
@@ -844,7 +844,7 @@ function detailsFramework:OpenLoadConditionsPanel(optionsTable, callback, frameO
 
 		--create the text entry for map ID
 			local mapIDLabel = detailsFramework:CreateLabel(loadConditionsFrame, "Map ID", detailsFramework:GetTemplate("font", "ORANGE_FONT_TEMPLATE"))
-			local mapIDEditbox = detailsFramework:CreateTextEntry(loadConditionsFrame, function() loadConditionsFrame.RunCallback() end, 200, 20, "MapEditbox", _, _, detailsFramework:GetTemplate("dropdown", "OPTIONS_DROPDOWN_TEMPLATE"))
+			local mapIDEditbox = detailsFramework:CreateTextEntry(loadConditionsFrame, function() loadConditionsFrame.RunCallback() end, 200, 20, "MapEditbox", _, _, detailsFramework:GetTemplate("dropdown", "options_DROPDOWN_TEMPLATE"))
 			mapIDLabel:SetPoint("topleft", loadConditionsFrame, "topleft", anchorPositions.map_ids[1], anchorPositions.map_ids[2])
 			mapIDEditbox:SetPoint("topleft", mapIDLabel, "bottomleft", 0, -2)
 			mapIDEditbox.DBKey = "map_ids"
