@@ -42,7 +42,7 @@ function SAP:EventHandler(e, wowevent, internal, ...) -- internal checks whether
             SAPRT.Settings["NickNamesSyncSend"] = SAPRT.Settings["NickNamesSyncSend"] or 3 -- guild default
             SAPRT.Settings["WeakAurasImportAccept"] = SAPRT.Settings["WeakAurasImportAccept"] or 1 -- guild default
             SAPRT.Settings["PAExtraAction"] = SAPRT.Settings["PAExtraAction"] or false
-            SAPRT.Settings["LIQUID_MACRO"] = SAPRT.Settings["LIQUID_MACRO"] or false
+            --SAPRT.Settings["LIQUID_MACRO"] = SAPRT.Settings["LIQUID_MACRO"] or false
             SAPRT.Settings["PASelfPing"] = SAPRT.Settings["PASelfPing"] or false
             SAPRT.Settings["ExternalSelfPing"] = SAPRT.Settings["ExternalSelfPing"] or false
             SAPRT.Settings["MRTNoteComparison"] = SAPRT.Settings["MRTNoteComparison"] or false
@@ -97,15 +97,9 @@ function SAP:EventHandler(e, wowevent, internal, ...) -- internal checks whether
         elseif not pafound then
             macrocount = macrocount+1            
             local macrotext = "/run SAP_API:PrivateAura();"
-            if SAPRT.Settings["PASelfPing"] then
-                macrotext = macrotext.."\n/ping [@player] Warning;"
-            end
-            if SAPRT.Settings["PAExtraAction"] then
-                macrotext = macrotext.."\n/click ExtraActionButton1"
-            end
-            if SAPRT.Settings["LIQUID_MACRO"] then
-                macrotext = macrotext.."\n/run WeakAuras.ScanEvents(\"LIQUID_PRIVATE_AURA_MACRO\", true)"
-            end
+            --if SAPRT.Settings["LIQUID_MACRO"] then
+            --    macrotext = macrotext.."\n/run WeakAuras.ScanEvents(\"LIQUID_PRIVATE_AURA_MACRO\", true)"
+            --end
             CreateMacro("SAP PA Macro", 132288, macrotext, false)
         end
         if macrocount >= 120 and not extfound then 

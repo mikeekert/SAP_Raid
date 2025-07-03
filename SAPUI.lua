@@ -50,9 +50,7 @@ local function PASelfPingChanged()
             if SAPRT.Settings["PAExtraAction"] then
                 macrotext = macrotext.."\n/click ExtraActionButton1"
             end            
-            if SAPRT.Settings["LIQUID_MACRO"] then
-                macrotext = macrotext.."\n/run WeakAuras.ScanEvents(\"LIQUID_PRIVATE_AURA_MACRO\", true)"
-            end
+
              EditMacro(i, "SAP PA Macro", 132288, macrotext, false)
             return
         end
@@ -1312,18 +1310,18 @@ Press 'Enter' to hear the TTS]],
         --    end,
         --    nocombat = true
         --},
-        {
-            type = "toggle",
-            boxfirst = true,
-            name = "Add Liquid Private Aura Macro",
-            desc = "Add Scan Event for Liquid Private Aura Macro",
-            get = function() return SAPRT.Settings["LIQUID_MACRO"] end,
-            set = function(self, fixedparam, value) 
-                SAPUI.OptionsChanged.general["PA_MACRO"] = true
-                SAPRT.Settings["LIQUID_MACRO"] = value
-            end,
-            nocombat = true
-        },
+        --{
+        --    type = "toggle",
+        --    boxfirst = true,
+        --    name = "Add Liquid Private Aura Macro",
+        --    desc = "Add Scan Event for Liquid Private Aura Macro",
+        --    get = function() return SAPRT.Settings["LIQUID_MACRO"] end,
+        --    set = function(self, fixedparam, value)
+        --        SAPUI.OptionsChanged.general["PA_MACRO"] = true
+        --        SAPRT.Settings["LIQUID_MACRO"] = value
+        --    end,
+        --    nocombat = true
+        --},
         {
             type = "label",
             get = function() return "Private Aura Keybind:" end,

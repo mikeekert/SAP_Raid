@@ -122,14 +122,14 @@ function SAP_API:GetNote() -- Get rid of extra spaces and color coding. Also con
     return SAP.Note
 end
 
-function SAP:UnitAura(unit, spellID) -- simplify aura checking for myself
+function SAP:UnitAura(unit, spellID)
     if unit and UnitExists(unit) and spellID then
         local spell = C_Spell.GetSpellInfo(spellID)
         return spell and C_UnitAuras.GetAuraDataBySpellName(unit, spell.name)
     end
 end
 
-function SAP:Difficultycheck(encountercheck) -- check if current difficulty is a Normal/Heroic/Mythic raid and also allow checking if we are currently in an encounter
+function SAP:Difficultycheck(encountercheck)
     local difficultyID = select(3, GetInstanceInfo()) or 0
     return SAPRT.Settings["Debug"] or ((difficultyID == 14 or difficultyID == 15 or difficultyID == 16) and ((not encountercheck) or SAP:EncounterCheck()))
 end
@@ -138,24 +138,22 @@ function SAP:EncounterCheck()
     return WeakAuras.CurrentEncounter or SAPRT.Settings["Debug"]
 end
 
--- this one is public as I want to use it in WeakAuras as well
 function SAP_API:DeathCheck(unit)
     if unit and UnitExists(unit) then
         return (UnitIsDead(unit) and not UnitIsFeignDeath(unit)) or SAP:UnitAura(unit, 27827)
     end
 end
 
--- technically don't need this to be public but it's good for backwards compatibility for a while
 function SAP_API:GetHash(text)
     local counter = 1
     local len = string.len(text)
     for i = 1, len, 3 do
-        counter = math.fmod(counter*8161, 4294967279) +  -- 2^32 - 17: Prime!
+        counter = math.fmod(counter*8161, 4294967279) +
                 (string.byte(text,i)*16776193) +
                 ((string.byte(text,i+1) or (len-i+256))*8372226) +
                 ((string.byte(text,i+2) or (len-i+256))*3932164)
     end
-    return math.fmod(counter, 4294967291) -- 2^32 - 5: Prime (and different from the prime in the loop)
+    return math.fmod(counter, 4294967291)
 end
 
 
