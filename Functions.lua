@@ -176,8 +176,8 @@ function SAP_API:PrivateAura()
     local now = GetTime()
     if (not SAP_API.LastPAMacro) or SAP_API.LastPAMacro < now-4 then -- putting this into global SAP_API namespace to allow auras to reset it if ever required
         SAP_API.LastPAMacro = now
-        WeakAuras.ScanEvents("SAP_PA_MACRO", true) -- this is for backwards compatibility
-        SAP:Broadcast("SAP_PAMACRO", "RAID", "nilcheck") -- this will be used going forward, slightly different wording to prevent issues with old auras
+        WeakAuras.ScanEvents("LIQUID_PRIVATE_AURA_MACRO", true) -- this is for backwards compatibility
+        -- SAP:Broadcast("SAP_PAMACRO", "RAID", "nilcheck") -- this will be used going forward, slightly different wording to prevent issues with old auras
     end
 end
 

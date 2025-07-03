@@ -36,9 +36,9 @@ function SAP_API:Broadcast(event, channel, ...) -- only used for weakauras, ever
         end
     end
     if channel == "WHISPER" then -- create "fake" whisper addon msg that actually just uses RAID instead and will be checked on receive
-        AceComm:SendCommMessage("SAPWA_MSG2", message, "RAID")
+        AceComm:SendCommMessage("SAP_WA_MSG2", message, "RAID")
     else
-        AceComm:SendCommMessage("SAPWA_MSG", message, channel)
+        AceComm:SendCommMessage("SAP_WA_MSG", message, channel)
     end
 end
 

@@ -1288,30 +1288,30 @@ Press 'Enter' to hear the TTS]],
             get = function() return "Private Aura Macro" end,
             text_template = DF:GetTemplate("font", "ORANGE_FONT_TEMPLATE"),
         },
-        {
-            type = "toggle",
-            boxfirst = true,
-            name = "Enable @player Ping",
-            desc = "Enable a @player ping when the private aura macro is used.",
-            get = function() return SAPRT.Settings["PASelfPing"] end,
-            set = function(self, fixedparam, value) 
-                SAPUI.OptionsChanged.general["PA_MACRO"] = true
-                SAPRT.Settings["PASelfPing"] = value
-            end,
-            nocombat = true
-        },
-        {
-            type = "toggle",
-            boxfirst = true,
-            name = "Combine Extra Action Button",
-            desc = "Combine the extra action button with the private aura macro.",
-            get = function() return SAPRT.Settings["PAExtraAction"] end,
-            set = function(self, fixedparam, value) 
-                SAPUI.OptionsChanged.general["PA_MACRO"] = true
-                SAPRT.Settings["PAExtraAction"] = value
-            end,
-            nocombat = true
-        },
+        --{
+        --    type = "toggle",
+        --    boxfirst = true,
+        --    name = "Enable @player Ping",
+        --    desc = "Enable a @player ping when the private aura macro is used.",
+        --    get = function() return SAPRT.Settings["PASelfPing"] end,
+        --    set = function(self, fixedparam, value)
+        --        SAPUI.OptionsChanged.general["PA_MACRO"] = true
+        --        SAPRT.Settings["PASelfPing"] = value
+        --    end,
+        --    nocombat = true
+        --},
+        --{
+        --    type = "toggle",
+        --    boxfirst = true,
+        --    name = "Combine Extra Action Button",
+        --    desc = "Combine the extra action button with the private aura macro.",
+        --    get = function() return SAPRT.Settings["PAExtraAction"] end,
+        --    set = function(self, fixedparam, value)
+        --        SAPUI.OptionsChanged.general["PA_MACRO"] = true
+        --        SAPRT.Settings["PAExtraAction"] = value
+        --    end,
+        --    nocombat = true
+        --},
         {
             type = "toggle",
             boxfirst = true,
@@ -1650,36 +1650,36 @@ Press 'Enter' to hear the TTS]],
 
         {
             type = "button",
-            name = "Anchor Auras 1440p",
-            desc = "Import WeakAura Anchors required for all Northern Sky WeakAuras, scaled for a 1440p Monitor",
+            name = "Anchor Auras",
+            desc = "Import WeakAura Anchors required for all SAP WeakAuras",
             func = function(self)
                 ImportWeakAura("anchor_weakaura")
             end,
             nocombat = true,
             spacement = true
         },
+        --
+        --{
+        --    type = "button",
+        --    name = "Anchor Auras 1080p",
+        --    desc = "Import WeakAura Anchors required for all Northern Sky WeakAuras, scaled for a 1080p Monitor",
+        --    func = function(self)
+        --        ImportWeakAura("anchor_weakaura_1080")
+        --    end,
+        --    nocombat = true,
+        --    spacement = true
+        --},
 
-        {
-            type = "button",
-            name = "Anchor Auras 1080p",
-            desc = "Import WeakAura Anchors required for all Northern Sky WeakAuras, scaled for a 1080p Monitor",
-            func = function(self)
-                ImportWeakAura("anchor_weakaura_1080")
-            end,
-            nocombat = true,
-            spacement = true
-        },
-
-        {
-            type = "button",
-            name = "External Alert",
-            desc = "Import WeakAura External Alert required for the external macro.",
-            func = function(self)
-                ImportWeakAura("external_weakaura")
-            end,
-            nocombat = true,
-            spacement = true
-        },
+        --{
+        --    type = "button",
+        --    name = "External Alert",
+        --    desc = "Import WeakAura External Alert required for the external macro.",
+        --    func = function(self)
+        --        ImportWeakAura("external_weakaura")
+        --    end,
+        --    nocombat = true,
+        --    spacement = true
+        --},
 
 
         {
@@ -1702,37 +1702,37 @@ Press 'Enter' to hear the TTS]],
             get = function() return "Raid Auras" end,
             text_template = DF:GetTemplate("font", "ORANGE_FONT_TEMPLATE"),
         },
-        {
-            type = "button",
-            name = "Manaforge Raid WA",
-            desc = "Import Manaforge Omega WeakAuras",
-            func = function(self)
-                local popup = DF:CreateSimplePanel(UIParent, 300, 60, "Manaforge Omega WA", "ManaforgeWAPopup")
-                popup:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
-                popup:SetFrameLevel(100)
-
-                popup.text_entry = DF:CreateTextEntry(popup, function() end, 280, 20)
-                popup.text_entry:SetTemplate(options_button_template)
-                popup.text_entry:SetPoint("TOP", popup, "TOP", 0, -30)
-                popup.text_entry:SetText(SAP:GetWeakAuraLink("Manaforge"))
-                popup.text_entry.editbox:SetJustifyH("CENTER")
-
-                -- Disable editing the text technically
-                popup.text_entry:SetScript("OnTextChanged", function(_)
-                    popup.text_entry:SetText(SAP:GetWeakAuraLink("Manaforge"))
-                    popup.text_entry.editbox:HighlightText()
-                end)
-
-                popup.text_entry:SetScript("OnEditFocusGained", function(_)
-                    popup.text_entry.editbox:HighlightText()
-                end)
-                popup:Show()
-                popup.text_entry:SetFocus()
-
-            end,
-            nocombat = true,
-            spacement = true
-        },
+        --{
+        --    type = "button",
+        --    name = "Manaforge Raid WA",
+        --    desc = "Import Manaforge Omega WeakAuras",
+        --    func = function(self)
+        --        local popup = DF:CreateSimplePanel(UIParent, 300, 60, "Manaforge Omega WA", "ManaforgeWAPopup")
+        --        popup:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
+        --        popup:SetFrameLevel(100)
+        --
+        --        popup.text_entry = DF:CreateTextEntry(popup, function() end, 280, 20)
+        --        popup.text_entry:SetTemplate(options_button_template)
+        --        popup.text_entry:SetPoint("TOP", popup, "TOP", 0, -30)
+        --        popup.text_entry:SetText(SAP:GetWeakAuraLink("Manaforge"))
+        --        popup.text_entry.editbox:SetJustifyH("CENTER")
+        --
+        --        -- Disable editing the text technically
+        --        popup.text_entry:SetScript("OnTextChanged", function(_)
+        --            popup.text_entry:SetText(SAP:GetWeakAuraLink("Manaforge"))
+        --            popup.text_entry.editbox:HighlightText()
+        --        end)
+        --
+        --        popup.text_entry:SetScript("OnEditFocusGained", function(_)
+        --            popup.text_entry.editbox:HighlightText()
+        --        end)
+        --        popup:Show()
+        --        popup.text_entry:SetFocus()
+        --
+        --    end,
+        --    nocombat = true,
+        --    spacement = true
+        --},
         
         
         {

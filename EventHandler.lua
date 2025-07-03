@@ -113,13 +113,14 @@ function SAP:EventHandler(e, wowevent, internal, ...) -- internal checks whether
         elseif not extfound then
             macrocount = macrocount+1
             local macrotext = SAPRT.Settings["ExternalSelfPing"] and "/run SAP_API:ExternalRequest();\n/ping [@player] Assist;" or "/run SAP_API:ExternalRequest();"
-            CreateMacro("SAP Ext Macro", 135966, macrotext, false)
+            --CreateMacro("SAP Ext Macro", 135966, macrotext, false)
         end
         if macrocount >= 120 and not inenrvatefound then
             print("You reached the global Macro cap so the Innervate Macro could not be created")
         elseif not innervatefound then
             macrocount = macrocount+1
-            CreateMacro("SAP Innervate", 136048, "/run SAP_API:InnervateRequest();", false)
+
+            --CreateMacro("SAP Innervate", 136048, "/run SAP_API:InnervateRequest();", false)
         end
         if SAPRT.Settings["MyNickName"] then SAP:SendNickName("Any") end -- only send nickname if it exists. If user has ever interacted with it it will create an empty string instead which will serve as deleting the nickname
         if SAPRT.Settings["GlobalNickNames"] then -- add own nickname if not already in database (for new characters)
@@ -133,12 +134,12 @@ function SAP:EventHandler(e, wowevent, internal, ...) -- internal checks whether
         end
         SAP.SAPUI:Init()
         SAP:InitLDB()
-        if WeakAuras.GetData("Northern Sky Externals") then
-            print("lease uninstall the |cFF00FFFFPNorthern Sky Externals Weakaura|r to prevent conflicts with the Northern Sky Raid Tools Addon.")
-        end
-        if C_AddOns.IsAddOnLoaded("NorthernSkyMedia") then
-            print("Please uninstall the |cFF00FFFFPNorthern Sky Media Addon|r as this new Addon takes over all its functionality")
-        end
+        --if WeakAuras.GetData("Northern Sky Externals") then
+        --    print("lease uninstall the |cFF00FFFFPNorthern Sky Externals Weakaura|r to prevent conflicts with the Northern Sky Raid Tools Addon.")
+        --end
+        --if C_AddOns.IsAddOnLoaded("NorthernSkyMedia") then
+        --    print("Please uninstall the |cFF00FFFFPNorthern Sky Media Addon|r as this new Addon takes over all its functionality")
+        --end
     elseif e == "READY_CHECK" and (wowevent or SAPRT.Settings["Debug"]) then
         if WeakAuras.CurrentEncounter then return end
         if SAP:Difficultycheck() or SAPRT.Settings["Debug"] then -- only care about note comparison in normal, heroic&mythic raid
