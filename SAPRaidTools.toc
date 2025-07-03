@@ -1,0 +1,31 @@
+## Interface: 110200
+
+## Title: |cFF00FFFFSAP Raid Tools|r
+## Version: 1.0.0
+## IconTexture: Interface\AddOns\SAP-Raid\Media\SAPLogo.blp
+## Author: SAP
+## DefaultState: Enable
+## Dependencies: WeakAuras
+## SavedVariables: SAPRT
+## Category: SAP
+
+# Libraries
+Libs\libs.xml
+
+# Main Files
+SAPRaidTools.lua
+Media.lua
+Functions.lua
+AuraResize.lua
+Comms.lua
+NickNames.lua
+EventHandler.lua
+Externals.lua
+VersionCheck.lua
+SetupManager.lua
+WeakAuras/Imports.lua
+WeakAuras/Links.lua
+
+# UI
+SAPUI.lua
+SlashCommands.lua

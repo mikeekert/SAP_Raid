@@ -1,0 +1,33 @@
+local _, SAP = ... -- Internal namespace
+_G["SAP_API"] = {}
+SAP.specs = {}
+
+local LDB = LibStub("LibDataBroker-1.1")
+local LDBIcon = LDB and LibStub("LibDBIcon-1.0")
+
+function NSI:InitLDB()
+    if LDB then
+        local databroker = LDB:NewDataObject("SAPRT", {
+            type = "launcher",
+            label = "SAP Raid Tools",
+            icon = [[Interface\AddOns\SAP-Raid\Media\Logo]],
+            showInCompartment = true,
+            OnClick = function(self, button)
+                if button == "LeftButton" then
+                    SAP.SAPUI:ToggleOptions()
+                end
+            end,
+            OnTooltipShow = function(tooltip)
+                tooltip:AddLine("SAP Raid Tools", 0, 1, 1)
+                tooltip:AddLine("|cFFCFCFCFLeft click|r: Show/Hide Options Window")
+            end
+        })
+
+        if (databroker and not LDBIcon:IsRegistered("SAPRT")) then
+            LDBIcon:Register("SAPRT", databroker, SAPRT.Settings["Minimap"])
+            LDBIcon:AddButtonToCompartment("SAPRT")
+        end
+
+        SAP.databroker = databroker
+    end
+end
