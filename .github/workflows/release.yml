@@ -1,0 +1,24 @@
+name: SAP_Raid
+
+on:
+  push:
+    tags:
+      - '*'   # Runs when you push a tag (like v1.0)
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Create ZIP
+        run: |
+          zip -r SAP_Raid.zip SAP_Raid/
+
+      - name: Upload Release Asset
+        uses: softprops/action-gh-release@v2
+        with:
+          files: SAP_Raid.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
