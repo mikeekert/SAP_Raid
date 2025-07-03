@@ -1,7 +1,7 @@
 ## Interface: 110107
 ## Title: SAP Raid Tools
 ## Notes: SAP tools for raids and dungeons
-## Version: 1.2.0
+## Version: 1.0.0
 ## Author: SAP
 ## DefaultState: Enable
 ## Dependencies: WeakAuras
