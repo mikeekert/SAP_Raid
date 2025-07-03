@@ -10,7 +10,7 @@ function SAP:InitLDB()
         local databroker = LDB:NewDataObject("SAPRT", {
             type = "launcher",
             label = "SAP Raid Tools",
-            icon = [[Interface\AddOns\SAP-Raid\Media\Logo]],
+            icon = [[Interface\AddOns\SAP_Raid\Media\Logo]],
             showInCompartment = true,
             OnClick = function(self, button)
                 if button == "LeftButton" then

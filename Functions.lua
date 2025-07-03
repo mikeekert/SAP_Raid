@@ -1,6 +1,5 @@
 local _, SAP = ... -- Internal namespace
 
--- Function from WeakAuras, thanks rivers
 function SAP:IterateGroupMembers(reversed, forceParty)
     local unit = (not forceParty and IsInRaid()) and 'raid' or 'party'
     local numGroupMembers = unit == 'party' and GetNumSubgroupMembers() or GetNumGroupMembers()

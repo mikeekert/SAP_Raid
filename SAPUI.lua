@@ -6,15 +6,15 @@ local WA = _G["WeakAuras"]
 
 local window_width = 800
 local window_height = 515
-local expressway = [[Interface\AddOns\SAP-Raid\Media\Fonts\Expressway.TTF]]
+local expressway = [[Interface\AddOns\SAP_Raid\Media\Fonts\Expressway.TTF]]
 
 local authorsString = "SAP"
 
-local options_text_template = DF:GetTemplate("font", "options_FONT_TEMPLATE")
-local options_dropdown_template = DF:GetTemplate("dropdown", "options_DROPDOWN_TEMPLATE")
-local options_switch_template = DF:GetTemplate("switch", "options_CHECKBOX_TEMPLATE")
-local options_slider_template = DF:GetTemplate("slider", "options_SLIDER_TEMPLATE")
-local options_button_template = DF:GetTemplate("button", "options_button_template")
+local options_text_template = DF:GetTemplate("font", "OPTIONS_FONT_TEMPLATE")
+local options_dropdown_template = DF:GetTemplate("dropdown", "OPTIONS_DROPDOWN_TEMPLATE")
+local options_switch_template = DF:GetTemplate("switch", "OPTIONS_CHECKBOX_TEMPLATE")
+local options_slider_template = DF:GetTemplate("slider", "OPTIONS_SLIDER_TEMPLATE")
+local options_button_template = DF:GetTemplate("button", "OPTIONS_BUTTON_TEMPLATE")
 
 local SAPUI_panel_options = {
     UseStatusBar = true
@@ -151,7 +151,7 @@ local function BuildVersionCheckUI(parent)
     local hide_version_response_button = DF:CreateSwitch(parent,
         function(self, _, value) SAPRT.Settings["VersionCheckRemoveResponse"] = value end,
         SAPRT.Settings["VersionCheckRemoveResponse"], 20, 20, nil, nil, nil, "VersionCheckResponseToggle", nil, nil, nil,
-        "Hide Version Check Responses", options_switch_template, options_text_template)
+            "Hide Version Check Responses", options_switch_template, options_text_template)
     hide_version_response_button:SetPoint("TOPLEFT", parent, "TOPLEFT", 10, -100)
     hide_version_response_button:SetAsCheckBox()
     hide_version_response_button:SetTooltip(
@@ -237,7 +237,7 @@ local function BuildVersionCheckUI(parent)
                     line.duplicates:SetTextColor(0, 1, 0, 1)
                 end
                 
-                line:SetScript("OnClick", function(self)
+                line:SetScript("OnClick", function(_)
                     local message = ""
                     local now = GetTime()
                     if (SAP.VersionCheckData.lastclick[name] and now < SAP.VersionCheckData.lastclick[name] + 5) or (thisData.version == SAP.VersionCheckData.version and not thisData.duplicate) or thisData.version == "No Response" then return end
@@ -463,7 +463,6 @@ local function BuildVersionCheckUI(parent)
     end
 
     local function createPresetLineFunc(self, index)
-        local parent = self
         local line = CreateFrame("Frame", "$parentLine" .. index, self, "BackdropTemplate")
         line:SetPoint("TOPLEFT", self, "TOPLEFT", 1, -((index - 1) * (self.LineHeight)) - 1)
         line:SetSize(self:GetWidth() - 2, self.LineHeight)
@@ -553,14 +552,14 @@ local function BuildNicknameEditUI()
     local refresh_count = 0
 
     local function PrepareData(data)
-        local data = {}
+        local _data = {}
         for player, nickname in pairs(SAPRT.NickNames) do
-            tinsert(data, {player = player, nickname = nickname})
+            tinsert(_data, { player = player, nickname = nickname})
         end
-        table.sort(data, function(a, b)
+        table.sort(_data, function(a, b)
             return a.nickname < b.nickname
         end)
-        return data
+        return _data
     end
 
     local function MasterRefresh(self) 
@@ -600,7 +599,7 @@ local function BuildNicknameEditUI()
         line.playerText:SetPoint("LEFT", line, "LEFT", 5, 0)
         
         -- Nickname text
-        line.nicknameEntry = DF:CreateTextEntry(line, function(self, _, value) 
+        line.nicknameEntry = DF:CreateTextEntry(line, function(_, _, value)
             SAP:AddNickName(line.player, line.realm, string.sub(value, 1, 12))
             line.nicknameEntry.text = string.sub(value, 1, 12)
             parent:MasterRefresh()
@@ -734,10 +733,10 @@ function SAPUI:Init()
     SAPUI:SetScale(SAPRT.SAPUI.scale)
 
     -- Create the tab container
-    local tabContainer = DF:CreateTabContainer(SAPUI, "Northern Sky", "SAPUI_TabsTemplate", {
+    local tabContainer = DF:CreateTabContainer(SAPUI, "SAP", "SAPUI_TabsTemplate", {
         { name = "General",   text = "General" },
-        { name = "Nicknames", text = "Nicknames" },
-        { name = "Externals", text = "Externals" },
+        --{ name = "Nicknames", text = "Nicknames" },
+        --{ name = "Externals", text = "Externals" },
         { name = "Versions",  text = "Versions" },
         { name = "WeakAuras",   text = "WeakAuras" },
     }, {
@@ -751,11 +750,11 @@ function SAPUI:Init()
     tabContainer:SetPoint("CENTER", SAPUI, "CENTER", 0, 0)
 
     local general_tab = tabContainer:GetTabFrameByName("General")
-    local nicknames_tab = tabContainer:GetTabFrameByName("Nicknames")
-    local externals_tab = tabContainer:GetTabFrameByName("Externals")
-    local versioSAP_tab = tabContainer:GetTabFrameByName("Versions")
+    --local nicknames_tab = tabContainer:GetTabFrameByName("Nicknames")
+    --local externals_tab = tabContainer:GetTabFrameByName("Externals")
+    local versions_tab = tabContainer:GetTabFrameByName("Versions")
     local weakaura_tab = tabContainer:GetTabFrameByName("WeakAuras")
-
+    
     -- generic text display
     local generic_display = CreateFrame("Frame", "SAPUIGenericDisplay", UIParent, "BackdropTemplate")
     generic_display:SetPoint("CENTER", UIParent, "CENTER", 0, 350)
@@ -813,7 +812,7 @@ function SAPUI:Init()
     external_frame:SetPoint("BOTTOMLEFT", SAPUI.externals_anchor, "BOTTOMLEFT", 0, 0)
     external_frame:SetPoint("TOPRIGHT", SAPUI.externals_anchor, "TOPRIGHT", 0, 0)
     local external_frame_text = external_frame:CreateFontString(nil, "OVERLAY")
-    external_frame_text:SetFont([[Interface\AddOns\SAP-Raid\Media\Fonts\Expressway.TTF]], 20, "OUTLINE")
+    external_frame_text:SetFont([[Interface\AddOns\SAP_Raid\Media\Fonts\Expressway.TTF]], 20, "OUTLINE")
     external_frame_text:SetTextColor(1, 1, 1, 1)
     external_frame_text:SetPoint("CENTER", external_frame, "TOP", 0, 10)
     external_frame_text:SetText("SAP_EXT")
@@ -905,13 +904,13 @@ function SAPUI:Init()
     (with optional modifiers) to bind the]].."\n"..displayName)
 
 
-        local function OnKeyDown(self, key)
+        local function OnKeyDown(_self, key)
             if listening then
                 if key == "ESCAPE" then
                     listening = false
-                    self:SetScript("OnKeyDown", nil)
-                    self:SetPropagateKeyboardInput(false)
-                    self:Hide()
+                    _self:SetScript("OnKeyDown", nil)
+                    _self:SetPropagateKeyboardInput(false)
+                    _self:Hide()
                     SAPUI:Show()
                     return
                 end
@@ -935,9 +934,9 @@ function SAPUI:Init()
                 bindKeybind(keyCombo, macroName)
 
                 listening = false
-                self:SetScript("OnKeyDown", nil)
-                self:SetPropagateKeyboardInput(false)
-                self:Hide()
+                _self:SetScript("OnKeyDown", nil)
+                _self:SetPropagateKeyboardInput(false)
+                _self:Hide()
                 SAPUI:Show()
 
                 if general_tab:GetWidgetById(macroName) ~= nil then
@@ -1719,12 +1718,12 @@ Press 'Enter' to hear the TTS]],
                 popup.text_entry.editbox:SetJustifyH("CENTER")
 
                 -- Disable editing the text technically
-                popup.text_entry:SetScript("OnTextChanged", function(self)
+                popup.text_entry:SetScript("OnTextChanged", function(_)
                     popup.text_entry:SetText(SAP:GetWeakAuraLink("Manaforge"))
                     popup.text_entry.editbox:HighlightText()
                 end)
 
-                popup.text_entry:SetScript("OnEditFocusGained", function(self)
+                popup.text_entry:SetScript("OnEditFocusGained", function(_)
                     popup.text_entry.editbox:HighlightText()
                 end)
                 popup:Show()
@@ -1740,7 +1739,7 @@ Press 'Enter' to hear the TTS]],
             type = "button",
             name = "Liberation Raid WA",
             desc = "Import Liberation of Undermine Raid WeakAuras",
-            func = function(self)
+            func = function(_)
                 ImportWeakAura("raid_weakaura")
             end,
             nocombat = true,
@@ -1760,7 +1759,7 @@ Press 'Enter' to hear the TTS]],
             type = "button",
             name = "Send WeakAura to Raid",
             desc = "Send an individual WeakAura string to the raid.",
-            func = function(self)
+            func = function(_)
                 SendWeakAuras()
             end,
             nocombat = true,
@@ -1781,36 +1780,36 @@ Press 'Enter' to hear the TTS]],
     DF:BuildMenu(general_tab, general_options1_table, 10, -100, window_height - 10, false, options_text_template,
         options_dropdown_template, options_switch_template, true, options_slider_template, options_button_template,
         general_callback)
-    DF:BuildMenu(nicknames_tab, nicknames_options1_table, 10, -100, window_height - 10, false, options_text_template,
-        options_dropdown_template, options_switch_template, true, options_slider_template, options_button_template,
-        nicknames_callback)
-    DF:BuildMenu(externals_tab, externals_options1_table, 10, -100, window_height - 10, false, options_text_template,
-        options_dropdown_template, options_switch_template, true, options_slider_template, options_button_template,
-        externals_callback)
+    --DF:BuildMenu(nicknames_tab, nicknames_options1_table, 10, -100, window_height - 10, false, options_text_template,
+    --    options_dropdown_template, options_switch_template, true, options_slider_template, options_button_template,
+    --    nicknames_callback)
+    --DF:BuildMenu(externals_tab, externals_options1_table, 10, -100, window_height - 10, false, options_text_template,
+    --    options_dropdown_template, options_switch_template, true, options_slider_template, options_button_template,
+    --    externals_callback)
     DF:BuildMenu(weakaura_tab, weakaura_options1_table, 10, -100, window_height - 10, false, options_text_template,
         options_dropdown_template, options_switch_template, true, options_slider_template, options_button_template,
         weakaura_callback)
 
     -- Add SUF Setup guide tooltip button thingy
 
-    SAPUI.suf_setup_guide_popup = BuildSUFSetupGuidePopup()
+    --SAPUI.suf_setup_guide_popup = BuildSUFSetupGuidePopup()
 
-    local help_i_texture = [[Interface\common\help-i]]
-    local SUF_Toggle = nicknames_tab:GetWidgetById("SUF-Toggle")
-    local suf_help_button = DF:CreateButton(nicknames_tab, function()
-        if SAPUI.suf_setup_guide_popup and not SAPUI.suf_setup_guide_popup:IsShown() then
-            SAPUI.suf_setup_guide_popup:Show()
-        else
-            SAPUI.suf_setup_guide_popup:Hide()
-        end
-    end, 20, 20, "")
-    suf_help_button:SetIcon(help_i_texture)
-    suf_help_button:SetPoint("LEFT", SUF_Toggle.hasLabel, "RIGHT", 0, 0)
+    --local help_i_texture = [[Interface\common\help-i]]
+    --local SUF_Toggle = nicknames_tab:GetWidgetById("SUF-Toggle")
+    --local suf_help_button = DF:CreateButton(nicknames_tab, function()
+    --    if SAPUI.suf_setup_guide_popup and not SAPUI.suf_setup_guide_popup:IsShown() then
+    --        SAPUI.suf_setup_guide_popup:Show()
+    --    else
+    --        SAPUI.suf_setup_guide_popup:Hide()
+    --    end
+    --end, 20, 20, "")
+    --suf_help_button:SetIcon(help_i_texture)
+    --suf_help_button:SetPoint("LEFT", SUF_Toggle.hasLabel, "RIGHT", 0, 0)
 
     -- Set right click functions for clearing keybinding on keybind buttons
     local PAMacroButton = general_tab:GetWidgetById("MACRO NS PA Macro")
-    local ExternalMacroButton = externals_tab:GetWidgetById("MACRO NS Ext Macro")
-    local InnervateMacroButton = externals_tab:GetWidgetById("MACRO NS Innervate")
+    --local ExternalMacroButton = externals_tab:GetWidgetById("MACRO NS Ext Macro")
+    --local InnervateMacroButton = externals_tab:GetWidgetById("MACRO NS Innervate")
     if PAMacroButton then
         PAMacroButton:SetClickFunction(clearKeybinding, PAMacroButton.param1, PAMacroButton.param2, "RightButton")
     end
@@ -1822,12 +1821,12 @@ Press 'Enter' to hear the TTS]],
     end
 
     -- Build version check UI
-    SAPUI.version_scrollbox = BuildVersionCheckUI(versioSAP_tab)
+    SAPUI.version_scrollbox = BuildVersionCheckUI(versions_tab)
     SAPUI.nickname_frame = BuildNicknameEditUI()
 
     -- Version Number in status bar
-    local versionTitle = C_AddOns.GetAddOnMetadata("SAP-Raid", "Title")
-    local verisonNumber = C_AddOns.GetAddOnMetadata("SAP-Raid", "Version")
+    local versionTitle = C_AddOns.GetAddOnMetadata("SAP_Raid", "Title")
+    local verisonNumber = C_AddOns.GetAddOnMetadata("SAP_Raid", "Version")
     local statusBarText = versionTitle .. " v" .. verisonNumber .. " | |cFFFFFFFF" .. (authorsString) .. "|r"
     SAPUI.StatusBar.authorName:SetText(statusBarText)
 end

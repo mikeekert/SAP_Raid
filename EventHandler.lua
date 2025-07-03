@@ -16,7 +16,7 @@ end)
 function SAP:EventHandler(e, wowevent, internal, ...) -- internal checks whether the event comes from addon comms. We don't want to allow blizzard events to be fired manually
     if e == "ADDON_LOADED" and wowevent then
         local name = ...
-        if name == "SAP-Raid" then
+        if name == "SAP_Raid" then
             if not SAPRT then SAPRT = {} end
             if not SAPRT.SAPUI then SAPRT.SAPUI = {scale = 1} end
             if not SAPRT.SAPUI.externals_anchor then SAPRT.SAPUI.externals_anchor = {} end

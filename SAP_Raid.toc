@@ -1,8 +1,7 @@
-## Interface: 110200
-
-## Title: |cFF00FFFFSAP Raid Tools|r
-## Version: 1.0.0
-## IconTexture: Interface\AddOns\SAP-Raid\Media\SAPLogo.blp
+## Interface: 110107
+## Title: SAP Raid Tools
+## Notes: SAP tools for raids and dungeons
+## Version: 1.0.5
 ## Author: SAP
 ## DefaultState: Enable
 ## Dependencies: WeakAuras
@@ -13,7 +12,7 @@
 Libs\libs.xml
 
 # Main Files
-SAPRaidTools.lua
+SAP_Raid.lua
 Media.lua
 Functions.lua
 AuraResize.lua
