@@ -21,9 +21,9 @@ jobs:
         run: |
           TAG_NAME=${GITHUB_REF#refs/tags/}
           echo "Tag name: $TAG_NAME"
-          sed -i "s/^## Version: .*/## Version: $TAG_NAME/" SAP_RAID.toc
-          echo "Updated SAP_RAID.toc:"
-          cat SAP_RAID.toc
+          sed -i "s/^## Version: .*/## Version: $TAG_NAME/" SAP_Raid.toc
+          echo "Updated SAP_Raid.toc:"
+          cat SAP_Raid.toc
 
       - name: Prepare Addon Folder
         run: |
