@@ -1,4 +1,6 @@
 local _, SAP = ...
+_G["SAP_API"] = {}
+
 local f = CreateFrame("Frame")
 for _, event in ipairs({
     "ENCOUNTER_START", "ENCOUNTER_END", "UNIT_AURA", "READY_CHECK",
@@ -58,31 +60,7 @@ function SAP:EventHandler(e, wowevent, internal, ...)
     elseif e == "PLAYER_LOGIN" and wowevent then
         ensureMacro()
         SAP.SAPUI:Init()
-        SAP:InitLDB()
-    elseif e == "READY_CHECK" and (wowevent or SAPSaved.Settings.Debug) then
-        if not WeakAuras.CurrentEncounter and (SAP:DiffCheck() or SAPSaved.Settings.Debug) then
-            local hashed = C_AddOns.IsAddOnLoaded("MRT") and SAP_API:GetHash(SAP_API:GetNote()) or ""
-            SAP:Broadcast("MRT_NOTE", "RAID", hashed)
-        end
-    elseif e == "MRT_NOTE" and SAPSaved.Settings.MRTNoteComparison and (internal or SAPSaved.Settings.Debug) then
-        if not WeakAuras.CurrentEncounter then
-            local _, hashed = ...
-            if hashed ~= "" then
-                local note = C_AddOns.IsAddOnLoaded("MRT") and SAP_API:GetHash(SAP_API:GetNote()) or ""
-                if note ~= "" and note ~= hashed then SAP_API:DisplayText("MRT Note Mismatch detected", 5) end
-            end
-        end
-    elseif e == "UNIT_AURA" and SAP.Externals and SAP.Externals.target and ((UnitIsUnit(SAP.Externals.target, "player") and wowevent) or SAPSaved.Settings.Debug) then
-        local unit, info = ...
-        if SAP.Externals.AllowedUnits[unit] and info and info.addedAuras then
-            for _, v in ipairs(info.addedAuras) do
-                local key = SAP.Externals.Automated[v.spellId]
-                if key then
-                    local num = SAP.Externals.Amount[key..v.spellId]
-                    SAP:EventHandler("SAP_EXTERNAL_REQ", false, true, unit, key, num, false, "skip", v.expirationTime)
-                end
-            end
-        end
+
     elseif e == "SAP_VERSION_CHECK" and (internal or SAPSaved.Settings.Debug) then
         if not WeakAuras.CurrentEncounter then
             local unit, ver, duplicate = ...

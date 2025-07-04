@@ -1,7 +1,7 @@
 ## Interface: 110107
 ## Title: SAP Raid Tools
 ## Notes: SAP tools for raids and dungeons
-## Version: 1.0.0
+## Version: 55
 ## Author: SAP
 ## DefaultState: Enable
 ## Dependencies: WeakAuras
@@ -12,16 +12,19 @@
 Libs\libs.xml
 
 # Main Files
-SAP_Raid.lua
-Functions.lua
-Comms.lua
-Media.lua
-Updater.lua
 EventHandler.lua
-VersionCheck.lua
 WeakAuras/Imports.lua
 WeakAuras/Links.lua
 
-# UI
-SAPUI.lua
+Comms.lua
+Functions.lua
+Media.lua
 SlashCommands.lua
+VersionCheck.lua
+SAPUI.lua
+
+Repository/Updater.lua
+Repository/StoreWA.lua
+
+SAP_Raid.lua
+

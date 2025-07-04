@@ -767,11 +767,11 @@ function SAPUI:Init()
             type = "toggle",
             boxfirst = true,
             name = "Disable Minimap Button",
-            desc = "Hide the minimap button.",
+            desc = "Hide the minimap button if up to date",
             get = function() return SAPSaved.Settings["Minimap"].hide end,
             set = function(self, fixedparam, value)
                 SAPSaved.Settings["Minimap"].hide = value
-                LDBIcon:Refresh("SAPSaved", SAPSaved.Settings["Minimap"])
+                SAP:UpdateMinimapIconVisibility()
             end,
         },
 

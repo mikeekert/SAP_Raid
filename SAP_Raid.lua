@@ -1,33 +1,42 @@
 local _, SAP = ... -- Internal namespace
-_G["SAP_API"] = {}
 SAP.specs = {}
 
+local eventFrame = CreateFrame("Frame")
 local LDB = LibStub("LibDataBroker-1.1")
-local LDBIcon = LDB and LibStub("LibDBIcon-1.0")
+local LDBIcon = LibStub("LibDBIcon-1.0")
 
-function SAP:InitLDB()
-    if LDB then
-        local databroker = LDB:NewDataObject("SAPSaved", {
-            type = "launcher",
-            label = "SAP Raid Tools",
-            icon = [[Interface\AddOns\SAP_Raid\Media\Logo]],
-            showInCompartment = true,
-            OnClick = function(self, button)
-                if button == "LeftButton" then
-                    SAP.SAPUI:ToggleOptions()
+eventFrame:RegisterEvent("ADDON_LOADED")
+
+eventFrame:SetScript(
+        "OnEvent",
+        function(_, event, ...)
+            if event == "ADDON_LOADED" then
+                local addOnName = ...
+
+                if addOnName == "SAP_Raid" then
+                    if LDB then
+                        SAP.LDB = LDB:NewDataObject(
+                                "SAP Raid",
+                                {
+                                    type = "data source",
+                                    text = "SAP Raid",
+                                    icon = [[Interface\Addons\SAP_Raid\Media\Images\S.tga]],
+                                    OnClick = function()
+                                        SAP.SAPUI:ToggleOptions()
+                                    end,
+                                    OnTooltipShow = function(tooltip)
+                                        tooltip:AddLine("SAP Raid Tools", 0, 1, 1)
+                                        tooltip:AddLine("|cFFCFCFCFLeft click|r: Show/Hide Options Window")
+                                    end
+                                }
+                        )
+
+                        LDBIcon:Register("SAP Raid", SAP.LDB, SAPSaved.Settings["Minimap"])
+                    end
+
+                    SAP:InitializeWeakAurasImporter()
+                    SAP:InitializeSAP_Updater()
                 end
-            end,
-            OnTooltipShow = function(tooltip)
-                tooltip:AddLine("SAP Raid Tools", 0, 1, 1)
-                tooltip:AddLine("|cFFCFCFCFLeft click|r: Show/Hide Options Window")
             end
-        })
-
-        if (databroker and not LDBIcon:IsRegistered("SAPSaved")) then
-            LDBIcon:Register("SAPSaved", databroker, SAPSaved.Settings["Minimap"])
-            LDBIcon:AddButtonToCompartment("SAPSaved")
         end
-
-        SAP.databroker = databroker
-    end
-end
+)
