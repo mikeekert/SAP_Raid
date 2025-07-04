@@ -1,5 +1,9 @@
 local _, SAP = ... -- Internal namespace
 
+function SAP:ErrorPrint(text)
+    print(string.format("[SAP] |cffff0000ERROR|r: %s", text))
+end
+
 function SAP:IterateGroupMembers(reversed, forceParty)
     local unit = (not forceParty and IsInRaid()) and 'raid' or 'party'
     local numGroupMembers = unit == 'party' and GetNumSubgroupMembers() or GetNumGroupMembers()
@@ -21,7 +25,7 @@ function SAP_API:Version()
 end
 
 function SAP:Print(...)
-    if SAPRT.Settings["DebugLogs"] then
+    if SAPSaved.Settings["DebugLogs"] then
         if DevTool then
             local t = {...}
             local name = t[1]
@@ -131,11 +135,11 @@ end
 
 function SAP:DiffCheck(encountercheck)
     local difficultyID = select(3, GetInstanceInfo()) or 0
-    return SAPRT.Settings["Debug"] or ((difficultyID == 14 or difficultyID == 15 or difficultyID == 16) and ((not encountercheck) or SAP:EncounterCheck()))
+    return SAPSaved.Settings["Debug"] or ((difficultyID == 14 or difficultyID == 15 or difficultyID == 16) and ((not encountercheck) or SAP:EncounterCheck()))
 end
 
 function SAP:EncounterCheck()
-    return WeakAuras.CurrentEncounter or SAPRT.Settings["Debug"]
+    return WeakAuras.CurrentEncounter or SAPSaved.Settings["Debug"]
 end
 
 function SAP_API:DeathCheck(unit)
@@ -157,15 +161,15 @@ function SAP_API:GetHash(text)
 end
 
 
-function SAP_API:TTS(sound, voice) -- SAP_API:TTS("Bait Frontal", SAPRT.TTSVoice)
-  if SAPRT.Settings["TTS"] then
-      local num = voice or SAPRT.Settings["TTSVoice"]
+function SAP_API:TTS(sound, voice) -- SAP_API:TTS("Bait Frontal", SAPSaved.TTSVoice)
+  if SAPSaved.Settings["TTS"] then
+      local num = voice or SAPSaved.Settings["TTSVoice"]
         C_VoiceChat.SpeakText(
                 num,
                 sound,
                 Enum.VoiceTtsDestination.LocalPlayback,
                 C_TTSSettings and C_TTSSettings.GetSpeechRate() or 0,
-                SAPRT.Settings["TTSVolume"]
+                SAPSaved.Settings["TTSVolume"]
         )
      end
 end

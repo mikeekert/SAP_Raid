@@ -41,10 +41,10 @@ local function PASelfPingChanged()
         if macroname == "SAP PA Macro" then
             pafound = true
             local macrotext = "/run SAP_API:PrivateAura();"
-            if SAPRT.Settings["PASelfPing"] then
+            if SAPSaved.Settings["PASelfPing"] then
                  macrotext = macrotext.."\n/ping [@player] Warning;"
              end
-            if SAPRT.Settings["PAExtraAction"] then
+            if SAPSaved.Settings["PAExtraAction"] then
                 macrotext = macrotext.."\n/click ExtraActionButton1"
             end            
 
@@ -57,10 +57,10 @@ local function PASelfPingChanged()
     elseif not pafound then
         macrocount = macrocount+1
         local macrotext = "/run SAP_API:PrivateAura();"
-        if SAPRT.Settings["PASelfPing"] then
+        if SAPSaved.Settings["PASelfPing"] then
              macrotext = macrotext.."\n/ping [@player] Warning;"
          end
-        if SAPRT.Settings["PAExtraAction"] then
+        if SAPSaved.Settings["PAExtraAction"] then
             macrotext = macrotext.."\n/click ExtraActionButton1"
         end
         CreateMacro("SAP PA Macro", 132288, macrotext, false)
@@ -87,8 +87,8 @@ end
 local component_name = ""
 local function BuildVersionCheckUI(parent)
     local hide_version_response_button = DF:CreateSwitch(parent,
-        function(self, _, value) SAPRT.Settings["VersionCheckRemoveResponse"] = value end,
-        SAPRT.Settings["VersionCheckRemoveResponse"], 20, 20, nil, nil, nil, "VersionCheckResponseToggle", nil, nil, nil,
+        function(self, _, value) SAPSaved.Settings["VersionCheckRemoveResponse"] = value end,
+        SAPSaved.Settings["VersionCheckRemoveResponse"], 20, 20, nil, nil, nil, "VersionCheckResponseToggle", nil, nil, nil,
             "Hide Version Check Responses", options_switch_template, options_text_template)
     hide_version_response_button:SetPoint("TOPLEFT", parent, "TOPLEFT", 10, -100)
     hide_version_response_button:SetAsCheckBox()
@@ -112,8 +112,8 @@ local function BuildVersionCheckUI(parent)
     component_name_entry:SetTemplate(options_button_template)
     component_name_entry:SetPoint("LEFT", component_name_label, "RIGHT", 5, 0)
     component_name_entry:SetHook("OnEditFocusGained", function(self)
-        component_name_entry.WAAutoCompleteList = SAPRT.SAPUI.AutoComplete["WA"] or {}
-        component_name_entry.AddonAutoCompleteList = SAPRT.SAPUI.AutoComplete["Addon"] or {}
+        component_name_entry.WAAutoCompleteList = SAPSaved.SAPUI.AutoComplete["WA"] or {}
+        component_name_entry.AddonAutoCompleteList = SAPSaved.SAPUI.AutoComplete["Addon"] or {}
         local _component_type = component_type_dropdown:GetValue()
         if _component_type == "WA" then
             component_name_entry:SetAsAutoComplete("WAAutoCompleteList", _, true)
@@ -277,7 +277,7 @@ local function BuildVersionCheckUI(parent)
         local currentData = self:GetData() -- currentData = {{name, version, duplicate}...}
 
         if self.name_map[data.name] then
-            if SAPRT.Settings["VersionCheckRemoveResponse"] and currentData[1] and currentData[1].version and data.version and data.version == currentData[1].version and data.version ~= "WA Missing" and data.version ~= "Addon Missing" and data.version ~= "Note Missing" and not data.duplicate then
+            if SAPSaved.Settings["VersionCheckRemoveResponse"] and currentData[1] and currentData[1].version and data.version and data.version == currentData[1].version and data.version ~= "WA Missing" and data.version ~= "Addon Missing" and data.version ~= "Note Missing" and not data.duplicate then
                 table.remove(currentData, self.name_map[data.name])
                 for k, v in pairs(self.name_map) do
                     if v > self.name_map[data.name] then
@@ -307,8 +307,8 @@ local function BuildVersionCheckUI(parent)
         
         local text = component_name_entry:GetText()
         local _component_type = component_type_dropdown:GetValue()
-        if text and text ~= ""  and not tContains(SAPRT.SAPUI.AutoComplete[_component_type], text) then
-            tinsert(SAPRT.AutoComplete[_component_type], text)
+        if text and text ~= ""  and not tContains(SAPSaved.SAPUI.AutoComplete[_component_type], text) then
+            tinsert(SAPSaved.AutoComplete[_component_type], text)
         end
 
         if not text or text == "" and _component_type ~= "Note" then return end
@@ -333,11 +333,11 @@ local function BuildVersionCheckUI(parent)
     }
 
     local function build_version_check_presets_options()
-        SAPRT.Settings["VersionCheckPresets"] = SAPRT.Settings["VersionCheckPresets"] or
+        SAPSaved.Settings["VersionCheckPresets"] = SAPSaved.Settings["VersionCheckPresets"] or
             {} -- structure will be {{label, {type, name}}}
         local t = {}
-        for i = 1, #SAPRT.Settings["VersionCheckPresets"] do
-            local v = SAPRT.Settings["VersionCheckPresets"][i]
+        for i = 1, #SAPSaved.Settings["VersionCheckPresets"] do
+            local v = SAPSaved.Settings["VersionCheckPresets"][i]
             tinsert(t, {
                 label = v[1], -- label
                 value = v[2], -- {type, name}
@@ -416,8 +416,8 @@ local function BuildVersionCheckUI(parent)
 
         -- Delete button
         line.deleteButton = DF:CreateButton(line, function()
-            tremove(SAPRT.Settings["VersionCheckPresets"], line.index)
-            self:SetData(SAPRT.Settings["VersionCheckPresets"])
+            tremove(SAPSaved.Settings["VersionCheckPresets"], line.index)
+            self:SetData(SAPSaved.Settings["VersionCheckPresets"])
             self:Refresh()
             version_check_preset_dropdown:Refresh()
         end, 12, 12)
@@ -435,7 +435,7 @@ local function BuildVersionCheckUI(parent)
 
     local presetScrollLines = 9
     local version_presets_edit_scrollbox = DF:CreateScrollBox(version_presets_edit_frame,
-        "$parentVersionPresetsEditScrollBox", refreshPresets, SAPRT.Settings["VersionCheckPresets"], 360,
+        "$parentVersionPresetsEditScrollBox", refreshPresets, SAPSaved.Settings["VersionCheckPresets"], 360,
         window_height / 2 - 75, presetScrollLines, 20, createPresetLineFunc)
     version_presets_edit_scrollbox:SetPoint("TOPLEFT", version_presets_edit_frame, "TOPLEFT", 10, -30)
     DF:ReskinSlider(version_presets_edit_scrollbox)
@@ -465,8 +465,8 @@ local function BuildVersionCheckUI(parent)
     local add_button = DF:CreateButton(version_presets_edit_frame, function()
         local name = new_preset_name_entry:GetText()
         local type = new_preset_type_dropdown:GetValue()
-        tinsert(SAPRT.Settings["VersionCheckPresets"], { type .. ": " .. name, { type, name } })
-        version_presets_edit_scrollbox:SetData(SAPRT.Settings["VersionCheckPresets"])
+        tinsert(SAPSaved.Settings["VersionCheckPresets"], { type .. ": " .. name, { type, name } })
+        version_presets_edit_scrollbox:SetData(SAPSaved.Settings["VersionCheckPresets"])
         version_presets_edit_scrollbox:Refresh()
         version_check_preset_dropdown:Refresh()
         new_preset_name_entry:SetText("")
@@ -479,8 +479,8 @@ end
 
 function SAPUI:Init()
     -- Create the scale bar
-    DF:CreateScaleBar(SAPUI, SAPRT.SAPUI)
-    SAPUI:SetScale(SAPRT.SAPUI.scale)
+    DF:CreateScaleBar(SAPUI, SAPSaved.SAPUI)
+    SAPUI:SetScale(SAPSaved.SAPUI.scale)
 
     -- Create the tab container
     local tabContainer = DF:CreateTabContainer(SAPUI, "", "SAPUI_TabsTemplate", {
@@ -586,7 +586,7 @@ function SAPUI:Init()
         local existingBinding = GetBindingAction(keyCombo)
         if existingBinding and existingBinding ~= macroName and existingBinding ~= "" then
             SetBinding(keyCombo, nil)
-            print("|cFF00FFFFSAPRT:|r Overriding existing binding for " .. existingBinding .. " to " .. macroName)
+            print("|cFF00FFFFSAPSaved:|r Overriding existing binding for " .. existingBinding .. " to " .. macroName)
         end
 
         local existingKeybind = GetBindingKey(macroName)
@@ -618,7 +618,7 @@ function SAPUI:Init()
         SetBinding(GetBindingKey(macroName), nil)
         SaveBindings(GetCurrentBindingSet())
         self:SetText("Unbound")
-        print("|cFF00FFFFSAPRT:|r Keybinding cleared for " .. macroName)
+        print("|cFF00FFFFSAPSaved:|r Keybinding cleared for " .. macroName)
     end
 
     local registerKeybinding = function(self, macroName, keybindName)
@@ -700,7 +700,7 @@ function SAPUI:Init()
                 label = weakauras_importaccept_options[i],
                 value = i,
                 onclick = function(_, _, value)
-                    SAPRT.Settings["WeakAurasImportAccept"] = value
+                    SAPSaved.Settings["WeakAurasImportAccept"] = value
                 end
 
             })
@@ -750,7 +750,7 @@ function SAPUI:Init()
             PASelfPingChanged()
         end        
         if SAPUI.OptionsChanged.general["DEBUGLOGS"] then
-            if SAPRT.Settings["DebugLogs"] then -- Add this data if enables this after a wipe as the data exists anyway
+            if SAPSaved.Settings["DebugLogs"] then -- Add this data if enables this after a wipe as the data exists anyway
                 SAP:Print("Macro Data", SAP.MacroPresses)
                 SAP:Print("Assigned Externals", SAP.AssignedExternals)
                 SAP.AssignedExternals = {}
@@ -768,10 +768,10 @@ function SAPUI:Init()
             boxfirst = true,
             name = "Disable Minimap Button",
             desc = "Hide the minimap button.",
-            get = function() return SAPRT.Settings["Minimap"].hide end,
+            get = function() return SAPSaved.Settings["Minimap"].hide end,
             set = function(self, fixedparam, value)
-                SAPRT.Settings["Minimap"].hide = value
-                LDBIcon:Refresh("SAPRT", SAPRT.Settings["Minimap"])
+                SAPSaved.Settings["Minimap"].hide = value
+                LDBIcon:Refresh("SAPSaved", SAPSaved.Settings["Minimap"])
             end,
         },
 
@@ -780,10 +780,10 @@ function SAPUI:Init()
             boxfirst = true,
             name = "Enable Debug Logging",
             desc = "Enables Debug Logging, which prints a bunch of information and adds it to DevTool. This might Error if you do not have the DevTool Addon installed.\nIf enabled after a wipe, it will still add External and Macro data to DevTool",
-            get = function() return SAPRT.Settings["DebugLogs"] end,
+            get = function() return SAPSaved.Settings["DebugLogs"] end,
             set = function(self, fixedparam, value)
                 SAPUI.OptionsChanged.general["DEBUGLOGS"] = true
-                SAPRT.Settings["DebugLogs"] = value
+                SAPSaved.Settings["DebugLogs"] = value
             end,
         },
 
@@ -801,10 +801,10 @@ function SAPUI:Init()
             boxfirst = true,
             name = "Enable MRT Note Comparison",
             desc = "Enables MRT note comparison on ready check.",
-            get = function() return SAPRT.Settings["MRTNoteComparison"] end,
+            get = function() return SAPSaved.Settings["MRTNoteComparison"] end,
             set = function(self, fixedparam, value)
                 SAPUI.OptionsChanged.general["MRT_NOTE_COMPARISON"] = true
-                SAPRT.Settings["MRTNoteComparison"] = value
+                SAPSaved.Settings["MRTNoteComparison"] = value
             end,
             nocombat = true
         },  
@@ -817,10 +817,10 @@ function SAPUI:Init()
             type = "range",
             name = "TTS Voice",
             desc = "Voice to use for TTS",
-            get = function() return SAPRT.Settings["TTSVoice"] end,
+            get = function() return SAPSaved.Settings["TTSVoice"] end,
             set = function(self, fixedparam, value) 
                 SAPUI.OptionsChanged.general["TTS_VOICE"] = true
-                SAPRT.Settings["TTSVoice"] = value
+                SAPSaved.Settings["TTSVoice"] = value
             end,
             min = 1,
             max = 5,
@@ -829,9 +829,9 @@ function SAPUI:Init()
             type = "range",
             name = "TTS Volume",
             desc = "Volume of the TTS",
-            get = function() return SAPRT.Settings["TTSVolume"] end,
+            get = function() return SAPSaved.Settings["TTSVolume"] end,
             set = function(self, fixedparam, value)
-                SAPRT.Settings["TTSVolume"] = value
+                SAPSaved.Settings["TTSVolume"] = value
             end,
             min = 0,
             max = 100,
@@ -847,7 +847,7 @@ function SAPUI:Init()
             end,
             hooks = {
                 OnEnterPressed = function(self)
-                    SAP_API:TTS(tts_text_preview, SAPRT.Settings["TTSVoice"])
+                    SAP_API:TTS(tts_text_preview, SAPSaved.Settings["TTSVoice"])
                 end
             }
         },
@@ -856,10 +856,10 @@ function SAPUI:Init()
             boxfirst = true,
             name = "Enable TTS",
             desc = "Enable TTS",
-            get = function() return SAPRT.Settings["TTS"] end,
+            get = function() return SAPSaved.Settings["TTS"] end,
             set = function(self, fixedparam, value)
                 SAPUI.OptionsChanged.general["TTS_ENABLED"] = true
-                SAPRT.Settings["TTS"] = value
+                SAPSaved.Settings["TTS"] = value
             end,
         },        
         {
@@ -961,7 +961,7 @@ function SAPUI:Init()
 
         {
             type = "select",
-            get = function() return SAPRT.Settings["WeakAurasImportAccept"] end,
+            get = function() return SAPSaved.Settings["WeakAurasImportAccept"] end,
             values = function() return build_weakauras_importaccept_options() end,
             name = "Import Accept",
             desc = "Choose who you are accepting WeakAuras imports to come from. Note that even if guild is selected here this still only works when in the same raid as them",

@@ -7,7 +7,7 @@ local LDBIcon = LDB and LibStub("LibDBIcon-1.0")
 
 function SAP:InitLDB()
     if LDB then
-        local databroker = LDB:NewDataObject("SAPRT", {
+        local databroker = LDB:NewDataObject("SAPSaved", {
             type = "launcher",
             label = "SAP Raid Tools",
             icon = [[Interface\AddOns\SAP_Raid\Media\Logo]],
@@ -23,9 +23,9 @@ function SAP:InitLDB()
             end
         })
 
-        if (databroker and not LDBIcon:IsRegistered("SAPRT")) then
-            LDBIcon:Register("SAPRT", databroker, SAPRT.Settings["Minimap"])
-            LDBIcon:AddButtonToCompartment("SAPRT")
+        if (databroker and not LDBIcon:IsRegistered("SAPSaved")) then
+            LDBIcon:Register("SAPSaved", databroker, SAPSaved.Settings["Minimap"])
+            LDBIcon:AddButtonToCompartment("SAPSaved")
         end
 
         SAP.databroker = databroker

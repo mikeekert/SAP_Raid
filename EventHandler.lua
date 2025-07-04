@@ -6,10 +6,10 @@ for _, event in ipairs({
 }) do f:RegisterEvent(event) end
 
 local function initSettings()
-    SAPRT = SAPRT or {}
-    SAPRT.SAPUI = SAPRT.SAPUI or {scale = 1}
-    SAPRT.SAPUI.externals_anchor = SAPRT.SAPUI.externals_anchor or {}
-    SAPRT.Settings = SAPRT.Settings or {}
+    SAPSaved = SAPSaved or {}
+    SAPSaved.SAPUI = SAPSaved.SAPUI or {scale = 1}
+    SAPSaved.SAPUI.externals_anchor = SAPSaved.SAPUI.externals_anchor or {}
+    SAPSaved.Settings = SAPSaved.Settings or {}
     local defaults = {
         Blizzard = false, WA = false, MRT = false, Cell = false, Grid2 = false,
         OmniCD = false, ElvUI = false, Translit = false, Unhalted = false,
@@ -19,11 +19,11 @@ local function initSettings()
         VersionCheckPresets = {}
     }
     for k, v in pairs(defaults) do
-        if SAPRT.Settings[k] == nil then SAPRT.Settings[k] = v end
+        if SAPSaved.Settings[k] == nil then SAPSaved.Settings[k] = v end
     end
-    SAPRT.SAPUI.AutoComplete = SAPRT.SAPUI.AutoComplete or {}
-    SAPRT.SAPUI.AutoComplete.WA = SAPRT.SAPUI.AutoComplete.WA or {}
-    SAPRT.SAPUI.AutoComplete.Addon = SAPRT.SAPUI.AutoComplete.Addon or {}
+    SAPSaved.SAPUI.AutoComplete = SAPSaved.SAPUI.AutoComplete or {}
+    SAPSaved.SAPUI.AutoComplete.WA = SAPSaved.SAPUI.AutoComplete.WA or {}
+    SAPSaved.SAPUI.AutoComplete.Addon = SAPSaved.SAPUI.AutoComplete.Addon or {}
 end
 
 local function ensureMacro()
@@ -59,12 +59,12 @@ function SAP:EventHandler(e, wowevent, internal, ...)
         ensureMacro()
         SAP.SAPUI:Init()
         SAP:InitLDB()
-    elseif e == "READY_CHECK" and (wowevent or SAPRT.Settings.Debug) then
-        if not WeakAuras.CurrentEncounter and (SAP:DiffCheck() or SAPRT.Settings.Debug) then
+    elseif e == "READY_CHECK" and (wowevent or SAPSaved.Settings.Debug) then
+        if not WeakAuras.CurrentEncounter and (SAP:DiffCheck() or SAPSaved.Settings.Debug) then
             local hashed = C_AddOns.IsAddOnLoaded("MRT") and SAP_API:GetHash(SAP_API:GetNote()) or ""
             SAP:Broadcast("MRT_NOTE", "RAID", hashed)
         end
-    elseif e == "MRT_NOTE" and SAPRT.Settings.MRTNoteComparison and (internal or SAPRT.Settings.Debug) then
+    elseif e == "MRT_NOTE" and SAPSaved.Settings.MRTNoteComparison and (internal or SAPSaved.Settings.Debug) then
         if not WeakAuras.CurrentEncounter then
             local _, hashed = ...
             if hashed ~= "" then
@@ -72,7 +72,7 @@ function SAP:EventHandler(e, wowevent, internal, ...)
                 if note ~= "" and note ~= hashed then SAP_API:DisplayText("MRT Note Mismatch detected", 5) end
             end
         end
-    elseif e == "UNIT_AURA" and SAP.Externals and SAP.Externals.target and ((UnitIsUnit(SAP.Externals.target, "player") and wowevent) or SAPRT.Settings.Debug) then
+    elseif e == "UNIT_AURA" and SAP.Externals and SAP.Externals.target and ((UnitIsUnit(SAP.Externals.target, "player") and wowevent) or SAPSaved.Settings.Debug) then
         local unit, info = ...
         if SAP.Externals.AllowedUnits[unit] and info and info.addedAuras then
             for _, v in ipairs(info.addedAuras) do
@@ -83,12 +83,12 @@ function SAP:EventHandler(e, wowevent, internal, ...)
                 end
             end
         end
-    elseif e == "SAP_VERSION_CHECK" and (internal or SAPRT.Settings.Debug) then
+    elseif e == "SAP_VERSION_CHECK" and (internal or SAPSaved.Settings.Debug) then
         if not WeakAuras.CurrentEncounter then
             local unit, ver, duplicate = ...
             SAP:VersionResponse({name = UnitName(unit), version = ver, duplicate = duplicate})
         end
-    elseif e == "SAP_VERSION_REQUEST" and (internal or SAPRT.Settings.Debug) then
+    elseif e == "SAP_VERSION_REQUEST" and (internal or SAPSaved.Settings.Debug) then
         if not WeakAuras.CurrentEncounter then
             local unit, type, name = ...
             if UnitExists(unit) and not UnitIsUnit("player", unit) and (UnitIsGroupLeader(unit) or UnitIsGroupAssistant(unit)) then
@@ -96,16 +96,16 @@ function SAP:EventHandler(e, wowevent, internal, ...)
                 SAP:Broadcast("SAP_VERSION_CHECK", "WHISPER", unit, ver, duplicate)
             end
         end
-    elseif e == "PLAYER_REGEN_ENABLED" and (wowevent or SAPRT.Settings.Debug) then
+    elseif e == "PLAYER_REGEN_ENABLED" and (wowevent or SAPSaved.Settings.Debug) then
         C_Timer.After(1, function()
             if SAP.WAString and SAP.WAString.unit and SAP.WAString.string then
                 SAP:EventHandler("SAP_WA_SYNC", false, true, SAP.WAString.unit, SAP.WAString.string)
                 SAP.WAString = nil
             end
         end)
-    elseif e == "SAP_WA_SYNC" and (internal or SAPRT.Settings.Debug) then
+    elseif e == "SAP_WA_SYNC" and (internal or SAPSaved.Settings.Debug) then
         local unit, str = ...
-        local setting = SAPRT.Settings.WeakAurasImportAccept
+        local setting = SAPSaved.Settings.WeakAurasImportAccept
         if setting ~= 3 and UnitExists(unit) and not UnitIsUnit("player", unit) then
             if setting == 2 or (GetGuildInfo(unit) == GetGuildInfo("player")) then
                 if UnitAffectingCombat("player") or WeakAuras.CurrentEncounter then
@@ -121,7 +121,7 @@ function SAP:EventHandler(e, wowevent, internal, ...)
         SAP.specs[unit] = tonumber(spec)
     elseif e == "SAP_API_SPEC_REQUEST" then
         SAP_API:Broadcast("SAP_API_SPEC", "RAID", GetSpecializationInfo(GetSpecialization()))
-    elseif e == "ENCOUNTER_START" and ((wowevent and SAP:DiffCheck()) or SAPRT.Settings.Debug) then
+    elseif e == "ENCOUNTER_START" and ((wowevent and SAP:DiffCheck()) or SAPSaved.Settings.Debug) then
         SAP.specs = {}
         for u in SAP:IterateGroupMembers() do
             if UnitIsVisible(u) then SAP.specs[u] = WeakAuras.SpecForUnit(u) end
@@ -130,9 +130,9 @@ function SAP:EventHandler(e, wowevent, internal, ...)
         C_Timer.After(0.5, function() WeakAuras.ScanEvents("SAP_API_ENCOUNTER_START", true) end)
         SAP.MacroPresses = {}
         SAP.Externals:Init()
-    elseif e == "ENCOUNTER_END" and ((wowevent and SAP:DiffCheck()) or SAPRT.Settings.Debug) then
+    elseif e == "ENCOUNTER_END" and ((wowevent and SAP:DiffCheck()) or SAPSaved.Settings.Debug) then
         local _, encounterName = ...
-        if SAPRT.Settings.DebugLogs then
+        if SAPSaved.Settings.DebugLogs then
             if SAP.MacroPresses and next(SAP.MacroPresses) then SAP:Print("Macro Data for Encounter: "..encounterName, SAP.MacroPresses) end
             if SAP.AssignedExternals and next(SAP.AssignedExternals) then SAP:Print("Assigned Externals for Encounter: "..encounterName, SAP.AssignedExternals) end
             SAP.AssignedExternals, SAP.MacroPresses = {}, {}
@@ -142,9 +142,9 @@ function SAP:EventHandler(e, wowevent, internal, ...)
                 SAP:EventHandler("SAP_WA_SYNC", false, true, SAP.WAString.unit, SAP.WAString.string)
             end
         end)
-    elseif e == "SAP_PAMACRO" and (internal or SAPRT.Settings.Debug) then
+    elseif e == "SAP_PAMACRO" and (internal or SAPSaved.Settings.Debug) then
         local unitID = ...
-        if unitID and UnitExists(unitID) and SAPRT.Settings.DebugLogs then
+        if unitID and UnitExists(unitID) and SAPSaved.Settings.DebugLogs then
             SAP.MacroPresses = SAP.MacroPresses or {}
             SAP.MacroPresses["Private Aura"] = SAP.MacroPresses["Private Aura"] or {}
             table.insert(SAP.MacroPresses["Private Aura"], {name = SAP_API:Shorten(unitID, 8), time = Round(GetTime()-SAP.Externals.pull)})

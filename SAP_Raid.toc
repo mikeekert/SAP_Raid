@@ -5,7 +5,7 @@
 ## Author: SAP
 ## DefaultState: Enable
 ## Dependencies: WeakAuras
-## SavedVariables: SAPRT
+## SavedVariables: SAPSaved
 ## Category: SAP
 
 # Libraries
@@ -16,6 +16,7 @@ SAP_Raid.lua
 Functions.lua
 Comms.lua
 Media.lua
+Updater.lua
 EventHandler.lua
 VersionCheck.lua
 WeakAuras/Imports.lua
