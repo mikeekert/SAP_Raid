@@ -129,7 +129,7 @@ function SAP:UnitAura(unit, spellID)
     end
 end
 
-function SAP:Difficultycheck(encountercheck)
+function SAP:DiffCheck(encountercheck)
     local difficultyID = select(3, GetInstanceInfo()) or 0
     return SAPRT.Settings["Debug"] or ((difficultyID == 14 or difficultyID == 15 or difficultyID == 16) and ((not encountercheck) or SAP:EncounterCheck()))
 end
