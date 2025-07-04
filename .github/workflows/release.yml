@@ -17,13 +17,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Replace Version in .toc
-        run: |
-          TAG_NAME=${GITHUB_REF#refs/tags/}
-          echo "Tag name: $TAG_NAME"
-          sed -i "s/^## Version: .*/## Version: $TAG_NAME/" SAP_Raid.toc
-          echo "Updated SAP_Raid.toc:"
-          cat SAP_Raid.toc
 
       - name: Prepare Addon Folder
         run: |
