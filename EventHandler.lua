@@ -107,13 +107,13 @@ function SAP:EventHandler(e, wowevent, internal, ...)
         SAP_API:Broadcast("SAP_API_SPEC", "RAID", GetSpecializationInfo(GetSpecialization()))
         C_Timer.After(0.5, function() WeakAuras.ScanEvents("SAP_API_ENCOUNTER_START", true) end)
         SAP.MacroPresses = {}
-        SAP.Externals:Init()
+        --SAP.Externals:Init()
     elseif e == "ENCOUNTER_END" and ((wowevent and SAP:DiffCheck()) or SAPSaved.Settings.Debug) then
         local _, encounterName = ...
         if SAPSaved.Settings.DebugLogs then
             if SAP.MacroPresses and next(SAP.MacroPresses) then SAP:Print("Macro Data for Encounter: "..encounterName, SAP.MacroPresses) end
-            if SAP.AssignedExternals and next(SAP.AssignedExternals) then SAP:Print("Assigned Externals for Encounter: "..encounterName, SAP.AssignedExternals) end
-            SAP.AssignedExternals, SAP.MacroPresses = {}, {}
+            --if SAP.AssignedExternals and next(SAP.AssignedExternals) then SAP:Print("Assigned Externals for Encounter: "..encounterName, SAP.AssignedExternals) end
+            --SAP.AssignedExternals, SAP.MacroPresses = {}, {}
         end
         C_Timer.After(1, function()
             if SAP.WAString and SAP.WAString.unit and SAP.WAString.string then
