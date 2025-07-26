@@ -1,0 +1,129 @@
+name: SAP_Raid_Updater
+
+on:
+  push:
+    tags:
+      - '*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Full history needed for tag diff
+
+      - name: Update Version and Changelog
+        run: |
+          TAG_NAME=${GITHUB_REF#refs/tags/}
+          CLEAN_TAG=$(echo $TAG_NAME | sed 's/^1\.0\.//')
+
+          # Update version in TOC file
+          sed -i "s/## Version: .*/## Version: $CLEAN_TAG/" SAP_Raid_Updater.toc
+          echo "Updated TOC version to $CLEAN_TAG"
+
+          # Get current date
+          CURRENT_DATE=$(date +"%Y-%m-%d")
+
+          # Get previous tag
+          PREV_TAG=$(git tag --sort=-creatordate | grep -v "$TAG_NAME" | head -n 1)
+          echo "Current tag: $TAG_NAME"
+          echo "Previous tag: $PREV_TAG"
+
+          # Get commit messages between tags
+          if [ -n "$PREV_TAG" ]; then
+            COMMIT_LOG=$(git log "$PREV_TAG..$TAG_NAME" --pretty=format:"- %s" | grep -v '\[skip ci\]')
+          else
+            COMMIT_LOG=$(git log "$TAG_NAME" --pretty=format:"- %s" | grep -v '\[skip ci\]')
+          fi
+
+          echo "Commit log here: "
+          echo "$COMMIT_LOG"
+
+          # Prepend changelog entry
+          echo -e "# SAP Updater\n\n## v$CLEAN_TAG ($CURRENT_DATE)\n$COMMIT_LOG\n\n$(cat CHANGELOG.md | grep -v "^# SAP Updater" | tail -n +1)" > CHANGELOG.md.new
+          mv CHANGELOG.md.new CHANGELOG.md
+
+          echo "Updated CHANGELOG.md with commit log from $PREV_TAG to $TAG_NAME"
+
+      - name: Prepare Addon Folder
+        run: |
+          mkdir -p package/SAP_Raid_Updater
+          shopt -s extglob
+          cp -r !(package|.git|.github) package/SAP_Raid_Updater/
+
+      - name: Create ZIP with tag suffix
+        run: |
+          TAG_NAME=${GITHUB_REF#refs/tags/}
+          cd package
+          zip -r SAP_Raid_Updater-v${TAG_NAME}.zip SAP_Raid_Updater/
+          echo "ZIP_NAME=SAP_Raid_Updater-v${TAG_NAME}.zip" >> $GITHUB_ENV
+
+      - name: Upload Release Asset
+        if: ${{ success() }}
+        uses: softprops/action-gh-release@v2
+        with:
+          files: package/${{ env.ZIP_NAME }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build Changelog
+        id: changelog
+        if: ${{ success() }}
+        run: |
+          TAG_NAME=${GITHUB_REF#refs/tags/}
+          CLEAN_TAG=$(echo $TAG_NAME | sed 's/^1\.0\.//')
+
+          LATEST_ENTRY=$(awk '
+            BEGIN { in_entry=0; }
+            /^# SAP Updater/ { next }
+            /^## / {
+              if (in_entry) exit; else in_entry=1;
+            }
+            in_entry { print }
+          ' CHANGELOG.md)
+          
+          VERSION_LINE=$(echo "$LATEST_ENTRY" | head -n 1)
+          CHANGELOG=$(echo "$LATEST_ENTRY" | tail -n +2 | sed ':a;N;$!ba;s/\n/\\n/g' | sed 's/"/\\"/g')
+          
+          EMBEDS=$(cat <<EOF
+          [
+            {
+              "title": "New Version Deployed",
+              "description": "**$VERSION_LINE**\\n📝 Changelog\\n$CHANGELOG",
+              "color": 1127128
+            }
+          ]
+          EOF
+          )
+
+          echo "embeds<<EOF" >> $GITHUB_OUTPUT
+          printf "%s\n" "$EMBEDS" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Discord Notification
+        if: ${{ success() }}
+        uses: Ilshidur/action-discord@master
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+          DISCORD_USERNAME: 'SAP Raid Updater'
+          DISCORD_AVATAR: 'https://i.imgur.com/kJ98eyt.png'
+          DISCORD_EMBEDS: ${{ steps.changelog.outputs.embeds }}
+        with:
+          args: ''
+
+      - name: Commit updated files
+        if: ${{ success() }}
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add SAP_Raid_Updater.toc CHANGELOG.md
+          git commit -m "Update version to ${GITHUB_REF#refs/tags/} and update changelog [skip ci]"
+          git push origin HEAD:master

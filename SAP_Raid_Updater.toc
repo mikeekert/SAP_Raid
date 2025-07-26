@@ -1,0 +1,37 @@
+## Interface: 110107
+## Version: 34
+## Title: SAP Raid Tools [Manaforge]
+## Author: SAP
+## IconTexture: Interface\Addons\SAP_Raid_Updater\Media\Textures\logo_secondary.blp
+## SavedVariables: SAPUpdaterSaved
+## Dependencies: WeakAuras
+## OptionalDeps: ViragDevTool, DBM-Core, Liquid, LiquidUpdater
+## Category: SAP
+
+embeds.xml
+LiquidUI/LiquidUI.xml
+
+GlobalSettings.lua
+BigWigsDisabler.lua
+AnchorSettings.lua
+WeakAuras.lua
+WeakAurasImporter.lua
+Utility.lua
+
+Nicknames/Nicknames.lua
+Nicknames/Cell.lua
+Nicknames/CustomNames.lua
+Nicknames/ElvUI.lua
+Nicknames/Grid2.lua
+Nicknames/MRT.lua
+Nicknames/VuhDo.lua
+Nicknames/WeakAuras.lua
+
+Interface/Interface.lua
+Interface/AuraImportElement.lua
+Interface/AuraUpdater.lua
+Interface/AuraChecker.lua
+Interface/OtherChecker.lua
+Interface/Settings.lua
+
+SAP_Raid_Updater.lua
