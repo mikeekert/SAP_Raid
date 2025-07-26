@@ -1,5 +1,9 @@
 # SAP Updater
 
+## v32 (2025-07-26)
+- Update release.yml
+
+
 ## v31 (2025-07-26)
 - i dont know
 
