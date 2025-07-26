@@ -18,26 +18,19 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
         with:
-          fetch-depth: 0  # Fetch all history for commit messages
+          fetch-depth: 0
 
       - name: Update Version and Changelog
         run: |
-          # Extract tag without "1.0." prefix if present
           TAG_NAME=${GITHUB_REF#refs/tags/}
           CLEAN_TAG=$(echo $TAG_NAME | sed 's/^1\.0\.//')
 
-          # Update the version in the TOC file
           sed -i "s/## Version: .*/## Version: $CLEAN_TAG/" SAP_Raid_Updater.toc
           echo "Updated TOC version to $CLEAN_TAG"
 
-          # Get the current date in YYYY-MM-DD format
           CURRENT_DATE=$(date +"%Y-%m-%d")
-
-          # Get the commit message from the tagged commit
           COMMIT_MSG=$(git log -1 --pretty=%B ${GITHUB_REF#refs/tags/})
 
-          # Update CHANGELOG.md - prepend new version entry at the top
-          # Create a temporary file with new content
           echo -e "# SAP Updater\n\n## v$CLEAN_TAG ($CURRENT_DATE)\n$COMMIT_MSG\n\n$(cat CHANGELOG.md | grep -v "^# SAP Updater" | tail -n +1)" > CHANGELOG.md.new
           mv CHANGELOG.md.new CHANGELOG.md
 
@@ -71,9 +64,39 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Discord Notification
+      - name: Send Discord Notification with Changelog
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        run: |
+          TAG_NAME=${GITHUB_REF#refs/tags/}
+          CLEAN_TAG=$(echo $TAG_NAME | sed 's/^1\.0\.//')
+          VERSION_LINE=$(head -n 3 CHANGELOG.md | tail -n 1)
+          CHANGELOG=$(awk 'NR>2' CHANGELOG.md | sed ':a;N;$!ba;s/\n/\\n/g' | sed 's/"/\\"/g')
+
+          EMBEDS=$(cat <<EOF
+          [
+            {
+              "title": "🚀 New Version Deployed: v$CLEAN_TAG",
+              "description": "SAP Raid Addon has been updated!\\n\\n**$VERSION_LINE**",
+              "color": 1127128
+            },
+            {
+              "title": "📝 Changelog",
+              "description": "$CHANGELOG",
+              "color": 14177041
+            }
+          ]
+          EOF
+          )
+  
+          echo "DISCORD_EMBEDS=$EMBEDS" >> $GITHUB_ENV
+
+      - name: Discord Notification
         uses: Ilshidur/action-discord@master
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+          DISCORD_USERNAME: 'SAP Raid Updater'
+          DISCORD_AVATAR_URL: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSrblEuY_ed5K_vEyINkM3M65cM39WweQOAWA&s'
+          DISCORD_EMBEDS: ${{ env.DISCORD_EMBEDS }}
         with:
-          args: 'New Release: SAP Raid Updater v${{ github.ref_name }} is now available!\nDownload it'
+          args: 'New SAP Raid Addon version released!'
