@@ -1,5 +1,9 @@
 # SAP Updater
 
+## v21 (2025-07-26)
+- refactored changelog job
+
+
 ## v19 (2025-07-26)
 - Testing git commit history for changelog
 - updated how github actions pulls values from git history
