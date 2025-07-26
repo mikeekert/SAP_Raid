@@ -44,7 +44,7 @@ jobs:
             COMMIT_LOG=$(git log "$TAG_NAME" --pretty=format:"- %s")
           fi
 
-          echo "Commit log:"
+          echo "Commit log here: "
           echo "$COMMIT_LOG"
 
           # Prepend changelog entry
