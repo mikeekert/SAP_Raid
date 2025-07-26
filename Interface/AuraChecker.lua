@@ -131,7 +131,14 @@ function LUP.auraChecker:UpdateCheckElementForUnit(unit, versionsTable, force)
 
     for displayName, highestAuraVersion in pairs(LUP.highestSeenVersionsTable.auras) do
         local auraVersion = versionsTable and versionsTable.auras[displayName] or 0
-        local auraVersionsBehind = versionsTable and highestAuraVersion - auraVersion or -1
+        local auraVersionsBehind
+
+        if displayName == "SAP - Raid Anchors" then
+            auraVersionsBehind = auraVersion > 0 and 0 or -1
+        else
+            auraVersionsBehind = (versionsTable and highestAuraVersion - auraVersion == highestAuraVersion) and -1
+            or (versionsTable and highestAuraVersion - auraVersion or -1)
+        end
 
         table.insert(
             data.versionsBehindTable,
@@ -252,11 +259,11 @@ local function CheckElementInitializer(frame, data)
             versionFrame.versionsBehindText:Hide()
             versionFrame.versionsBehindIcon:Show()
 
-            versionFrame.versionsBehindIcon.tex:SetAtlas("QuestTurnin")
+            versionFrame.versionsBehindIcon.tex:SetAtlas("common-icon-redx")
 
             LUP.LiquidUI:AddTooltip(
                 versionFrame,
-                "No info has been received for this player's auras.|n|nThey may not have SAP Raid Updater installed."
+                "No info has been received for this aura.|n|nThey may not have it installed."
             )
         else
             versionFrame.versionsBehindText:Show()

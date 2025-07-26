@@ -1,0 +1,21 @@
+/.github/
+
+# generate sample gitignore for intellj and lua code
+# i dont use vscode
+
+# IntelliJ IDEA
+*.iml
+.idea/*
+*.ipr
+*.iws
+out/
+
+# Lua
+*.luac
+*.log
+*.tmp
+*.bak
+*.swp
+*.DS_Store
+*.swo
+*.luac.out

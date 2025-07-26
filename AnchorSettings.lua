@@ -172,8 +172,7 @@ local function GetIconSettings(groupName, auraName, previewCount)
     local settings = {
         subtexts = {}
     }
-    
-    -- test
+
     settings.grow = groupData.grow
     settings.limit = groupData.useLimit and groupData.limit or 100
     settings.space = groupData.space

@@ -41,8 +41,8 @@ end
 local function BroadcastVersions()
     local chatType = IsInGroup(LE_PARTY_CATEGORY_INSTANCE) and "INSTANCE_CHAT" or IsInRaid() and "RAID" or "PARTY"
 
-    AceComm:SendCommMessage("AU_Versions", serializedTable, "GUILD")
-    AceComm:SendCommMessage("AU_Versions", serializedTable, chatType)
+    AceComm:SendCommMessage("SAP_Versions", serializedTable, "GUILD")
+    AceComm:SendCommMessage("SAP_Versions", serializedTable, chatType)
 
     UpdateVersionsForUnit(playerVersionsTable, "player")
 end
@@ -158,14 +158,14 @@ end
 function LUP:UpdateMinimapIconVisibility()
     if LUP.upToDate then
         if SAPUpdaterSaved.settings.hideMinimapIcon then
-            LDBIcon:Hide("Aura Updater")
+            LDBIcon:Hide("SAP Updater")
         else
-            LDBIcon:Show("Aura Updater")
+            LDBIcon:Show("SAP Updater")
         end
 
         LUP.LDB.icon = [[Interface\Addons\SAP_Raid_Updater\Media\Textures\minimap_logo.tga]]
     else
-        LDBIcon:Show("Aura Updater")
+        LDBIcon:Show("SAP Updater")
 
         LUP.LDB.icon = [[Interface\Addons\SAP_Raid_Updater\Media\Textures\minimap_logo_red.tga]]
     end
@@ -187,6 +187,14 @@ local function BuildAuraImportElements()
         local importedVersion = auraData and auraData.d.sapVersion or 0
         local installedAuraID = uid and UIDToID[uid]
         local installedVersion = installedAuraID and WeakAuras.GetData(installedAuraID).sapVersion or 0
+
+        if displayName == "SAP - Raid Anchors" then
+            if installedVersion > 0 then
+                installedVersion = 1
+                addOnVersionsBehind = 0
+                highestSeenVersion = 1
+            end
+        end
 
         if installedVersion < highestSeenVersion then
             table.insert(
@@ -279,7 +287,7 @@ function LUP:QueueUpdate()
 end
 
 local function RequestVersions(chatType)
-    AceComm:SendCommMessage("AU_Request", " ", chatType or "GUILD")
+    AceComm:SendCommMessage("SAP_Request", " ", chatType or "GUILD")
 end
 
 UpdateVersionsForUnit = function(versionsTable, unit)
@@ -303,9 +311,8 @@ UpdateVersionsForUnit = function(versionsTable, unit)
     for displayName, version in pairs(versionsTable.auras or {}) do
         local highestSeenVersion = LUP.highestSeenVersionsTable.auras[displayName]
 
-        if highestSeenVersion and highestSeenVersion < version then
+        if not highestSeenVersion or highestSeenVersion < version then
             LUP.highestSeenVersionsTable.auras[displayName] = version
-
             shouldFullRebuildAura = true
         end
     end
@@ -610,9 +617,9 @@ function LUP:InitializeAuraUpdater()
     if C_AddOns.IsAddOnLoaded("RCLootCouncil") then
         UpdateRCLCVersion()
     end
-    
-    AceComm:RegisterComm("AU_Request", BroadcastVersions)
-    AceComm:RegisterComm("AU_Versions", ReceiveVersions)
+
+    AceComm:RegisterComm("SAP_Request", BroadcastVersions)
+    AceComm:RegisterComm("SAP_Versions", ReceiveVersions)
 
     for displayName, auraData in pairs(SAPUpdaterSaved.WeakAuras) do
         auraUIDs[auraData.d.uid] = true
@@ -680,11 +687,11 @@ local function OnEvent(_, event, ...)
             updatePopupWindow:SetButtonText(string.format("|cff%sOK|r", LUP.gs.visual.colorStrings.green))
             updatePopupWindow:AddCheckButton("Don't show again")
             updatePopupWindow:SetButtonOnClick(
-                function(dontShowAgain)
-                    LUP:SetNotifyOnReadyCheck(not dontShowAgain)
+                    function(dontShowAgain)
+                        LUP:SetNotifyOnReadyCheck(not dontShowAgain)
 
-                    updatePopupWindow.checkButton:SetChecked(false)
-                end
+                        updatePopupWindow.checkButton:SetChecked(false)
+                    end
             )
         end
 
@@ -693,16 +700,16 @@ local function OnEvent(_, event, ...)
             updatePopupWindow:SetPoint("CENTER", UIParent, "CENTER", 0, 150)
         end
     elseif event == "ADDON_LOADED" then
-		local name = ...
-	
-		if name == "RCLootCouncil" then
-			UpdateRCLCVersion()
-		elseif name == "WeakAuras" then
-			HookWeakAuras()
-		elseif name == "MRT" then
-			HookMRT()
-		end
-	end
+        local name = ...
+
+        if name == "RCLootCouncil" then
+            UpdateRCLCVersion()
+        elseif name == "WeakAuras" then
+            HookWeakAuras()
+        elseif name == "MRT" then
+            HookMRT()
+        end
+    end
 end
 
 local f = CreateFrame("Frame")

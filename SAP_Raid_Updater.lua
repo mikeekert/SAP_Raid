@@ -27,16 +27,16 @@ eventFrame:SetScript(
 
                 -- Minimap icon
                 LUP.LDB = LDB:NewDataObject(
-                    "Aura Updater",
+                    "SAP Updater",
                     {
                         type = "data source",
-                        text = "Aura Updater",
+                        text = "SAP Updater",
                         icon = [[Interface\Addons\SAP_Raid_Updater\Media\Textures\minimap_logo.tga]],
                         OnClick = function() LUP.window:SetShown(not LUP.window:IsShown()) end
                     }
                 )
 
-                LDBIcon:Register("Aura Updater", LUP.LDB, SAPUpdaterSaved.minimap)
+                LDBIcon:Register("SAP Updater", LUP.LDB, SAPUpdaterSaved.minimap)
 
                 LUP:UpdateMinimapIconVisibility()
 

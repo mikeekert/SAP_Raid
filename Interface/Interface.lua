@@ -78,7 +78,7 @@ function LUP:InitializeInterface()
     updateButton.text = updateButton:CreateFontString(nil, "OVERLAY")
     updateButton.text:SetFontObject(LiquidFont17)
     updateButton.text:SetPoint("CENTER", updateButton, "CENTER")
-    updateButton.text:SetText(string.format("|cff%sUpdate Addon/WA|r", LUP.gs.visual.colorStrings.white))
+    updateButton.text:SetText(string.format("|cff%sUpdate WeakAura|r", LUP.gs.visual.colorStrings.white))
 
     updateButton:SetScript(
         "OnMouseDown",
@@ -108,7 +108,7 @@ function LUP:InitializeInterface()
     auraCheckButton.text = auraCheckButton:CreateFontString(nil, "OVERLAY")
     auraCheckButton.text:SetFontObject(LiquidFont17)
     auraCheckButton.text:SetPoint("CENTER", auraCheckButton, "CENTER")
-    auraCheckButton.text:SetText(string.format("|cff%sCheck Raid versions|r", LUP.gs.visual.colorStrings.white))
+    auraCheckButton.text:SetText(string.format("|cff%sCheck Raid Team versions|r", LUP.gs.visual.colorStrings.white))
 
     auraCheckButton:SetScript(
         "OnMouseDown",

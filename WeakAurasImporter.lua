@@ -27,6 +27,9 @@ local auraRelevancy = {
         before = 110200,
         after = 110100
     },
+    ["SAP - Raid Anchors"] = {
+        after = 110100
+    },
     ["SAP - Manaforge Omega"] = {
         after = 110200
     }
