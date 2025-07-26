@@ -1,5 +1,9 @@
 # SAP Updater
 
+## v34 (2025-07-26)
+- correct discord key for image
+
+
 ## v33 (2025-07-26)
 - trying new url for avatar
 
