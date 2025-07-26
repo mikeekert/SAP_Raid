@@ -119,7 +119,7 @@ function LUP:CreateAuraImportElement(parent)
     frame.versionCount:SetPoint("CENTER", frame, "CENTER")
     
     function frame:SetVersionsBehind(count)
-        frame.versionCount:SetText(string.format("|cff%s%d version(s)|r", LUP.gs.visual.colorStrings.red, count))
+        frame.versionCount:SetText(string.format("|cff%s%d version(s) behind|r", LUP.gs.visual.colorStrings.red, count))
     end
 
     -- Import button
