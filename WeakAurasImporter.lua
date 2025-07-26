@@ -23,14 +23,11 @@ end
 -- The before/after fields are interface versions, as returned by GetBuildInfo()
 -- before is exclusive, after is inclusive
 local auraRelevancy = {
-    ["Nerub-ar Palace"] = {
-        before = 110100
-    },
-    ["Liberation of Undermine"] = {
+    ["SAP - Undermine Liberation"] = {
         before = 110200,
         after = 110100
     },
-    ["Manaforge Omega"] = {
+    ["SAP - Manaforge Omega"] = {
         after = 110200
     }
 }

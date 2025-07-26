@@ -1,12 +1,12 @@
 ## Interface: 110107
-## Version: 42
-## Title: Aura Updater
-## Author: Naemesis
+## Version: 1
+## Title: SAP Raid Tools [Manaforge]
+## Author: yes
 ## IconTexture: Interface\AddOns\AuraUpdater\Media\Textures\logo_secondary.blp
 ## SavedVariables: LiquidUpdaterSaved
 ## Dependencies: WeakAuras
 ## OptionalDeps: ViragDevTool, DBM-Core, Liquid, LiquidUpdater
-## Category: Liquid
+## Category: SAP
 
 embeds.xml
 LiquidUI/LiquidUI.xml
@@ -34,4 +34,4 @@ Interface/AuraChecker.lua
 Interface/OtherChecker.lua
 Interface/Settings.lua
 
-AuraUpdater.lua
+SAP_Raid_2.lua
