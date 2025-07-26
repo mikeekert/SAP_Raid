@@ -97,7 +97,7 @@ jobs:
           [
             {
               "title": "New Version Deployed",
-              "description": "SAP Raid Addon has been updated!\\n\\n**$VERSION_LINE**\\n📝 Changelog\\n$CHANGELOG",
+              "description": "**$VERSION_LINE**\\n📝 Changelog\\n$CHANGELOG",
               "color": 1127128
             }
           ]
@@ -117,7 +117,7 @@ jobs:
           DISCORD_AVATAR_URL: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSrblEuY_ed5K_vEyINkM3M65cM39WweQOAWA&s'
           DISCORD_EMBEDS: ${{ steps.changelog.outputs.embeds }}
         with:
-          args: 'New SAP Raid Addon version released!'
+          args: ''
 
       - name: Commit updated files
         if: ${{ success() }}
