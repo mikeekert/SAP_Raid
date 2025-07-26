@@ -1,5 +1,10 @@
 # SAP Updater
 
+## v30 (2025-07-26)
+- final notification code
+- Update version to 1.0.29 and update changelog [skip ci]
+
+
 ## v29 (2025-07-26)
 - merging the messages into 1
 - Update version to 1.0.28 and update changelog [skip ci]
