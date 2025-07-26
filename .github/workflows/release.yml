@@ -114,7 +114,7 @@ jobs:
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
           DISCORD_USERNAME: 'SAP Raid Updater'
-          DISCORD_AVATAR_URL: 'https://i.imgur.com/eo8j9jy.png'
+          DISCORD_AVATAR_URL: 'https://i.imgur.com/oBPXx0D.png'
           DISCORD_EMBEDS: ${{ steps.changelog.outputs.embeds }}
         with:
           args: ''
