@@ -1,5 +1,11 @@
 # SAP Updater
 
+## v19 (2025-07-26)
+- Testing git commit history for changelog
+- updated how github actions pulls values from git history
+- Update version to 1.0.18 and update changelog [skip ci]
+
+
 ## v18 (2025-07-26)
 - New update
 
