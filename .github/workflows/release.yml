@@ -38,3 +38,11 @@ jobs:
           files: package/${{ env.ZIP_NAME }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Discord Notification
+        if: startsWith(github.ref, 'refs/tags/')
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        uses: Ilshidur/action-discord@master
+        with:
+          args: '${{ EVENT_PAYLOAD.repository.full_name }} has been deployed - version: ${{ env.ZIP_NAME }}'

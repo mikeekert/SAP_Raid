@@ -78,7 +78,7 @@ function LUP:InitializeInterface()
     updateButton.text = updateButton:CreateFontString(nil, "OVERLAY")
     updateButton.text:SetFontObject(LiquidFont17)
     updateButton.text:SetPoint("CENTER", updateButton, "CENTER")
-    updateButton.text:SetText(string.format("|cff%sUpdate WeakAuras|r", LUP.gs.visual.colorStrings.white))
+    updateButton.text:SetText(string.format("|cff%sUpdate Addon/WA|r", LUP.gs.visual.colorStrings.white))
 
     updateButton:SetScript(
         "OnMouseDown",
