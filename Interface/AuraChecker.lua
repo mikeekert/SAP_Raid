@@ -5,7 +5,7 @@ LUP.auraChecker = {}
 -- Element variables
 local nameFrameWidth = 150
 local versionFramePaddingLeft = 10
-local versionFramePaddingRight = 40
+local versionFramePaddingRight = 70
 local elementHeight = 32
 
 -- Version tables for GUIDs, used for comparison against their new table
@@ -246,7 +246,7 @@ local function CheckElementInitializer(frame, data)
 
             LUP.LiquidUI:AddTooltip(
                 versionFrame,
-                "This player's aura is up to date."
+                "This player is up to date."
             )
         elseif versionsBehind == -1 then
             versionFrame.versionsBehindText:Hide()
@@ -256,7 +256,7 @@ local function CheckElementInitializer(frame, data)
 
             LUP.LiquidUI:AddTooltip(
                 versionFrame,
-                "No info has been received for this player's auras.|n|nThey may not have AuraUpdater installed."
+                "No info has been received for this player's auras.|n|nThey may not have SAP Raid Updater installed."
             )
         else
             versionFrame.versionsBehindText:Show()
@@ -266,7 +266,7 @@ local function CheckElementInitializer(frame, data)
 
             LUP.LiquidUI:AddTooltip(
                 versionFrame,
-                string.format("This player's aura is %d version(s) behind.", versionsBehind)
+                string.format("This player is %d version(s) behind.", versionsBehind)
             )
         end
     end
