@@ -39,9 +39,9 @@ jobs:
 
           # Get commit messages between tags
           if [ -n "$PREV_TAG" ]; then
-            COMMIT_LOG=$(git log "$PREV_TAG..$TAG_NAME" --pretty=format:"- %s")
+            COMMIT_LOG=$(git log "$PREV_TAG..$TAG_NAME" --pretty=format:"- %s" | grep -v '\[skip ci\]')
           else
-            COMMIT_LOG=$(git log "$TAG_NAME" --pretty=format:"- %s")
+            COMMIT_LOG=$(git log "$TAG_NAME" --pretty=format:"- %s" | grep -v '\[skip ci\]')
           fi
 
           echo "Commit log here: "
