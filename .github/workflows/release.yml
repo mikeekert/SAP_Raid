@@ -12,11 +12,44 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Fetch all history for commit messages
 
+      - name: Update Version and Changelog
+        run: |
+          # Extract tag without "1.0." prefix if present
+          TAG_NAME=${GITHUB_REF#refs/tags/}
+          CLEAN_TAG=$(echo $TAG_NAME | sed 's/^1\.0\.//')
+
+          # Update the version in the TOC file
+          sed -i "s/## Version: .*/## Version: $CLEAN_TAG/" SAP_Raid_Updater.toc
+          echo "Updated TOC version to $CLEAN_TAG"
+
+          # Get the current date in YYYY-MM-DD format
+          CURRENT_DATE=$(date +"%Y-%m-%d")
+
+          # Get the commit message from the tagged commit
+          COMMIT_MSG=$(git log -1 --pretty=%B ${GITHUB_REF#refs/tags/})
+
+          # Update CHANGELOG.md - prepend new version entry at the top
+          # Create a temporary file with new content
+          echo -e "# SAP Updater\n\n## v$CLEAN_TAG ($CURRENT_DATE)\n$COMMIT_MSG\n\n$(cat CHANGELOG.md | grep -v "^# SAP Updater" | tail -n +1)" > CHANGELOG.md.new
+          mv CHANGELOG.md.new CHANGELOG.md
+
+          echo "Updated CHANGELOG.md with new version v$CLEAN_TAG and commit message"
+
+      - name: Commit updated files
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add SAP_Raid_Updater.toc CHANGELOG.md
+          git commit -m "Update version to ${GITHUB_REF#refs/tags/} and update changelog [skip ci]"
+          git push
 
       - name: Prepare Addon Folder
         run: |
@@ -32,7 +65,6 @@ jobs:
           echo "ZIP_NAME=SAP_Raid_Updater-v${TAG_NAME}.zip" >> $GITHUB_ENV
 
       - name: Upload Release Asset
-        if: startsWith(github.ref, 'refs/tags/')
         uses: softprops/action-gh-release@v2
         with:
           files: package/${{ env.ZIP_NAME }}
@@ -40,9 +72,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Discord Notification
-        if: startsWith(github.ref, 'refs/tags/')
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
         uses: Ilshidur/action-discord@master
         with:
-          args: '{{ EVENT_PAYLOAD.repository.full_name }} has been deployed - version: ${{ env.ZIP_NAME }}'
+          args: 'New Release: SAP Raid Updater v${{ github.ref_name }} is now available!\nDownload it'
