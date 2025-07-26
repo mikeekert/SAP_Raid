@@ -1,5 +1,10 @@
 # SAP Updater
 
+## v29 (2025-07-26)
+- merging the messages into 1
+- Update version to 1.0.28 and update changelog [skip ci]
+
+
 ## v28 (2025-07-26)
 - removing audio
 - this one worked
