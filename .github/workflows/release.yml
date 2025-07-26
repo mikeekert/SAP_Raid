@@ -39,9 +39,9 @@ jobs:
 
           # Get commit messages between tags
           if [ -n "$PREV_TAG" ]; then
-            COMMIT_LOG=$(git log "$PREV_TAG..$TAG_NAME" --pretty=format:"- %s")
+            COMMIT_LOG=$(git log "$PREV_TAG..$TAG_NAME" --pretty=format:"- %s" | grep -v '\[skip ci\]')
           else
-            COMMIT_LOG=$(git log "$TAG_NAME" --pretty=format:"- %s")
+            COMMIT_LOG=$(git log "$TAG_NAME" --pretty=format:"- %s" | grep -v '\[skip ci\]')
           fi
 
           echo "Commit log here: "
@@ -100,12 +100,11 @@ jobs:
             {
               "title": "New Version Deployed",
               "description": "SAP Raid Addon has been updated!\\n\\n**$VERSION_LINE**",
-              "color": 1127128
+              "color": 3066993
             },
             {
               "title": "📝 Changelog",
               "description": "$CHANGELOG",
-              "color": 14177041
             }
           ]
           EOF
@@ -121,7 +120,7 @@ jobs:
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
           DISCORD_USERNAME: 'SAP Raid Updater'
-          DISCORD_AVATAR_URL: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSrblEuY_ed5K_vEyINkM3M65cM39WweQOAWA&s'
+          DISCORD_AVATAR_URL: 'https://avatars.githubusercontent.com/u/9121773?s=280&v=4'
           DISCORD_EMBEDS: ${{ steps.changelog.outputs.embeds }}
         with:
           args: 'New SAP Raid Addon version released!'
