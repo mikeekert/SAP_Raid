@@ -47,7 +47,7 @@ local function BuildAuraLabels()
     end
 
     local sortedLabelTable = {
-        "AuraUpdater"
+        "SAP_Raid_Updater"
     }
 
     for displayName in pairs(LUP.highestSeenVersionsTable.auras) do
@@ -58,8 +58,8 @@ local function BuildAuraLabels()
     table.sort(
         sortedLabelTable,
         function(displayName1, displayName2)
-            local isAddOn1 = displayName1 == "AuraUpdater"
-            local isAddOn2 = displayName2 == "AuraUpdater"
+            local isAddOn1 = displayName1 == "SAP_Raid_Updater"
+            local isAddOn2 = displayName2 == "SAP_Raid_Updater"
 
             if isAddOn1 ~= isAddOn2 then
                 return isAddOn1
@@ -124,7 +124,7 @@ function LUP.auraChecker:UpdateCheckElementForUnit(unit, versionsTable, force)
     table.insert(
         data.versionsBehindTable,
         {
-            displayName = "AuraUpdater",
+            displayName = "SAP_Raid_Updater",
             versionsBehind = addOnVersionsBehind
         }
     )
@@ -146,8 +146,8 @@ function LUP.auraChecker:UpdateCheckElementForUnit(unit, versionsTable, force)
     table.sort(
         data.versionsBehindTable,
         function(info1, info2)
-            local isAddOn1 = info1.displayName == "AuraUpdater"
-            local isAddOn2 = info2.displayName == "AuraUpdater"
+            local isAddOn1 = info1.displayName == "SAP_Raid_Updater"
+            local isAddOn2 = info2.displayName == "SAP_Raid_Updater"
 
             if isAddOn1 ~= isAddOn2 then
                 return isAddOn1

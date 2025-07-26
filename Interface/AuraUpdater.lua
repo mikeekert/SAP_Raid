@@ -226,7 +226,7 @@ local function BuildAuraImportElements()
     if addOnVersionsBehind > 0 then
         local auraImportFrame = auraImportElementPool[1] or LUP:CreateAuraImportElement(parent)
 
-        auraImportFrame:SetDisplayName("AuraUpdater")
+        auraImportFrame:SetDisplayName("SAP_Raid_Updater")
         auraImportFrame:SetVersionsBehind(addOnVersionsBehind)
         auraImportFrame:SetRequiresAddOnUpdate(true)
 
@@ -377,12 +377,12 @@ local function ReceiveVersions(_, payload, _, sender)
     -- Convert it to the new format
     if not versionsTable.auras then
         local newVersionsTable = {
-            addOn = versionsTable["AuraUpdater"],
+            addOn = versionsTable["SAP_Raid_Updater"],
             auras = {}
         }
 
         for displayName, version in pairs(versionsTable) do
-            if displayName ~= "AuraUpdater" then
+            if displayName ~= "SAP_Raid_Updater" then
                 newVersionsTable.auras[displayName] = version
             end
         end

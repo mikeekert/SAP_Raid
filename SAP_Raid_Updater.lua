@@ -12,7 +12,7 @@ eventFrame:SetScript(
         if event == "ADDON_LOADED" then
             local addOnName = ...
 
-            if addOnName == "AuraUpdater" then
+            if addOnName == "SAP_Raid_Updater" then
                 if not SAPUpdaterSaved then SAPUpdaterSaved = {} end
                 if not SAPUpdaterSaved.minimap then SAPUpdaterSaved.minimap = {} end
                 if not SAPUpdaterSaved.settings then SAPUpdaterSaved.settings = {} end

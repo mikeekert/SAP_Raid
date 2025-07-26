@@ -30,7 +30,7 @@ function LUP:CreateAuraImportElement(parent)
 
         -- If this element shows an addon update instead of an aura update, don't add an update button script
         -- Icon is also hardcoded, rather than taken from aura data (there is no aura)
-        if displayName == "AuraUpdater" then
+        if displayName == "SAP_Raid_Updater" then
             frame.icon.tex:SetTexture("Interface\\Addons\\AuraUpdater\\Media\\Textures\\Bart.tga")
             frame.icon:Show()
             frame.displayName:SetPoint("LEFT", frame, "LEFT", 38, 0)
