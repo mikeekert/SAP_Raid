@@ -279,8 +279,8 @@ end
 -- Bars
 updateAnchorFunctions.Bars = function()
     anchorSettings.bars = GetBarSettings(
-        "Liquid Anchor - Bars",
-        "Liquid Anchor - Bar",
+        "Bars - Anchor",
+        "SAP Anchor - Bar 1",
         previewCounts.bars
     )
 end
@@ -292,8 +292,8 @@ end
 -- Special Bars
 updateAnchorFunctions.SpecialBars = function()
     anchorSettings.specialBars = GetBarSettings(
-        "Liquid Anchor - Special Bars",
-        "Liquid Anchor - Special Bar",
+        "Special Bars - Anchor",
+        "SAP Anchor - Special Bar",
         previewCounts.specialBars
     )
 end
@@ -305,8 +305,8 @@ end
 -- Lists
 updateAnchorFunctions.Lists = function()
     anchorSettings.lists = GetBarSettings(
-        "Liquid Anchor - Lists",
-        "Liquid Anchor - List",
+        "Lists - Anchor",
+        "SAP Anchor - List",
         previewCounts.lists
     )
 end
@@ -315,24 +315,11 @@ applyAnchorFunctions.Lists = function(newPositions, activeRegions)
     ApplyBarSettings(anchorSettings.lists, newPositions, activeRegions)
 end
 
--- Raid Leader Lists
-updateAnchorFunctions.RaidLeaderLists = function()
-    anchorSettings.raidLeaderLists = GetBarSettings(
-        "Liquid Anchor - Raid Leader Lists",
-        "Liquid Anchor - Raid Leader List",
-        previewCounts.raidLeaderLists
-    )
-end
-
-applyAnchorFunctions.RaidLeaderLists = function(newPositions, activeRegions)
-    ApplyBarSettings(anchorSettings.raidLeaderLists, newPositions, activeRegions)
-end
-
 -- Big Icons
 updateAnchorFunctions.BigIcons = function()
     anchorSettings.bigIcons = GetIconSettings(
-        "Liquid Anchor - Big Icons",
-        "Liquid Anchor - Big Icon",
+        "Icon - High Priority - Anchor",
+        "SAP Anchor - Big Icon 1",
         previewCounts.bigIcons
     )
 end
@@ -344,8 +331,8 @@ end
 -- Icons
 updateAnchorFunctions.Icons = function()
     anchorSettings.icons = GetIconSettings(
-        "Liquid Anchor - Icons",
-        "Liquid Anchor - Icon",
+        "Icon - Low Priority - Anchor",
+        "SAP Anchor - Icon 1",
         previewCounts.icons
     )
 end
@@ -356,8 +343,8 @@ end
 
 -- Circles
 updateAnchorFunctions.Circles = function()
-    local groupData = WeakAuras.GetData("Liquid Anchor - Circles")
-    local auraData = WeakAuras.GetData("Liquid Anchor - Circle")
+    local groupData = WeakAuras.GetData("Circles - Anchor")
+    local auraData = WeakAuras.GetData("SAP Anchor - Circle 1")
 
     if not (groupData and auraData) then return end
 
@@ -407,8 +394,8 @@ end
 -- Texts
 updateAnchorFunctions.Texts = function()
     anchorSettings.texts = GetTextSettings(
-        "Liquid Anchor - Texts",
-        "Liquid Anchor - Text",
+        "Texts - Anchor",
+        "SAP Anchor - Text",
         previewCounts.texts
     )
 end
@@ -420,116 +407,14 @@ end
 -- Assignments
 updateAnchorFunctions.Assignments = function()
     anchorSettings.assignments = GetTextSettings(
-        "Liquid Anchor - Assignments",
-        "Liquid Anchor - Assignment",
+            "Annoying Text",
+            "Annoying Text - Anchor",
         previewCounts.assignments
     )
 end
 
 applyAnchorFunctions.Assignments = function(newPositions, activeRegions)
     ApplyTextSettings(anchorSettings.assignments, newPositions, activeRegions)
-end
-
--- Tank Warnings
-updateAnchorFunctions.TankWarningsBars = function()
-    anchorSettings.tankWarningsBars = GetBarSettings(
-        "Liquid Anchor - Tank Warnings",
-        "Liquid Anchor - Tank Warning Bar",
-        previewCounts.tankWarningsBars
-    )
-end
-
-updateAnchorFunctions.TankWarningsTexts = function()
-    anchorSettings.tankWarningsTexts = GetTextSettings(
-        "Liquid Anchor - Tank Warnings",
-        "Liquid Anchor - Tank Warning Text",
-        previewCounts.tankWarningsTexts
-    )
-end
-
-applyAnchorFunctions.TankWarnings = function(newPositions, activeRegions)
-    local barSettings = anchorSettings.tankWarningsBars
-    local textSettings = anchorSettings.tankWarningsTexts
-
-    local optionsOffsets = {
-        barSettings.optionsOffsets[1] + textSettings.optionsOffsets[1],
-        barSettings.optionsOffsets[2] + textSettings.optionsOffsets[2],
-    }
-
-    if not (barSettings and textSettings) then return end
-
-    -- Position is not done using PositionAuras(), since tank warnings are unique in that they have both bars and texts
-    -- Both barSettings and textSettings contains identical group settings data. We just use barSettings to fetch things like limit, spacing, etc.
-    local nextPosition = WeakAuras.IsOptionsOpen() and optionsOffsets and CopyTable(optionsOffsets) or {0, 0}
-    local limit = barSettings.limit or #activeRegions
-    local directionX = barSettings.grow == "RIGHT" and 1 or barSettings.grow == "LEFT" and -1 or 0
-    local directionY = barSettings.grow == "UP" and 1 or barSettings.grow == "DOWN" and -1 or 0
-
-    for regionCount, regionData in ipairs(activeRegions) do
-        local region = regionData.region
-        local regionType = region.regionType
-
-        if regionCount > limit then
-            newPositions[regionCount] = {0, 0, false}
-        else
-            local skipPosition = region.state.skipPosition
-
-            newPositions[regionCount] = nextPosition
-
-            if not skipPosition then
-                local width = regionType == "aurabar" and barSettings.width or regionType == "text" and textSettings.width or regionData.region.width
-                local height = regionType == "aurabar" and barSettings.height or regionType == "text" and textSettings.height or regionData.region.height
-
-                nextPosition = {
-                    nextPosition[1] + directionX * (width + barSettings.space),
-                    nextPosition[2] + directionY * (height + barSettings.space)
-                }
-            end
-        end
-    end
-
-    -- Applying bar/text settings
-    for _, regionData in ipairs(activeRegions) do
-        local region = regionData.region
-
-        if region.regionType == "aurabar" then
-            ResizeAura(barSettings, region)
-            ApplyBarTexture(barSettings, region)
-            ApplySubtextSettings(barSettings, region)
-        elseif region.regionType == "text" then
-            region.text:SetFont(textSettings.fontPath, textSettings.height, textSettings.fontType)
-
-            -- Required to force text positioning when no text replacements are present
-            region:SetHeight(textSettings.height)
-            region:SetWidth(region.text:GetWidth())
-        end
-    end
-end
-
--- Tank Icons
-updateAnchorFunctions.TankIcons = function()
-    anchorSettings.tankIcons = GetIconSettings(
-        "Liquid Anchor - Tank Icons",
-        "Liquid Anchor - Tank Icon",
-        previewCounts.tankIcons
-    )
-end
-
-applyAnchorFunctions.TankIcons = function(newPositions, activeRegions)
-    ApplyIconSettings(anchorSettings.tankIcons, newPositions, activeRegions)
-end
-
--- Co-Tank Icons
-updateAnchorFunctions.CoTankIcons = function()
-    anchorSettings.coTankIcons = GetIconSettings(
-        "Liquid Anchor - Co-Tank Icons",
-        "Liquid Anchor - Co-Tank Icon",
-        previewCounts.coTankIcons
-    )
-end
-
-applyAnchorFunctions.CoTankIcons = function(newPositions, activeRegions)
-    ApplyIconSettings(anchorSettings.coTankIcons, newPositions, activeRegions)
 end
 
 function AuraUpdater:UpdateAnchorSettings(anchorType)
