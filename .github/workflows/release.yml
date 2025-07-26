@@ -18,23 +18,40 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
         with:
-          fetch-depth: 0
+          fetch-depth: 0  # Full history needed for tag diff
 
       - name: Update Version and Changelog
         run: |
           TAG_NAME=${GITHUB_REF#refs/tags/}
           CLEAN_TAG=$(echo $TAG_NAME | sed 's/^1\.0\.//')
 
+          # Update version in TOC file
           sed -i "s/## Version: .*/## Version: $CLEAN_TAG/" SAP_Raid_Updater.toc
           echo "Updated TOC version to $CLEAN_TAG"
 
+          # Get current date
           CURRENT_DATE=$(date +"%Y-%m-%d")
-          COMMIT_MSG=$(git log -1 --pretty=%B ${GITHUB_REF#refs/tags/})
 
-          echo -e "# SAP Updater\n\n## v$CLEAN_TAG ($CURRENT_DATE)\n$COMMIT_MSG\n\n$(cat CHANGELOG.md | grep -v "^# SAP Updater" | tail -n +1)" > CHANGELOG.md.new
+          # Get previous tag
+          PREV_TAG=$(git tag --sort=-creatordate | grep -v "$TAG_NAME" | head -n 1)
+          echo "Current tag: $TAG_NAME"
+          echo "Previous tag: $PREV_TAG"
+
+          # Get commit messages between tags
+          if [ -n "$PREV_TAG" ]; then
+            COMMIT_LOG=$(git log "$PREV_TAG..$TAG_NAME" --pretty=format:"- %s")
+          else
+            COMMIT_LOG=$(git log "$TAG_NAME" --pretty=format:"- %s")
+          fi
+
+          echo "Commit log:"
+          echo "$COMMIT_LOG"
+
+          # Prepend changelog entry
+          echo -e "# SAP Updater\n\n## v$CLEAN_TAG ($CURRENT_DATE)\n$COMMIT_LOG\n\n$(cat CHANGELOG.md | grep -v "^# SAP Updater" | tail -n +1)" > CHANGELOG.md.new
           mv CHANGELOG.md.new CHANGELOG.md
 
-          echo "Updated CHANGELOG.md with new version v$CLEAN_TAG and commit message"
+          echo "Updated CHANGELOG.md with commit log from $PREV_TAG to $TAG_NAME"
 
       - name: Prepare Addon Folder
         run: |
@@ -50,6 +67,7 @@ jobs:
           echo "ZIP_NAME=SAP_Raid_Updater-v${TAG_NAME}.zip" >> $GITHUB_ENV
 
       - name: Upload Release Asset
+        if: ${{ success() }}
         uses: softprops/action-gh-release@v2
         with:
           files: package/${{ env.ZIP_NAME }}
@@ -57,6 +75,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build Changelog
+        if: ${{ success() }}
         run: |
           TAG_NAME=${GITHUB_REF#refs/tags/}
           CLEAN_TAG=$(echo $TAG_NAME | sed 's/^1\.0\.//')
@@ -78,10 +97,11 @@ jobs:
           ]
           EOF
           )
-  
+
           echo "DISCORD_EMBEDS=$EMBEDS" >> $GITHUB_ENV
 
       - name: Discord Notification
+        if: ${{ success() }}
         uses: Ilshidur/action-discord@master
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
@@ -92,7 +112,7 @@ jobs:
           args: 'New SAP Raid Addon version released!'
 
       - name: Commit updated files
-        if: success()
+        if: ${{ success() }}
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
