@@ -64,9 +64,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Send Discord Notification with Changelog
-        env:
-          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+      - name: Build Changelog
         run: |
           TAG_NAME=${GITHUB_REF#refs/tags/}
           CLEAN_TAG=$(echo $TAG_NAME | sed 's/^1\.0\.//')
