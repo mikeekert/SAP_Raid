@@ -54,26 +54,22 @@ jobs:
       
           # Build JSON embed payload
           EMBEDS=$(cat <<EOF
-          {
-            "embeds": [
-              {
-                "title": "New Version Deployed: v$CLEAN_TAG",
-                "description": "SAP Raid Addon has been updated!",
-                "color": 3066993
-              },
-              {
-                "title": "📝 Changelog",
-                "description": $ESCAPED_CHANGELOG_ENTRY,
-                "color": 14177041
-              }
-            ]
-          }
+          [
+            {
+              "title": "New Version Deployed: v$CLEAN_TAG",
+              "description": "SAP Raid Addon has been updated!",
+              "color": 3066993
+            },
+            {
+              "title": "📝 Changelog",
+              "description": $ESCAPED_CHANGELOG_ENTRY,
+              "color": 14177041
+            }
+          ]
           EOF
           )
 
-          echo "embeds<<EOF" >> $GITHUB_OUTPUT
-          echo "$EMBEDS" >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
+          echo "embeds=$EMBEDS" >> $GITHUB_OUTPUT
 
       - name: Prepare Addon Folder
         run: |
@@ -97,12 +93,11 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Discord Notification
-        if: ${{ success() }}
         uses: Ilshidur/action-discord@master
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
           DISCORD_USERNAME: 'SAP Raid Updater'
-          DISCORD_AVATAR_URL: 'https://avatars.githubusercontent.com/u/9121773?s=280&v=4'
+          DISCORD_AVATAR_URL: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSrblEuY_ed5K_vEyINkM3M65cM39WweQOAWA&s'
           DISCORD_EMBEDS: ${{ steps.changelog.outputs.embeds }}
         with:
           args: 'New SAP Raid Addon version released!'
