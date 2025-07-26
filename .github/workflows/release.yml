@@ -97,13 +97,8 @@ jobs:
           [
             {
               "title": "New Version Deployed",
-              "description": "SAP Raid Addon has been updated!\\n\\n**$VERSION_LINE**",
+              "description": "SAP Raid Addon has been updated!\\n\\n**$VERSION_LINE**\\n📝 Changelog\\n$CHANGELOG",
               "color": 1127128
-            },
-            {
-              "title": "📝 Changelog",
-              "description": "$CHANGELOG",
-              "color": 14177041
             }
           ]
           EOF
