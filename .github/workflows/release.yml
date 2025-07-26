@@ -52,7 +52,6 @@ jobs:
           # Escape changelog entry for JSON embedding
           ESCAPED_CHANGELOG_ENTRY=$(printf "%s" "$CHANGELOG_ENTRY" | python3 -c 'import json,sys; print(json.dumps(sys.stdin.read()))')
       
-          # Build JSON embed payload
           EMBEDS=$(cat <<EOF
           [
             {
@@ -68,8 +67,10 @@ jobs:
           ]
           EOF
           )
-
-          echo "embeds=$EMBEDS" >> $GITHUB_OUTPUT
+          
+          echo "embeds<<EOF" >> $GITHUB_OUTPUT
+          printf "%s\n" "$EMBEDS" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
 
       - name: Prepare Addon Folder
         run: |
