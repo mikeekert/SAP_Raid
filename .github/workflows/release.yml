@@ -18,60 +18,40 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
         with:
-          fetch-depth: 0
+          fetch-depth: 0  # Full history needed for tag diff
 
-      - id: changelog
-        name: Update Version and Changelog
+      - name: Update Version and Changelog
         run: |
           TAG_NAME=${GITHUB_REF#refs/tags/}
           CLEAN_TAG=$(echo $TAG_NAME | sed 's/^1\.0\.//')
-      
+
+          # Update version in TOC file
           sed -i "s/## Version: .*/## Version: $CLEAN_TAG/" SAP_Raid_Updater.toc
           echo "Updated TOC version to $CLEAN_TAG"
-      
-          CURRENT_DATE=$(date +"%Y-%m-%d")
-          PREV_TAG=$(git tag --sort=-creatordate | grep -v "$TAG_NAME" | head -n 1)
-      
-          if [ -n "$PREV_TAG" ]; then
-            COMMIT_LOG=$(git log "$PREV_TAG..$TAG_NAME" --pretty=format:"- %s" | grep -v '\[skip ci\]')
-          else
-            COMMIT_LOG=$(git log "$TAG_NAME" --pretty=format:"- %s" | grep -v '\[skip ci\]')
-          fi
-      
-          echo "Commit log:"
-          echo "$COMMIT_LOG"
-      
-          CHANGELOG_ENTRY="## v$CLEAN_TAG ($CURRENT_DATE)\n$COMMIT_LOG"
-      
-          # Update changelog file
-          echo -e "# SAP Updater\n\n$CHANGELOG_ENTRY\n\n$(grep -v '^# SAP Updater' CHANGELOG.md | tail -n +1)" > CHANGELOG.md.new
-          mv CHANGELOG.md.new CHANGELOG.md
-      
-          echo "Updated CHANGELOG.md with commit log from $PREV_TAG to $TAG_NAME"
-      
-          # Escape changelog entry for JSON embedding
-          CHANGELOG_FOR_EMBED=$(echo "$CHANGELOG_ENTRY" | sed 's/^## //; s/^# //')
-          ESCAPED_CHANGELOG_ENTRY=$(printf '%s' "$CHANGELOG_FOR_EMBED" | sed -e 's/\\/\\\\/g' -e 's/"/\\"/g')
 
-          EMBEDS=$(cat <<EOF
-          [
-            {
-              "title": "New Version Deployed: v$CLEAN_TAG",
-              "description": "SAP Raid Addon has been updated!",
-              "color": 3066993
-            },
-            {
-              "title": "📝 Changelog",
-              "description": $ESCAPED_CHANGELOG_ENTRY,
-              "color": 14177041
-            }
-          ]
-          EOF
-          )
-          
-          echo "embeds<<EOF" >> $GITHUB_OUTPUT
-          printf "%s\n" "$EMBEDS" >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
+          # Get current date
+          CURRENT_DATE=$(date +"%Y-%m-%d")
+
+          # Get previous tag
+          PREV_TAG=$(git tag --sort=-creatordate | grep -v "$TAG_NAME" | head -n 1)
+          echo "Current tag: $TAG_NAME"
+          echo "Previous tag: $PREV_TAG"
+
+          # Get commit messages between tags
+          if [ -n "$PREV_TAG" ]; then
+            COMMIT_LOG=$(git log "$PREV_TAG..$TAG_NAME" --pretty=format:"- %s")
+          else
+            COMMIT_LOG=$(git log "$TAG_NAME" --pretty=format:"- %s")
+          fi
+
+          echo "Commit log here: "
+          echo "$COMMIT_LOG"
+
+          # Prepend changelog entry
+          echo -e "# SAP Updater\n\n## v$CLEAN_TAG ($CURRENT_DATE)\n$COMMIT_LOG\n\n$(cat CHANGELOG.md | grep -v "^# SAP Updater" | tail -n +1)" > CHANGELOG.md.new
+          mv CHANGELOG.md.new CHANGELOG.md
+
+          echo "Updated CHANGELOG.md with commit log from $PREV_TAG to $TAG_NAME"
 
       - name: Prepare Addon Folder
         run: |
@@ -94,7 +74,47 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Build Changelog
+        id: changelog
+        if: ${{ success() }}
+        run: |
+          TAG_NAME=${GITHUB_REF#refs/tags/}
+          CLEAN_TAG=$(echo $TAG_NAME | sed 's/^1\.0\.//')
+
+          LATEST_ENTRY=$(awk '
+            BEGIN { in_entry=0; }
+            /^# SAP Updater/ { next }
+            /^## / {
+              if (in_entry) exit; else in_entry=1;
+            }
+            in_entry { print }
+          ' CHANGELOG.md)
+          
+          VERSION_LINE=$(echo "$LATEST_ENTRY" | head -n 1)
+          CHANGELOG=$(echo "$LATEST_ENTRY" | tail -n +2 | sed ':a;N;$!ba;s/\n/\\n/g' | sed 's/"/\\"/g')
+          
+          EMBEDS=$(cat <<EOF
+          [
+            {
+              "title": "New Version Deployed",
+              "description": "SAP Raid Addon has been updated!\\n\\n**$VERSION_LINE**",
+              "color": 1127128
+            },
+            {
+              "title": "📝 Changelog",
+              "description": "$CHANGELOG",
+              "color": 14177041
+            }
+          ]
+          EOF
+          )
+
+          echo "embeds<<EOF" >> $GITHUB_OUTPUT
+          printf "%s\n" "$EMBEDS" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
       - name: Discord Notification
+        if: ${{ success() }}
         uses: Ilshidur/action-discord@master
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
