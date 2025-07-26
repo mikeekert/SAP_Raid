@@ -1,5 +1,10 @@
 # SAP Updater
 
+## v28 (2025-07-26)
+- removing audio
+- this one worked
+
+
 ## v25 (2025-07-26)
 - idk
 
