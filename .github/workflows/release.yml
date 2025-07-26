@@ -75,6 +75,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build Changelog
+        id: changelog
         if: ${{ success() }}
         run: |
           TAG_NAME=${GITHUB_REF#refs/tags/}
@@ -98,7 +99,9 @@ jobs:
           EOF
           )
 
-          echo "DISCORD_EMBEDS=$EMBEDS" >> $GITHUB_ENV
+          echo "embeds<<EOF" >> $GITHUB_OUTPUT
+          printf "%s\n" "$EMBEDS" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
 
       - name: Discord Notification
         if: ${{ success() }}
@@ -107,7 +110,7 @@ jobs:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
           DISCORD_USERNAME: 'SAP Raid Updater'
           DISCORD_AVATAR_URL: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSrblEuY_ed5K_vEyINkM3M65cM39WweQOAWA&s'
-          DISCORD_EMBEDS: ${{ env.DISCORD_EMBEDS }}
+          DISCORD_EMBEDS: ${{ steps.changelog.outputs.embeds }}
         with:
           args: 'New SAP Raid Addon version released!'
 
