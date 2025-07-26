@@ -52,17 +52,17 @@ local function IsRelevantWeakAura(displayName)
     return beforeOK and afterOK
 end
 
--- Takes WeakAura strings from LUP.WeakAuras, decodes them, and saves them to LiquidUpdaterSaved.WeakAuras
+-- Takes WeakAura strings from LUP.WeakAuras, decodes them, and saves them to SAPUpdaterSaved.WeakAuras
 -- Only decodes new auras (or new versions of auras)
 function LUP:InitializeWeakAurasImporter()
-    if not LiquidUpdaterSaved.WeakAuras then LiquidUpdaterSaved.WeakAuras = {} end
+    if not SAPUpdaterSaved.WeakAuras then SAPUpdaterSaved.WeakAuras = {} end
 
     for _, auraData in ipairs(LUP.WeakAuras) do
         local displayName = auraData.displayName
 
         if IsRelevantWeakAura(displayName) then
             local version = auraData.version
-            local importedVersion = LiquidUpdaterSaved.WeakAuras[displayName] and LiquidUpdaterSaved.WeakAuras[displayName].d and LiquidUpdaterSaved.WeakAuras[displayName].d.liquidVersion
+            local importedVersion = SAPUpdaterSaved.WeakAuras[displayName] and SAPUpdaterSaved.WeakAuras[displayName].d and SAPUpdaterSaved.WeakAuras[displayName].d.liquidVersion
 
             if not importedVersion or importedVersion < version then
                 local toDecode = auraData.data:match("!WA:2!(.+)")
@@ -88,7 +88,7 @@ function LUP:InitializeWeakAurasImporter()
                                     end
                                 end
 
-                                LiquidUpdaterSaved.WeakAuras[displayName] = data
+                                SAPUpdaterSaved.WeakAuras[displayName] = data
                             else
                                 LUP:ErrorPrint(string.format("could not deserialize aura data for [%s]", displayName))
                             end
@@ -106,14 +106,14 @@ function LUP:InitializeWeakAurasImporter()
     end
 
     -- Delete irrelevant auras from SavedVariables
-    for displayName in pairs(LiquidUpdaterSaved.WeakAuras) do
+    for displayName in pairs(SAPUpdaterSaved.WeakAuras) do
         if not IsRelevantWeakAura(displayName) then
-            LiquidUpdaterSaved.WeakAuras[displayName] = nil
+            SAPUpdaterSaved.WeakAuras[displayName] = nil
         end
     end
 
     -- Match imported aura UIDs to installed aura UIDs
-    for _, auraData in pairs(LiquidUpdaterSaved.WeakAuras) do
+    for _, auraData in pairs(SAPUpdaterSaved.WeakAuras) do
         LUP:MatchInstalledUID(auraData.d)
     end
 end

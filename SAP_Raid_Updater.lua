@@ -13,13 +13,13 @@ eventFrame:SetScript(
             local addOnName = ...
 
             if addOnName == "AuraUpdater" then
-                if not LiquidUpdaterSaved then LiquidUpdaterSaved = {} end
-                if not LiquidUpdaterSaved.minimap then LiquidUpdaterSaved.minimap = {} end
-                if not LiquidUpdaterSaved.settings then LiquidUpdaterSaved.settings = {} end
-                if not LiquidUpdaterSaved.settings.frames then LiquidUpdaterSaved.settings.frames = {} end
-                if not LiquidUpdaterSaved.nicknames then LiquidUpdaterSaved.nicknames = {} end
-                if LiquidUpdaterSaved.settings.readyCheckPopup == nil then LiquidUpdaterSaved.settings.readyCheckPopup = true end
-                if LiquidUpdaterSaved.settings.disableBigWigsAssignments == nil then LiquidUpdaterSaved.settings.disableBigWigsAssignments = true end
+                if not SAPUpdaterSaved then SAPUpdaterSaved = {} end
+                if not SAPUpdaterSaved.minimap then SAPUpdaterSaved.minimap = {} end
+                if not SAPUpdaterSaved.settings then SAPUpdaterSaved.settings = {} end
+                if not SAPUpdaterSaved.settings.frames then SAPUpdaterSaved.settings.frames = {} end
+                if not SAPUpdaterSaved.nicknames then SAPUpdaterSaved.nicknames = {} end
+                if SAPUpdaterSaved.settings.readyCheckPopup == nil then SAPUpdaterSaved.settings.readyCheckPopup = true end
+                if SAPUpdaterSaved.settings.disableBigWigsAssignments == nil then SAPUpdaterSaved.settings.disableBigWigsAssignments = true end
 
                 if not InCombatLockdown() then
                     SetCVar("Sound_NumChannels", 128)
@@ -36,11 +36,11 @@ eventFrame:SetScript(
                     }
                 )
 
-                LDBIcon:Register("Aura Updater", LUP.LDB, LiquidUpdaterSaved.minimap)
+                LDBIcon:Register("Aura Updater", LUP.LDB, SAPUpdaterSaved.minimap)
 
                 LUP:UpdateMinimapIconVisibility()
 
-                LUP.LiquidUI:Initialize(LiquidUpdaterSaved)
+                LUP.LiquidUI:Initialize(SAPUpdaterSaved)
 
                 LUP:InitializeNicknames()
                 LUP:InitializeBigWigsDisabler()

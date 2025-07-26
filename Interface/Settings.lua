@@ -46,9 +46,9 @@ function LUP:InitializeSettings()
     AddCheckButton(
         "Hide minimap icon when up to date",
         "Hides the minimap icon when all your auras (and the addon itself) are up to date.",
-        LiquidUpdaterSaved.settings.hideMinimapIcon,
+        SAPUpdaterSaved.settings.hideMinimapIcon,
         function(hideMinimapIcon)
-            LiquidUpdaterSaved.settings.hideMinimapIcon = hideMinimapIcon
+            SAPUpdaterSaved.settings.hideMinimapIcon = hideMinimapIcon
             
             LUP:UpdateMinimapIconVisibility()
         end
@@ -57,9 +57,9 @@ function LUP:InitializeSettings()
     AddCheckButton(
         "Notify on ready check",
         "If your addon or any of your auras are out of date, show a popup window on ready check.",
-        LiquidUpdaterSaved.settings.readyCheckPopup,
+        SAPUpdaterSaved.settings.readyCheckPopup,
         function(readyCheckPopup)
-            LiquidUpdaterSaved.settings.readyCheckPopup = readyCheckPopup
+            SAPUpdaterSaved.settings.readyCheckPopup = readyCheckPopup
         end
     )
 
@@ -72,9 +72,9 @@ function LUP:InitializeSettings()
         "- Experimental Dosage assignments|n" ..
         "- Voracious Worm marking|n" ..
         "- Reactive Toxin assignments",
-        LiquidUpdaterSaved.settings.disableBigWigsAssignments,
+        SAPUpdaterSaved.settings.disableBigWigsAssignments,
         function(disableBigWigsAssignments)
-            LiquidUpdaterSaved.settings.disableBigWigsAssignments = disableBigWigsAssignments
+            SAPUpdaterSaved.settings.disableBigWigsAssignments = disableBigWigsAssignments
 
             if disableBigWigsAssignments then
                 LUP:RegisterBigWigsDisabler()
@@ -128,7 +128,7 @@ function LUP:InitializeSettings()
 
         nicknameEditBox.secondaryTooltipText = string.format("|cff%sA preset nickname is associated with your battle.net account, so you cannot set one yourself.|r", LUP.gs.visual.colorStrings.red)
     else
-        nicknameEditBox:SetText(LiquidUpdaterSaved.nickname or "")
+        nicknameEditBox:SetText(SAPUpdaterSaved.nickname or "")
     end
 
     -- Nickname warning
@@ -202,16 +202,16 @@ function LUP:InitializeSettings()
     -- VuhDo nickname info
     local vuhDoInfoButton = LUP:CreateInfoButton(LUP.settingsWindow, "Click this button to toggle VuhDo nicknames.")
 
-    if LiquidUpdaterSaved.settings.vuhDoNicknames then
+    if SAPUpdaterSaved.settings.vuhDoNicknames then
         vuhDoInfoButton.secondaryTooltipText = string.format("VuhDo nicknames are currently |cff%senabled|r.", LUP.gs.visual.colorStrings.green)
     else
         vuhDoInfoButton.secondaryTooltipText = string.format("VuhDo nicknames are currently |cff%sdisabled|r.", LUP.gs.visual.colorStrings.red)
     end
 
     local function ToggleVuhDoNicknames()
-        LiquidUpdaterSaved.settings.vuhDoNicknames = not LiquidUpdaterSaved.settings.vuhDoNicknames
+        SAPUpdaterSaved.settings.vuhDoNicknames = not SAPUpdaterSaved.settings.vuhDoNicknames
 
-        if LiquidUpdaterSaved.settings.vuhDoNicknames then
+        if SAPUpdaterSaved.settings.vuhDoNicknames then
             vuhDoInfoButton.secondaryTooltipText = string.format("VuhDo nicknames are currently |cff%senabled|r.", LUP.gs.visual.colorStrings.green)
         else
             vuhDoInfoButton.secondaryTooltipText = string.format("VuhDo nicknames are currently |cff%sdisabled|r.", LUP.gs.visual.colorStrings.red)
@@ -234,16 +234,16 @@ function LUP:InitializeSettings()
     -- CustomNames nickname info
     local customNamesInfoButton = LUP:CreateInfoButton(LUP.settingsWindow, "Click this button to toggle CustomNames nicknames.")
 
-    if LiquidUpdaterSaved.settings.CustomNames then
+    if SAPUpdaterSaved.settings.CustomNames then
         customNamesInfoButton.secondaryTooltipText = string.format("CustomNames nicknames are currently |cff%senabled|r.", LUP.gs.visual.colorStrings.green)
     else
         customNamesInfoButton.secondaryTooltipText = string.format("CustomNames nicknames are currently |cff%sdisabled|r.", LUP.gs.visual.colorStrings.red)
     end
 
     local function ToggleCustomNames()
-        LiquidUpdaterSaved.settings.CustomNames = not LiquidUpdaterSaved.settings.CustomNames
+        SAPUpdaterSaved.settings.CustomNames = not SAPUpdaterSaved.settings.CustomNames
 
-        if LiquidUpdaterSaved.settings.CustomNames then
+        if SAPUpdaterSaved.settings.CustomNames then
             customNamesInfoButton.secondaryTooltipText = string.format("CustomNames nicknames are currently |cff%senabled|r.", LUP.gs.visual.colorStrings.green)
 
             LUP:RegisterCustomNamesNicknames()

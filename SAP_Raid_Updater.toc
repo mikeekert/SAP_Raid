@@ -3,7 +3,7 @@
 ## Title: SAP Raid Tools [Manaforge]
 ## Author: yes
 ## IconTexture: Interface\AddOns\AuraUpdater\Media\Textures\logo_secondary.blp
-## SavedVariables: LiquidUpdaterSaved
+## SavedVariables: SAPUpdaterSaved
 ## Dependencies: WeakAuras
 ## OptionalDeps: ViragDevTool, DBM-Core, Liquid, LiquidUpdater
 ## Category: SAP
@@ -34,4 +34,4 @@ Interface/AuraChecker.lua
 Interface/OtherChecker.lua
 Interface/Settings.lua
 
-SAP_Raid_2.lua
+SAP_Raid_Updater.lua

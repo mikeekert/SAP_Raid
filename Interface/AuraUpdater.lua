@@ -48,7 +48,7 @@ local function BroadcastVersions()
 end
 
 local function SerializeVersionsTable()
-    for displayName, auraData in pairs(LiquidUpdaterSaved.WeakAuras) do
+    for displayName, auraData in pairs(SAPUpdaterSaved.WeakAuras) do
         local uid = auraData.d.uid
         local installedAuraID = uid and UIDToID[uid]
         local installedVersion = installedAuraID and WeakAuras.GetData(installedAuraID).liquidVersion or 0
@@ -74,7 +74,7 @@ local function UpdateNickname(nickname)
 
     local oldNickname = playerVersionsTable.nickname
 
-    LiquidUpdaterSaved.nickname = nickname
+    SAPUpdaterSaved.nickname = nickname
     playerVersionsTable.nickname = nickname
 
     return oldNickname ~= nickname
@@ -157,7 +157,7 @@ end
 
 function LUP:UpdateMinimapIconVisibility()
     if LUP.upToDate then
-        if LiquidUpdaterSaved.settings.hideMinimapIcon then
+        if SAPUpdaterSaved.settings.hideMinimapIcon then
             LDBIcon:Hide("Aura Updater")
         else
             LDBIcon:Show("Aura Updater")
@@ -182,7 +182,7 @@ local function BuildAuraImportElements()
     local aurasToUpdate = {}
 
     for displayName, highestSeenVersion in pairs(LUP.highestSeenVersionsTable.auras) do
-        local auraData = LiquidUpdaterSaved.WeakAuras[displayName]
+        local auraData = SAPUpdaterSaved.WeakAuras[displayName]
         local uid = auraData and auraData.d.uid
         local importedVersion = auraData and auraData.d.liquidVersion or 0
         local installedAuraID = uid and UIDToID[uid]
@@ -601,7 +601,7 @@ function LUP:InitializeAuraUpdater()
         addOn = tonumber(C_AddOns.GetAddOnMetadata(addOnName, "Version")),
         auras = {},
         ignores = {},
-        nickname = LiquidUpdaterSaved.nickname
+        nickname = SAPUpdaterSaved.nickname
     }
 
     UpdateIgnoredPlayers()
@@ -614,7 +614,7 @@ function LUP:InitializeAuraUpdater()
     AceComm:RegisterComm("AU_Request", BroadcastVersions)
     AceComm:RegisterComm("AU_Versions", ReceiveVersions)
 
-    for displayName, auraData in pairs(LiquidUpdaterSaved.WeakAuras) do
+    for displayName, auraData in pairs(SAPUpdaterSaved.WeakAuras) do
         auraUIDs[auraData.d.uid] = true
 
         LUP.highestSeenVersionsTable.auras[displayName] = auraData.d.liquidVersion
@@ -688,7 +688,7 @@ local function OnEvent(_, event, ...)
             )
         end
 
-        if LiquidUpdaterSaved.settings.readyCheckPopup and not LUP.upToDate then
+        if SAPUpdaterSaved.settings.readyCheckPopup and not LUP.upToDate then
             updatePopupWindow:Pop()
             updatePopupWindow:SetPoint("CENTER", UIParent, "CENTER", 0, 150)
         end

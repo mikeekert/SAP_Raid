@@ -9,10 +9,10 @@ LUP.nicknameInitFunctions[ADDON_NAME] = function()
     if not CellDB.nicknames then return end
 
     -- Budget solution to disable AuraUpdater Cell nicknames while they are enabled inside Cell itself
-    if LiquidUpdaterSaved.settings.cellNicknames == false then return end
+    if SAPUpdaterSaved.settings.cellNicknames == false then return end
 
     -- Insert nicknames
-    for name, nickname in pairs(LiquidUpdaterSaved.nicknames) do
+    for name, nickname in pairs(SAPUpdaterSaved.nicknames) do
         local cellFormat = string.format("%s:%s", name, nickname)
 
         -- Insert nickname if it doesn't already exist, and refresh unit frame if necessary
@@ -23,7 +23,7 @@ LUP.nicknameInitFunctions[ADDON_NAME] = function()
 end
 
 LUP.nicknameUpdateFunctions[ADDON_NAME] = function(_, realmIncludedName, oldNickname, nickname)
-	if Cell and CellDB and CellDB.nicknames and LiquidUpdaterSaved.settings.cellNicknames ~= false then
+	if Cell and CellDB and CellDB.nicknames and SAPUpdaterSaved.settings.cellNicknames ~= false then
         local oldEntry = oldNickname and string.format("%s:%s", realmIncludedName, oldNickname)
         local newEntry = nickname and string.format("%s:%s", realmIncludedName, nickname)
 

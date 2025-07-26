@@ -68,7 +68,7 @@ function LUP:UpdateNicknameForUnit(unit, nickname)
 
     -- Update nicknameToCharacterCache for use in GetCharacterInGroup()
     -- This has the potential to nil others' nicknames if two players share the same nickname, but take care of that inside GetCharacterInGroup()
-    local oldNickname = LiquidUpdaterSaved.nicknames[realmIncludedName]
+    local oldNickname = SAPUpdaterSaved.nicknames[realmIncludedName]
 
     if oldNickname then
         nicknameToCharacterCache[oldNickname] = nil
@@ -78,7 +78,7 @@ function LUP:UpdateNicknameForUnit(unit, nickname)
         nicknameToCharacterCache[nickname] = unit
     end
 
-    LiquidUpdaterSaved.nicknames[realmIncludedName] = nickname
+    SAPUpdaterSaved.nicknames[realmIncludedName] = nickname
 
 	-- Update nicknames for installed addons
 	for _, updateFunction in pairs(LUP.nicknameUpdateFunctions) do
@@ -95,7 +95,7 @@ function AuraUpdater:GetNickname(unit)
     end
 
     local realmIncludedName = RealmIncludedName(unit)
-    local nickname = LiquidUpdaterSaved.nicknames[realmIncludedName or ""]
+    local nickname = SAPUpdaterSaved.nicknames[realmIncludedName or ""]
 
     if not nickname then
         nickname = UnitNameUnmodified(unit)

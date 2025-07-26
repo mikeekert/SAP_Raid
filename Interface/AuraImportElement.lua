@@ -35,7 +35,7 @@ function LUP:CreateAuraImportElement(parent)
             frame.icon:Show()
             frame.displayName:SetPoint("LEFT", frame, "LEFT", 38, 0)
         else
-            local auraData = LiquidUpdaterSaved.WeakAuras[displayName]
+            local auraData = SAPUpdaterSaved.WeakAuras[displayName]
 
             frame.importButton:SetScript(
                 "OnClick",
@@ -80,7 +80,7 @@ function LUP:CreateAuraImportElement(parent)
                             if not success then return end
 
                             local data = WeakAuras.GetData(id)
-                            local version = LiquidUpdaterSaved.WeakAuras[displayName].d.liquidVersion
+                            local version = SAPUpdaterSaved.WeakAuras[displayName].d.liquidVersion
 
                             data.preferToUpdate = true
                             data.ignoreWagoUpdate = true
