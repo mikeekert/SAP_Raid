@@ -1,5 +1,9 @@
 # SAP Updater
 
+## v33 (2025-07-26)
+- trying new url for avatar
+
+
 ## v32 (2025-07-26)
 - Update release.yml
 
