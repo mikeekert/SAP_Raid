@@ -1,5 +1,9 @@
 # SAP Updater
 
+## v25 (2025-07-26)
+- idk
+
+
 ## v21 (2025-07-26)
 - refactored changelog job
 
