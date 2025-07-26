@@ -62,7 +62,7 @@ function LUP:InitializeWeakAurasImporter()
 
         if IsRelevantWeakAura(displayName) then
             local version = auraData.version
-            local importedVersion = SAPUpdaterSaved.WeakAuras[displayName] and SAPUpdaterSaved.WeakAuras[displayName].d and SAPUpdaterSaved.WeakAuras[displayName].d.liquidVersion
+            local importedVersion = SAPUpdaterSaved.WeakAuras[displayName] and SAPUpdaterSaved.WeakAuras[displayName].d and SAPUpdaterSaved.WeakAuras[displayName].d.sapVersion
 
             if not importedVersion or importedVersion < version then
                 local toDecode = auraData.data:match("!WA:2!(.+)")
@@ -77,7 +77,7 @@ function LUP:InitializeWeakAurasImporter()
                             local success, data = LibSerialize:Deserialize(decompressed)
 
                             if success then
-                                data.d.liquidVersion = version
+                                data.d.sapVersion = version
                                 data.d.url = nil
                                 data.d.wagoID = nil
 

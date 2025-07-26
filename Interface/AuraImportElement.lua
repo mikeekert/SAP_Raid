@@ -80,11 +80,11 @@ function LUP:CreateAuraImportElement(parent)
                             if not success then return end
 
                             local data = WeakAuras.GetData(id)
-                            local version = SAPUpdaterSaved.WeakAuras[displayName].d.liquidVersion
+                            local version = SAPUpdaterSaved.WeakAuras[displayName].d.sapVersion
 
                             data.preferToUpdate = true
                             data.ignoreWagoUpdate = true
-                            data.liquidVersion = version
+                            data.sapVersion = version
 
                             LUP:ForceUpdateOnInit(customOnInit)
                             LUP:OnUpdateAura()
