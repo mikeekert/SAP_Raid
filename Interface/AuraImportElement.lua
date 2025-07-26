@@ -51,8 +51,15 @@ function LUP:CreateAuraImportElement(parent)
                     LUP:ApplyLoadSettings(modifiedAuraData.d, installedAuraData)
                     LUP:ApplyMiscellaneousPositionSettings(modifiedAuraData)
 
+                    local versionString = string.format("1.0.%d", modifiedAuraData.d.sapVersion)
+                    modifiedAuraData.d.semver = versionString
+                    modifiedAuraData.d.version = versionString
+
                     if modifiedAuraData.c then
                         for _, childAuraData in pairs(modifiedAuraData.c) do
+                            childAuraData.semver = nil
+                            childAuraData.version = nil
+
                             local installedChildAuraData = LUP:GetInstalledAuraDataByUID(childAuraData.uid)
 
                             LUP:ApplyLoadSettings(childAuraData, installedChildAuraData)
@@ -85,6 +92,7 @@ function LUP:CreateAuraImportElement(parent)
                             data.preferToUpdate = true
                             data.ignoreWagoUpdate = true
                             data.sapVersion = version
+                            data.semver = string.format("1.0.%d", version)
 
                             LUP:ForceUpdateOnInit(customOnInit)
                             LUP:OnUpdateAura()

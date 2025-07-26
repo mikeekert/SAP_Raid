@@ -19,6 +19,24 @@ local function ResizeHeaderButtons(_, buttonFrameWidth)
     auraCheckButton:SetWidth(combinedButtonWidth / 3)
 end
 
+local function SetActiveButton(activeButton)
+    updateButton.Background = updateButton.Background or updateButton:CreateTexture(nil, "BACKGROUND")
+    updateButton.Background:SetAllPoints()
+    updateButton.Background:SetColorTexture(0, 0, 0, 0)
+
+    auraCheckButton.Background = auraCheckButton.Background or auraCheckButton:CreateTexture(nil, "BACKGROUND")
+    auraCheckButton.Background:SetAllPoints()
+    auraCheckButton.Background:SetColorTexture(0, 0, 0, 0)
+
+    otherCheckButton.Background = otherCheckButton.Background or otherCheckButton:CreateTexture(nil, "BACKGROUND")
+    otherCheckButton.Background:SetAllPoints()
+    otherCheckButton.Background:SetColorTexture(0, 0, 0, 0)
+
+    activeButton.Background = activeButton.Background or activeButton:CreateTexture(nil, "BACKGROUND")
+    activeButton.Background:SetAllPoints()
+    activeButton.Background:SetColorTexture(0.3, 0.3, 0.9, 0.3) -- Blue highlight
+end
+
 function LUP:InitializeInterface()
     -- Window
     LUP.window = LUP:CreateWindow(nil, true, true, true)
@@ -60,7 +78,7 @@ function LUP:InitializeInterface()
     updateButton.text = updateButton:CreateFontString(nil, "OVERLAY")
     updateButton.text:SetFontObject(LiquidFont17)
     updateButton.text:SetPoint("CENTER", updateButton, "CENTER")
-    updateButton.text:SetText(string.format("|cff%sUpdate|r", LUP.gs.visual.colorStrings.white))
+    updateButton.text:SetText(string.format("|cff%sUpdate WeakAuras|r", LUP.gs.visual.colorStrings.white))
 
     updateButton:SetScript(
         "OnMouseDown",
@@ -68,6 +86,7 @@ function LUP:InitializeInterface()
             LUP.updateWindow:Show()
             LUP.auraCheckWindow:Hide()
             LUP.otherCheckWindow:Hide()
+            SetActiveButton(updateButton)
         end
     )
 
@@ -89,7 +108,7 @@ function LUP:InitializeInterface()
     auraCheckButton.text = auraCheckButton:CreateFontString(nil, "OVERLAY")
     auraCheckButton.text:SetFontObject(LiquidFont17)
     auraCheckButton.text:SetPoint("CENTER", auraCheckButton, "CENTER")
-    auraCheckButton.text:SetText(string.format("|cff%sAura check|r", LUP.gs.visual.colorStrings.white))
+    auraCheckButton.text:SetText(string.format("|cff%sCheck Raid versions|r", LUP.gs.visual.colorStrings.white))
 
     auraCheckButton:SetScript(
         "OnMouseDown",
@@ -97,6 +116,7 @@ function LUP:InitializeInterface()
             LUP.updateWindow:Hide()
             LUP.auraCheckWindow:Show()
             LUP.otherCheckWindow:Hide()
+            SetActiveButton(auraCheckButton)
         end
     )
 
@@ -117,7 +137,7 @@ function LUP:InitializeInterface()
     otherCheckButton.text = otherCheckButton:CreateFontString(nil, "OVERLAY")
     otherCheckButton.text:SetFontObject(LiquidFont17)
     otherCheckButton.text:SetPoint("CENTER", otherCheckButton, "CENTER")
-    otherCheckButton.text:SetText(string.format("|cff%sOther check|r", LUP.gs.visual.colorStrings.white))
+    otherCheckButton.text:SetText(string.format("|cff%sCheck other items|r", LUP.gs.visual.colorStrings.white))
 
     otherCheckButton:SetScript(
         "OnMouseDown",
@@ -125,6 +145,7 @@ function LUP:InitializeInterface()
             LUP.updateWindow:Hide()
             LUP.auraCheckWindow:Hide()
             LUP.otherCheckWindow:Show()
+            SetActiveButton(otherCheckButton)
         end
     )
 
@@ -151,7 +172,7 @@ function LUP:InitializeInterface()
 
     LUP:InitializeSettings()
 
-    -- When escape is pressed, cclose the main window
+    -- When escape is pressed, close the main window
     LUP.window:SetScript(
         "OnKeyDown",
         function(_, key)
@@ -166,4 +187,6 @@ function LUP:InitializeInterface()
             end
         end
     )
+
+    SetActiveButton(updateButton)
 end
