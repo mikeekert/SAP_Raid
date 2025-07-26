@@ -163,11 +163,11 @@ function LUP:UpdateMinimapIconVisibility()
             LDBIcon:Show("Aura Updater")
         end
 
-        LUP.LDB.icon = [[Interface\Addons\AuraUpdater\Media\Textures\minimap_logo.tga]]
+        LUP.LDB.icon = [[Interface\Addons\SAP_Raid_Updater\Media\Textures\minimap_logo.tga]]
     else
         LDBIcon:Show("Aura Updater")
 
-        LUP.LDB.icon = [[Interface\Addons\AuraUpdater\Media\Textures\minimap_logo_red.tga]]
+        LUP.LDB.icon = [[Interface\Addons\SAP_Raid_Updater\Media\Textures\minimap_logo_red.tga]]
     end
 end
 

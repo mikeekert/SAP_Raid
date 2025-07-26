@@ -1,8 +1,8 @@
 ## Interface: 110107
 ## Version: 1
 ## Title: SAP Raid Tools [Manaforge]
-## Author: yes
-## IconTexture: Interface\AddOns\AuraUpdater\Media\Textures\logo_secondary.blp
+## Author: SAP
+## IconTexture: Interface\Addons\SAP_Raid_Updater\Media\Textures\logo_secondary.blp
 ## SavedVariables: SAPUpdaterSaved
 ## Dependencies: WeakAuras
 ## OptionalDeps: ViragDevTool, DBM-Core, Liquid, LiquidUpdater

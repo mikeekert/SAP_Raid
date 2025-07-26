@@ -31,7 +31,7 @@ eventFrame:SetScript(
                     {
                         type = "data source",
                         text = "Aura Updater",
-                        icon = [[Interface\Addons\AuraUpdater\Media\Textures\minimap_logo.tga]],
+                        icon = [[Interface\Addons\SAP_Raid_Updater\Media\Textures\minimap_logo.tga]],
                         OnClick = function() LUP.window:SetShown(not LUP.window:IsShown()) end
                     }
                 )
