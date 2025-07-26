@@ -50,8 +50,9 @@ jobs:
           echo "Updated CHANGELOG.md with commit log from $PREV_TAG to $TAG_NAME"
       
           # Escape changelog entry for JSON embedding
-          ESCAPED_CHANGELOG_ENTRY=$(printf '%s' "$CHANGELOG_ENTRY" | sed -e 's/\\/\\\\/g' -e 's/"/\\"/g')
-      
+          CHANGELOG_FOR_EMBED=$(echo "$CHANGELOG_ENTRY" | sed 's/^## //; s/^# //')
+          ESCAPED_CHANGELOG_ENTRY=$(printf '%s' "$CHANGELOG_FOR_EMBED" | sed -e 's/\\/\\\\/g' -e 's/"/\\"/g')
+
           EMBEDS=$(cat <<EOF
           [
             {
