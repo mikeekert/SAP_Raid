@@ -60,8 +60,8 @@ jobs:
             # Prepare discord embeds
             VERSION_LINE="## $TAG_NAME ($CURRENT_DATE)"
             CHANGELOG_TEXT=$(echo "$COMMIT_LOG" | sed 's/\[sap\]//g' | sed ':a;N;$!ba;s/\n/\\n/g' | sed 's/"/\\"/g')
-            
-            EMBEDS=$(cat <<EOF
+
+            EMBEDS=$(cat <<-EOF
             [
               {
                 "title": "New Version Deployed",
@@ -69,9 +69,9 @@ jobs:
                 "color": 1127128
               }
             ]
-            EOF
+              EOF
             )
-            
+
             echo "embeds<<EOF" >> $GITHUB_OUTPUT
             printf "%s\n" "$EMBEDS" >> $GITHUB_OUTPUT
             echo "EOF" >> $GITHUB_OUTPUT
