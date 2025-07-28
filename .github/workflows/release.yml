@@ -24,61 +24,96 @@ jobs:
       - name: Update Version and Changelog
         id: update_version_and_changelog
         run: |
+          set -e  # Exit immediately if any command fails
+          
+          echo "::group::Updating TOC Version"
           TAG_NAME=${GITHUB_REF#refs/tags/}
+          if [ -z "$TAG_NAME" ]; then
+            echo "::error::Failed to extract tag name from ${GITHUB_REF}"
+            exit 1
+          fi
+          
           CLEAN_TAG=$(echo $TAG_NAME | sed 's/^1\.0\.//')
-      
+          echo "Tag: $TAG_NAME, Clean tag: $CLEAN_TAG"
+          
+          if [ ! -f SAP_Raid_Updater.toc ]; then
+            echo "::error::TOC file not found"
+            exit 1
+          fi
+          
           sed -i "s/## Version: .*/## Version: $CLEAN_TAG/" SAP_Raid_Updater.toc
           echo "Updated TOC version to $CLEAN_TAG"
-      
+          echo "::endgroup::"
+          
+          echo "::group::Retrieving commit history"
           # Get current date
           CURRENT_DATE=$(date +"%Y-%m-%d")
-      
+          
           # Get previous tag
           PREV_TAG=$(git tag --sort=-creatordate | grep -v "$TAG_NAME" | head -n 1)
           echo "Current tag: $TAG_NAME"
           echo "Previous tag: $PREV_TAG"
-      
+          
+          COMMIT_LOG=""
           if [ -n "$PREV_TAG" ]; then
-            COMMIT_LOG=$(git log "$PREV_TAG..$TAG_NAME" --pretty=format:"- %s" | grep '\[sap\]' | grep -v '\[skip ci\]')
+            echo "Getting commits from $PREV_TAG to $TAG_NAME"
+            COMMIT_LOG=$(git log "$PREV_TAG..$TAG_NAME" --pretty=format:"- %s" | grep '\[sap\]' | grep -v '\[skip ci\]' || true)
           else
-            COMMIT_LOG=$(git log "$TAG_NAME" --pretty=format:"- %s" | grep '\[sap\]' | grep -v '\[skip ci\]')
+            echo "No previous tag found, getting all commits up to $TAG_NAME"
+            COMMIT_LOG=$(git log "$TAG_NAME" --pretty=format:"- %s" | grep '\[sap\]' | grep -v '\[skip ci\]' || true)
           fi
-      
-          echo "Commit log here: "
-          echo "$COMMIT_LOG"
-      
+          
+          echo "Commit log content: "
+          if [ -z "$COMMIT_LOG" ]; then
+            echo "No [sap] commits found"
+          else
+            echo "$COMMIT_LOG"
+          fi
+          echo "::endgroup::"
+          
           # Output the commit_log for use in subsequent steps
+          echo "::group::Setting output variables"
           echo "commit_log<<EOF" >> $GITHUB_OUTPUT
           echo "$COMMIT_LOG" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
-      
+          echo "::endgroup::"
+          
+          echo "::group::Updating Changelog"
           # Only proceed if COMMIT_LOG is not empty
           if [ -n "$COMMIT_LOG" ]; then
+            echo "Updating CHANGELOG.md with new commits"
             # Generate CHANGELOG.md.new if it doesn't exist
-            if [ ! -f CHANGELOG.md.new ]; then
-              echo "## $TAG_NAME ($CURRENT_DATE)" > CHANGELOG.md.new
-              echo "$COMMIT_LOG" | sed 's/\[sap\]//g' >> CHANGELOG.md.new
-              echo "Generated CHANGELOG.md.new"
+            if [ ! -f CHANGELOG.md ]; then
+              echo "Creating new CHANGELOG.md file"
+              touch CHANGELOG.md
             fi
-      
+            
+            echo "## $TAG_NAME ($CURRENT_DATE)" > CHANGELOG.md.new
+            echo "$COMMIT_LOG" | sed 's/\[sap\]//g' >> CHANGELOG.md.new
+            echo "" >> CHANGELOG.md.new
+            
+            if [ -f CHANGELOG.md ]; then
+              cat CHANGELOG.md >> CHANGELOG.md.new
+            fi
+            
             mv CHANGELOG.md.new CHANGELOG.md
             echo "Updated CHANGELOG.md with commit log from $PREV_TAG to $TAG_NAME"
           else
             echo "No relevant commits found. Skipping changelog update."
           fi
-
-      - name: Prepare Addon Folder
-        run: |
-          mkdir -p package/SAP_Raid_Updater
-          shopt -s extglob
-          cp -r !(package|.git|.github) package/SAP_Raid_Updater/
-
-      - name: Create ZIP with tag suffix
-        run: |
-          TAG_NAME=${GITHUB_REF#refs/tags/}
-          cd package
-          zip -qr SAP_Raid_Updater-v${TAG_NAME}.zip SAP_Raid_Updater/
-          echo "ZIP_NAME=SAP_Raid_Updater-v${TAG_NAME}.zip" >> $GITHUB_ENV
+          echo "::endgroup::"
+            - name: Prepare Addon Folder
+              run: |
+                mkdir -p package/SAP_Raid_Updater
+                shopt -s extglob
+                cp -r !(package|.git|.github) package/SAP_Raid_Updater/
+      
+            - name: Create ZIP with tag suffix
+              run: |
+                TAG_NAME=${GITHUB_REF#refs/tags/}
+                cd package
+                zip -qr SAP_Raid_Updater-v${TAG_NAME}.zip SAP_Raid_Updater/
+                echo "ZIP_NAME=SAP_Raid_Updater-v${TAG_NAME}.zip" >> $GITHUB_ENV
 
       - name: Upload Release Asset
         if: ${{ success() }}
