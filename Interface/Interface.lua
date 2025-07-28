@@ -48,7 +48,7 @@ function LUP:InitializeInterface()
     LUP.window:Hide()
 
     LUP.window:AddButton(
-        "Interface\\Addons\\AuraUpdater\\Media\\Textures\\Cogwheel.tga",
+        "Interface\\Addons\\SAP_Raid_Updater\\Media\\Textures\\Cogwheel.tga",
         "Settings",
         function()
             LUP.settingsWindow:SetShown(not LUP.settingsWindow:IsShown())

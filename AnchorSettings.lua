@@ -1,6 +1,6 @@
 local SharedMedia = LibStub("LibSharedMedia-3.0")
 
-AuraUpdater = {}
+SAP_Raid_Updater = {}
 
 local anchorSettings = {}
 local updateAnchorFunctions = {}
@@ -12,16 +12,9 @@ local previewCounts = {
     bars = 3,
     specialBars = 1,
     lists = 10,
-    raidLeaderLists = 4,
     bigIcons = 1,
     icons = 3,
-    assignments = 1,
     texts = 1,
-    tankWarningsBars = 2, -- It's actually 1, but needs to be 2 here to account for the group having both texts and bars
-    tankWarningsTexts = 1,
-    coTankWarnings = 2,
-    tankIcons = 2,
-    coTankIcons = 2
 }
 
 local function PositionAuras(settings, newPositions, activeRegions)
@@ -417,13 +410,12 @@ applyAnchorFunctions.Assignments = function(newPositions, activeRegions)
     ApplyTextSettings(anchorSettings.assignments, newPositions, activeRegions)
 end
 
-function AuraUpdater:UpdateAnchorSettings(anchorType)
+function SAP_Raid_Updater:UpdateAnchorSettings(anchorType)
     if not updateAnchorFunctions[anchorType] then return end
-
     updateAnchorFunctions[anchorType]()
 end
 
-function AuraUpdater:ApplyAnchorSettings(anchorType, newPositions, activeRegions)
+function SAP_Raid_Updater:ApplyAnchorSettings(anchorType, newPositions, activeRegions)
     if not applyAnchorFunctions[anchorType] then return end
 
     applyAnchorFunctions[anchorType](newPositions, activeRegions)

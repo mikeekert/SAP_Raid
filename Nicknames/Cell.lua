@@ -8,7 +8,7 @@ LUP.nicknameInitFunctions[ADDON_NAME] = function()
     if not CellDB then return end
     if not CellDB.nicknames then return end
 
-    -- Budget solution to disable AuraUpdater Cell nicknames while they are enabled inside Cell itself
+    -- Budget solution to disable Addon Cell nicknames while they are enabled inside Cell itself
     if SAPUpdaterSaved.settings.cellNicknames == false then return end
 
     -- Insert nicknames

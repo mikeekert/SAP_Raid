@@ -102,7 +102,7 @@ function LUP.auraChecker:UpdateCheckElementForUnit(unit, versionsTable, force)
 
     if not (class and name) then return end
 
-    name = AuraUpdater:GetNickname(unit) or name -- If this unit has a nickname, use that instead
+    name = SAP_Raid_Updater:GetNickname(unit) or name -- If this unit has a nickname, use that instead
 
     local colorStr = RAID_CLASS_COLORS[class].colorStr
     local coloredName = string.format("|c%s%s|r", colorStr, name)

@@ -98,7 +98,7 @@ function LUP:InitializeSettings()
     nicknameEditBox:SetMaxLetters(12)
 
     local nicknameTooltips = "Set a nickname for yourself that your group members can see.|n|n" ..
-    "Nicknames show instead of character names in several places, such as WeakAuras, unit frames, and AuraUpdater.|n|n" ..
+    "Nicknames show instead of character names in several places, such as WeakAuras, unit frames, and Addon.|n|n" ..
     "They can also be used in MRT assignments, or for MRT reminders."
 
     LUP.LiquidUI:AddTooltip(nicknameEditBox, nicknameTooltips)
@@ -169,7 +169,7 @@ function LUP:InitializeSettings()
     "- Open Grid2 settings|n" ..
     "- Go to statuses|n" ..
     "- Disable Miscellaneous > name|n" ..
-    "- Enable miscellaneous > AuraUpdater Nickname"
+    "- Enable miscellaneous > Addon Nickname"
 
     local gridInfoButton = LUP:CreateInfoButton(LUP.settingsWindow, gridInfoTooltip)
 

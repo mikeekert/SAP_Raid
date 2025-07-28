@@ -121,7 +121,7 @@ function LUP.otherChecker:UpdateCheckElementForUnit(unit, versionsTable, force)
 
     if not (class and name) then return end
 
-    name = AuraUpdater:GetNickname(unit) or name -- If this unit has a nickname, use that instead
+    name = SAP_Raid_Updater:GetNickname(unit) or name -- If this unit has a nickname, use that instead
 
     local colorStr = RAID_CLASS_COLORS[class].colorStr
     local coloredName = string.format("|c%s%s|r", colorStr, name)
@@ -219,14 +219,14 @@ local function CheckElementInitializer(frame, data)
 
             LUP.LiquidUI:AddTooltip(
                 versionFrame,
-                "No information about MRT note received.|n|nUser is running an outdated AuraUpdater version, or has MRT disabled."
+                "No information about MRT note received.|n|nUser is running an outdated Addon version, or has MRT disabled."
             )
         else
             versionFrame.versionsBehindIcon.tex:SetAtlas("QuestTurnin")
 
             LUP.LiquidUI:AddTooltip(
                 versionFrame,
-                "No information about MRT note received.|n|nUser is not running AuraUpdater."
+                "No information about MRT note received.|n|nUser is not running Addon."
             )
         end
     elseif mrtNoteHash == data.mrtNoteHash then
@@ -254,14 +254,14 @@ local function CheckElementInitializer(frame, data)
 
             LUP.LiquidUI:AddTooltip(
                 versionFrame,
-                "No information about ignored players received.|n|nUser is running an outdated AuraUpdater version."
+                "No information about ignored players received.|n|nUser is running an outdated Addon version."
             )
         else
             versionFrame.versionsBehindIcon.tex:SetAtlas("QuestTurnin")
 
             LUP.LiquidUI:AddTooltip(
                 versionFrame,
-                "No information about ignored players received.|n|nUser is not running AuraUpdater."
+                "No information about ignored players received.|n|nUser is not running Addon."
             )
         end
     elseif next(data.ignores) then
@@ -294,7 +294,7 @@ local function CheckElementInitializer(frame, data)
 
         LUP.LiquidUI:AddTooltip(
             versionFrame,
-            "No information about RCLC version received.|n|nUser is running an outdated AuraUpdater version."
+            "No information about RCLC version received.|n|nUser is running an outdated Addon version."
         )
     elseif not data.RCLC then
         if data.auraUpdater then

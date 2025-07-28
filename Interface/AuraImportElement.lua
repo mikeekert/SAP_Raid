@@ -31,7 +31,7 @@ function LUP:CreateAuraImportElement(parent)
         -- If this element shows an addon update instead of an aura update, don't add an update button script
         -- Icon is also hardcoded, rather than taken from aura data (there is no aura)
         if displayName == "SAP_Raid_Updater" then
-            frame.icon.tex:SetTexture("Interface\\Addons\\AuraUpdater\\Media\\Textures\\Bart.tga")
+            frame.icon.tex:SetTexture("Interface\\Addons\\SAP_Raid_Updater\\Media\\Textures\\Bart.tga")
             frame.icon:Show()
             frame.displayName:SetPoint("LEFT", frame, "LEFT", 38, 0)
         else
@@ -118,16 +118,20 @@ function LUP:CreateAuraImportElement(parent)
     frame.versionCount:SetFontObject(LiquidFont17)
     frame.versionCount:SetPoint("CENTER", frame, "CENTER")
     
-    function frame:SetVersionsBehind(count)
-        frame.versionCount:SetText(string.format("|cff%s%d version(s) behind|r", LUP.gs.visual.colorStrings.red, count))
+    function frame:SetVersionsBehind(count, isAnchors)
+        if not isAnchors then
+            frame.versionCount:SetText(string.format("|cff%s%d version(s) behind|r", LUP.gs.visual.colorStrings.red, count))
+        else
+            frame.versionCount:SetText(string.format("|cff%sMissing!|r", LUP.gs.visual.colorStrings.red))
+        end
     end
 
     -- Import button
     frame.importButton = LUP:CreateButton(frame, "Update", function() end)
 
-    frame.importButton :SetNormalFontObject(LiquidFont15)
-    frame.importButton :SetHighlightFontObject(LiquidFont15)
-    frame.importButton :SetDisabledFontObject(LiquidFont15)
+    frame.importButton:SetNormalFontObject(LiquidFont15)
+    frame.importButton:SetHighlightFontObject(LiquidFont15)
+    frame.importButton:SetDisabledFontObject(LiquidFont15)
 
     frame.importButton:SetPoint("RIGHT", frame, "RIGHT", -8, 0)
 
@@ -136,7 +140,7 @@ function LUP:CreateAuraImportElement(parent)
 
     frame.requiresUpdateText:SetFontObject(LiquidFont17)
     frame.requiresUpdateText:SetPoint("RIGHT", frame, "RIGHT", -8, 0)
-    frame.requiresUpdateText:SetText(string.format("|cff%sUpdate addon!|r", LUP.gs.visual.colorStrings.red))
+    frame.requiresUpdateText:SetText(string.format("|cff%sUpdate please!|r", LUP.gs.visual.colorStrings.red))
     frame.requiresUpdateText:Hide()
 
     LUP.LiquidUI:AddTooltip(frame.requiresUpdateText, "A newer version of this aura is available. Update the addon to receive it.")

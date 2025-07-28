@@ -10,7 +10,7 @@ LUP.nicknameInitFunctions[ADDON_NAME] = function()
 			WeakAuras.GetName = function(name)
 				if not name then return end
 
-				return AuraUpdater:GetNickname(name) or name
+				return SAP_Raid_Updater:GetNickname(name) or name
 			end
 		end
 
@@ -22,7 +22,7 @@ LUP.nicknameInitFunctions[ADDON_NAME] = function()
 
 				if not name then return end
 
-				return AuraUpdater:GetNickname(unit) or name, realm
+				return SAP_Raid_Updater:GetNickname(unit) or name, realm
 			end
 		end
 
@@ -38,7 +38,7 @@ LUP.nicknameInitFunctions[ADDON_NAME] = function()
 				local nameRealm = GetUnitName(unit, showServerName)
 				local suffix = nameRealm:match(".+(%s%(%*%))") or nameRealm:match(".+(%-.+)") or ""
 
-				return string.format("%s%s", AuraUpdater:GetNickname(unit) or name, suffix)
+				return string.format("%s%s", SAP_Raid_Updater:GetNickname(unit) or name, suffix)
 			end
 		end
 
@@ -50,7 +50,7 @@ LUP.nicknameInitFunctions[ADDON_NAME] = function()
 
 				if not name then return end
 
-				return AuraUpdater:GetNickname(unit) or name, realm
+				return SAP_Raid_Updater:GetNickname(unit) or name, realm
 			end
 		end
 	end

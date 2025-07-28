@@ -44,6 +44,9 @@ eventFrame:SetScript(
 
                 LUP:InitializeNicknames()
                 LUP:InitializeBigWigsDisabler()
+
+                --reset versions
+                LUP:ClearAllSAPUpdaterSaved()
                 LUP:InitializeWeakAurasImporter()
                 LUP:InitializeInterface()
                 LUP:InitializeAuraUpdater()
@@ -78,6 +81,12 @@ SLASH_AURAUPDATER1 = "/lu"
 SLASH_AURAUPDATER2 = "/auraupdate"
 SLASH_AURAUPDATER3 = "/auraupdater"
 SLASH_AURAUPDATER4 = "/au"
+SLASH_SAPUPDATER1 = "/sapreset"
+
+function SlashCmdList.SAPUPDATER()
+    LUP:ClearAllSAPUpdaterSaved()
+    LUP:ErrorPrint("Cleared all SAPUpdaterSaved data.")
+end
 
 function SlashCmdList.AURAUPDATER()
     LUP.window:SetShown(not LUP.window:IsShown())

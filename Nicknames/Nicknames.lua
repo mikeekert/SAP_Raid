@@ -86,7 +86,7 @@ function LUP:UpdateNicknameForUnit(unit, nickname)
 	end
 end
 
-function AuraUpdater:GetNickname(unit)
+function SAP_Raid_Updater:GetNickname(unit)
     if not unit then return end
     if not UnitExists(unit) then return end
 
@@ -113,12 +113,12 @@ end
 
 -- For a given nickname, returns the character in the group that is associated with it
 -- This could either be a name or an actual unit id (no guarantees)
-function AuraUpdater:GetCharacterInGroup(nickname)
+function SAP_Raid_Updater:GetCharacterInGroup(nickname)
     local character = nicknameToCharacterCache[nickname]
 
     if not character then
         for unit in LUP:IterateGroupMembers() do
-            local _nickname = AuraUpdater:GetNickname(unit)
+            local _nickname = SAP_Raid_Updater:GetNickname(unit)
 
             if _nickname == nickname then
                 return unit

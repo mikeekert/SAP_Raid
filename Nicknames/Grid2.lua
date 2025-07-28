@@ -24,7 +24,7 @@ LUP.nicknameInitFunctions[ADDON_NAME] = function()
     end
 
     function Grid2NicknameStatus:GetText(unit)
-        return AuraUpdater:GetNickname(unit) or ""
+        return SAP_Raid_Updater:GetNickname(unit) or ""
     end
 
     local function Create(baseKey, dbx)

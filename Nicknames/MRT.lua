@@ -12,7 +12,7 @@ LUP.nicknameInitFunctions[ADDON_NAME] = function()
 					"RaidCooldowns_Bar_TextName",
 					function(_, _, gsubData)
 						if gsubData and gsubData.name then
-							gsubData.name = AuraUpdater:GetNickname(gsubData.name) or gsubData.name
+							gsubData.name = SAP_Raid_Updater:GetNickname(gsubData.name) or gsubData.name
 						end
 					end
 				)

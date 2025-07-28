@@ -6,7 +6,7 @@ local vuhDoHooks = {}
 local vuhDoPanelSettings = {}
 
 local function UpdateVuhDoName(unit, nameText, buttonName)
-    local name = SAPUpdaterSaved.settings.vuhDoNicknames and AuraUpdater:GetNickname(unit) or UnitName(unit)
+    local name = SAPUpdaterSaved.settings.vuhDoNicknames and SAP_Raid_Updater:GetNickname(unit) or UnitName(unit)
 
     -- Respect the max character option (if set)
     local panelNumber = buttonName and buttonName:match("^Vd(%d+)")

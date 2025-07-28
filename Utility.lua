@@ -77,7 +77,7 @@ function LUP:IconString(iconID)
 end
 
 function LUP:ErrorPrint(text)
-    print(string.format("AuraUpdater |cffff0000ERROR|r: %s", text))
+    print(string.format("Addon |cffff0000ERROR|r: %s", text))
 end
 
 function LUP:ClassColorName(unit)

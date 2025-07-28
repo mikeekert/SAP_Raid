@@ -26,7 +26,7 @@ local UpdateVersionsForUnit = function(_, _) end
 
 function LUP:GetInstalledAuraDataByUID(uid)
     local installedAuraID = UIDToID[uid]
-    
+
     return installedAuraID and WeakAuras.GetData(installedAuraID)
 end
 
@@ -86,15 +86,15 @@ function LUP:QueueNicknameUpdate(nickname)
     end
 
     nicknameUpdateTimer = C_Timer.NewTimer(
-        3,
-        function()
-            local shouldBroadcast = UpdateNickname(nickname)
+            3,
+            function()
+                local shouldBroadcast = UpdateNickname(nickname)
 
-            if shouldBroadcast then
-                SerializeVersionsTable()
-                BroadcastVersions()
+                if shouldBroadcast then
+                    SerializeVersionsTable()
+                    BroadcastVersions()
+                end
             end
-        end
     )
 end
 
@@ -132,7 +132,7 @@ local function GetMRTNoteHash()
     local counter = 1
     local len = string.len(text)
 
-    for i = 1, len, 3 do 
+    for i = 1, len, 3 do
         counter = math.fmod(counter * 8161, 4294967279) + (string.byte(text, i) * 16776193) + ((string.byte(text, i + 1) or (len - i + 256)) * 8372226) + ((string.byte(text, i + 2) or (len - i + 256)) * 3932164)
     end
 
@@ -198,29 +198,29 @@ local function BuildAuraImportElements()
 
         if installedVersion < highestSeenVersion then
             table.insert(
-                aurasToUpdate,
-                {
-                    displayName = displayName,
-                    installedVersion = installedVersion,
-                    importedVersion = importedVersion,
-                    highestSeenVersion = highestSeenVersion
-                }
+                    aurasToUpdate,
+                    {
+                        displayName = displayName,
+                        installedVersion = installedVersion,
+                        importedVersion = importedVersion,
+                        highestSeenVersion = highestSeenVersion
+                    }
             )
         end
     end
 
     table.sort(
-        aurasToUpdate,
-        function(auraData1, auraData2)
-            local versionsBehind1 = auraData1.highestSeenVersion - auraData1.installedVersion
-            local versionsBehind2 = auraData2.highestSeenVersion - auraData2.installedVersion
+            aurasToUpdate,
+            function(auraData1, auraData2)
+                local versionsBehind1 = auraData1.highestSeenVersion - auraData1.installedVersion
+                local versionsBehind2 = auraData2.highestSeenVersion - auraData2.installedVersion
 
-            if versionsBehind1 ~= versionsBehind2 then
-                return versionsBehind1 > versionsBehind2
-            else
-                return auraData1.displayName < auraData2.displayName
+                if versionsBehind1 ~= versionsBehind2 then
+                    return versionsBehind1 > versionsBehind2
+                else
+                    return auraData1.displayName < auraData2.displayName
+                end
             end
-        end
     )
 
     -- Build the aura import elements
@@ -241,7 +241,7 @@ local function BuildAuraImportElements()
         auraImportFrame:Show()
         auraImportFrame:SetPoint("TOPLEFT", parent, "TOPLEFT", spacing, -spacing)
         auraImportFrame:SetPoint("TOPRIGHT", parent, "TOPRIGHT", -spacing, -spacing)
-        
+
         auraImportElementPool[1] = auraImportFrame
     end
 
@@ -251,15 +251,23 @@ local function BuildAuraImportElements()
         -- Aura updates should use subsequent elements
         local i = addOnVersionsBehind > 0 and index + 1 or index
         local auraImportFrame = auraImportElementPool[i] or LUP:CreateAuraImportElement(parent)
+        local isAnchors = auraData.displayName == "SAP - Raid Anchors"
 
         auraImportFrame:SetDisplayName(auraData.displayName)
-        auraImportFrame:SetVersionsBehind(auraData.highestSeenVersion - auraData.installedVersion)
-        auraImportFrame:SetRequiresAddOnUpdate(auraData.highestSeenVersion > auraData.importedVersion)
+        auraImportFrame:SetVersionsBehind(auraData.highestSeenVersion - auraData.installedVersion, isAnchors)
+
+
+        -- if it is anchors, we dont need to update as long as their importedVersion is greater than 0
+        if isAnchors and auraData.importedVersion > 0 then
+            auraImportFrame:SetRequiresAddOnUpdate(false)
+        else
+            auraImportFrame:SetRequiresAddOnUpdate(auraData.highestSeenVersion > auraData.importedVersion)
+        end
 
         auraImportFrame:Show()
         auraImportFrame:SetPoint("TOPLEFT", parent, "TOPLEFT", spacing, -(i - 1) * (auraImportFrame.height + spacing) - spacing)
         auraImportFrame:SetPoint("TOPRIGHT", parent, "TOPRIGHT", -spacing, -(i - 1) * (auraImportFrame.height + spacing) - spacing)
-        
+
         auraImportElementPool[i] = auraImportFrame
     end
 
@@ -329,7 +337,7 @@ UpdateVersionsForUnit = function(versionsTable, unit)
     end
 
     -- Update nickname if necessary
-    local oldNickname = AuraUpdater:GetNickname(unit)
+    local oldNickname = SAP_Raid_Updater:GetNickname(unit)
     local nickname = versionsTable.nickname
 
     if oldNickname ~= nickname then
@@ -510,90 +518,90 @@ end
 -- Called on callback from WeakAuras.Import (in AuraImportElement)
 function LUP:OnUpdateAura()
     SerializeVersionsTable()
-    
+
     LUP:QueueUpdate()
 
     BroadcastVersions()
 end
 
 local function UpdateRCLCVersion()
-	local version = C_AddOns.GetAddOnMetadata("RCLootCouncil", "Version")
+    local version = C_AddOns.GetAddOnMetadata("RCLootCouncil", "Version")
 
-	playerVersionsTable.RCLC = version
+    playerVersionsTable.RCLC = version
 
-	LUP.highestSeenRCLCVersion = version
+    LUP.highestSeenRCLCVersion = version
 end
 
 local function HookWeakAuras()
-	if WeakAuras and WeakAurasSaved and WeakAurasSaved.displays then
+    if WeakAuras and WeakAurasSaved and WeakAurasSaved.displays then
         for id, auraData in pairs(WeakAurasSaved.displays) do
             UIDToID[auraData.uid] = id
         end
 
         hooksecurefunc(
-            WeakAuras,
-            "Add",
-            function(data)
-                local uid = data.uid
+                WeakAuras,
+                "Add",
+                function(data)
+                    local uid = data.uid
 
-                if uid then
-                    UIDToID[uid] = data.id
-                end
-            end
-        )
-
-        hooksecurefunc(
-            WeakAuras,
-            "Rename",
-            function(data, newID)
-                local uid = data.uid
-
-                if uid then
-                    UIDToID[uid] = newID
-                end
-            end
-        )
-
-        hooksecurefunc(
-            WeakAuras,
-            "Delete",
-            function(data)
-                local uid = data.uid
-
-                if uid then
-                    UIDToID[uid] = nil
-
-                    if auraUIDs[uid] then
-                        LUP:OnUpdateAura()
+                    if uid then
+                        UIDToID[uid] = data.id
                     end
                 end
-            end
+        )
+
+        hooksecurefunc(
+                WeakAuras,
+                "Rename",
+                function(data, newID)
+                    local uid = data.uid
+
+                    if uid then
+                        UIDToID[uid] = newID
+                    end
+                end
+        )
+
+        hooksecurefunc(
+                WeakAuras,
+                "Delete",
+                function(data)
+                    local uid = data.uid
+
+                    if uid then
+                        UIDToID[uid] = nil
+
+                        if auraUIDs[uid] then
+                            LUP:OnUpdateAura()
+                        end
+                    end
+                end
         )
     end
 end
 
 local function HookMRT()
-	if MRTNote and MRTNote.text then
+    if MRTNote and MRTNote.text then
         hooksecurefunc(
-            MRTNote.text,
-            "SetText",
-            function()
-                if mrtUpdateTimer and not mrtUpdateTimer:IsCancelled() then
-                    mrtUpdateTimer:Cancel()
-                end
-
-                mrtUpdateTimer = C_Timer.NewTimer(
-                    3,
-                    function()
-                        local shouldBroadcast = UpdateMRTNoteHash()
-
-                        if shouldBroadcast then
-                            SerializeVersionsTable()
-                            BroadcastVersions()
-                        end
+                MRTNote.text,
+                "SetText",
+                function()
+                    if mrtUpdateTimer and not mrtUpdateTimer:IsCancelled() then
+                        mrtUpdateTimer:Cancel()
                     end
-                )
-            end
+
+                    mrtUpdateTimer = C_Timer.NewTimer(
+                            3,
+                            function()
+                                local shouldBroadcast = UpdateMRTNoteHash()
+
+                                if shouldBroadcast then
+                                    SerializeVersionsTable()
+                                    BroadcastVersions()
+                                end
+                            end
+                    )
+                end
         )
     end
 end

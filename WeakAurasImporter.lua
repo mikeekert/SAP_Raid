@@ -11,7 +11,7 @@ local LibDeflate = LibStub("LibDeflate")
 function LUP:MatchInstalledUID(auraData)
     local displayName = auraData and auraData.id
     local installedAuraData = displayName and WeakAuras.GetData(displayName)
-    
+
     if not installedAuraData then return end
 
     auraData.uid = installedAuraData.uid
@@ -36,6 +36,7 @@ local auraRelevancy = {
 }
 
 local function IsRelevantWeakAura(displayName)
+
     local relevancyTable = auraRelevancy[displayName]
 
     if not relevancyTable then return true end
@@ -53,6 +54,12 @@ local function IsRelevantWeakAura(displayName)
     end
 
     return beforeOK and afterOK
+end
+
+function LUP:ClearAllSAPUpdaterSaved()
+    for key in pairs(SAPUpdaterSaved.WeakAuras) do
+        SAPUpdaterSaved.WeakAuras[key] = nil
+    end
 end
 
 -- Takes WeakAura strings from LUP.WeakAuras, decodes them, and saves them to SAPUpdaterSaved.WeakAuras
