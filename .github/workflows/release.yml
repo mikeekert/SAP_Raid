@@ -25,61 +25,54 @@ jobs:
         id: update_version_and_changelog
         run: |
           set -e
-          
-          # Extract tag info
+
           TAG_NAME=${GITHUB_REF#refs/tags/}
-          CLEAN_TAG=$(echo $TAG_NAME | sed 's/^1\.0\.//')
+          CLEAN_TAG=$(echo "$TAG_NAME" | sed 's/^1\.0\.//')
           CURRENT_DATE=$(date +"%Y-%m-%d")
-          
-          # Update TOC version
+
+          # Update .toc version
           sed -i "s/## Version: .*/## Version: $CLEAN_TAG/" SAP_Raid_Updater.toc
           echo "Updated TOC version to $CLEAN_TAG"
-          
-          # Get previous tag and commit log
-          PREV_TAG=$(git tag --sort=-creatordate | grep -v "$TAG_NAME" | head -n 1)
+
+          # Get commit log
+          PREV_TAG=$(git tag --sort=-creatordate | grep -v "$TAG_NAME" | head -n 1 || true)
           COMMIT_LOG=$(git log "${PREV_TAG:+$PREV_TAG..}$TAG_NAME" --pretty=format:"- %s" | grep '\[sap\]' | grep -v '\[skip ci\]' || true)
-          
-          # Set outputs
+
           echo "commit_log<<EOF" >> $GITHUB_OUTPUT
           echo "$COMMIT_LOG" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
-          
-          # Update changelog if commits exist
-          if [ -n "$COMMIT_LOG" ]; then
-            # Create/update CHANGELOG.md
-            echo "## $TAG_NAME ($CURRENT_DATE)" > CHANGELOG.md.new
-            echo "$COMMIT_LOG" | sed 's/\[sap\]//g' >> CHANGELOG.md.new
-            echo "" >> CHANGELOG.md.new
-            
-            if [ -f CHANGELOG.md ]; then
-              cat CHANGELOG.md >> CHANGELOG.md.new
-            fi
-            
-            mv CHANGELOG.md.new CHANGELOG.md
-            
-            # Prepare discord embeds
-            VERSION_LINE="## $TAG_NAME ($CURRENT_DATE)"
-            CHANGELOG_TEXT=$(echo "$COMMIT_LOG" | sed 's/\[sap\]//g' | sed ':a;N;$!ba;s/\n/\\n/g' | sed 's/"/\\"/g')
 
-            EMBEDS=$(cat <<-EOF
-            [
-              {
-                "title": "New Version Deployed",
-                "description": "**$VERSION_LINE**\\n📝 Changelog\\n$CHANGELOG_TEXT",
-                "color": 1127128
-              }
-            ]
-              EOF
-            )
-
-            echo "embeds<<EOF" >> $GITHUB_OUTPUT
-            printf "%s\n" "$EMBEDS" >> $GITHUB_OUTPUT
-            echo "EOF" >> $GITHUB_OUTPUT
-            echo "has_changelog=true" >> $GITHUB_OUTPUT
-          else
-            echo "No relevant commits found. Skipping changelog update."
+          if [ -z "$COMMIT_LOG" ]; then
+            echo "No relevant commits found."
             echo "has_changelog=false" >> $GITHUB_OUTPUT
+            exit 0
           fi
+
+          # Write changelog
+          {
+            echo "## $TAG_NAME ($CURRENT_DATE)"
+            echo "$COMMIT_LOG" | sed 's/\[sap\]//g'
+            echo
+            [ -f CHANGELOG.md ] && cat CHANGELOG.md
+          } > CHANGELOG.md.new
+          mv CHANGELOG.md.new CHANGELOG.md
+
+          # Prepare JSON for Discord
+          VERSION_LINE="## $TAG_NAME ($CURRENT_DATE)"
+          CHANGELOG_TEXT=$(echo "$COMMIT_LOG" | sed 's/\[sap\]//g' | sed ':a;N;$!ba;s/\n/\\n/g' | sed 's/"/\\"/g')
+
+          EMBEDS='[
+            {
+              "title": "New Version Deployed",
+              "description": "**'"$VERSION_LINE"'**\\n📝 Changelog\\n'"$CHANGELOG_TEXT"'",
+              "color": 1127128
+            }
+          ]'
+
+          echo "embeds<<EOF" >> $GITHUB_OUTPUT
+          echo "$EMBEDS" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+          echo "has_changelog=true" >> $GITHUB_OUTPUT
 
       - name: Prepare Addon Folder
         run: |
@@ -122,12 +115,12 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add SAP_Raid_Updater.toc
-          
+
           if [[ "${{ steps.update_version_and_changelog.outputs.has_changelog }}" == "true" ]]; then
             git add CHANGELOG.md
             git commit -m "Update version to ${GITHUB_REF#refs/tags/} and update changelog [skip ci]"
           else
             git commit -m "Update version to ${GITHUB_REF#refs/tags/} [skip ci]"
           fi
-          
+
           git push --force origin HEAD:master
