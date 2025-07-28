@@ -49,7 +49,7 @@ jobs:
           # Generate CHANGELOG.md.new if it doesn't exist
           if [ ! -f CHANGELOG.md.new ]; then
             echo "## $TAG_NAME ($CURRENT_DATE)" > CHANGELOG.md.new
-            echo "$COMMIT_LOG" >> CHANGELOG.md.new
+            echo "$COMMIT_LOG" | sed 's/\[sap\]//g' >> CHANGELOG.md.new
             echo "Generated CHANGELOG.md.new"
           fi
           
