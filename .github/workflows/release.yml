@@ -115,7 +115,7 @@ jobs:
           echo "EOF" >> $GITHUB_OUTPUT
 
       - name: Discord Notification
-        if: ${{ success() }}
+        if: ${{ steps.changelog.outputs.embeds != '[]' }}
         uses: Ilshidur/action-discord@master
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
