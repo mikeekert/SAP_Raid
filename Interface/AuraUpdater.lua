@@ -235,8 +235,8 @@ local function BuildAuraImportElements()
         local auraImportFrame = auraImportElementPool[1] or LUP:CreateAuraImportElement(parent)
 
         auraImportFrame:SetDisplayName("SAP_Raid_Updater")
-        auraImportFrame:SetVersionsBehind(addOnVersionsBehind)
-        auraImportFrame:SetRequiresAddOnUpdate(true)
+        auraImportFrame:SetVersionsBehind(addOnVersionsBehind, false, false)
+        auraImportFrame:SetRequiresAddOnUpdate(true, true)
 
         auraImportFrame:Show()
         auraImportFrame:SetPoint("TOPLEFT", parent, "TOPLEFT", spacing, -spacing)
@@ -252,16 +252,14 @@ local function BuildAuraImportElements()
         local i = addOnVersionsBehind > 0 and index + 1 or index
         local auraImportFrame = auraImportElementPool[i] or LUP:CreateAuraImportElement(parent)
         local isAnchors = auraData.displayName == "SAP - Raid Anchors"
+        local isInstalled = auraData.installedVersion > 0
+        local versionsBehind = auraData.highestSeenVersion - auraData.installedVersion
 
         auraImportFrame:SetDisplayName(auraData.displayName)
-        auraImportFrame:SetVersionsBehind(auraData.highestSeenVersion - auraData.installedVersion, isAnchors)
+        auraImportFrame:SetVersionsBehind(versionsBehind, isAnchors, not isInstalled)
 
-
-        -- if it is anchors, we dont need to update as long as their importedVersion is greater than 0
-        if isAnchors and auraData.importedVersion > 0 then
-            auraImportFrame:SetRequiresAddOnUpdate(false)
-        else
-            auraImportFrame:SetRequiresAddOnUpdate(auraData.highestSeenVersion > auraData.importedVersion)
+        if not isAnchors then
+            auraImportFrame:SetRequiresAddOnUpdate(auraData.highestSeenVersion > auraData.importedVersion, isInstalled)
         end
 
         auraImportFrame:Show()

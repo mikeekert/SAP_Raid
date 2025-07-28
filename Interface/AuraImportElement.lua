@@ -118,22 +118,35 @@ function LUP:CreateAuraImportElement(parent)
     frame.versionCount:SetFontObject(LiquidFont17)
     frame.versionCount:SetPoint("CENTER", frame, "CENTER")
     
-    function frame:SetVersionsBehind(count, isAnchors)
-        if not isAnchors then
-            frame.versionCount:SetText(string.format("|cff%s%d version(s) behind|r", LUP.gs.visual.colorStrings.red, count))
-        else
+    function frame:SetVersionsBehind(count, isAnchors, isMissing)
+        if isAnchors then
+            if isMissing then
+                frame.versionCount:SetText(string.format("|cff%sMissing!|r", LUP.gs.visual.colorStrings.red))
+            end
+        elseif isMissing then
             frame.versionCount:SetText(string.format("|cff%sMissing!|r", LUP.gs.visual.colorStrings.red))
+        else
+            frame.versionCount:SetText(string.format("|cff%s%d version(s) behind|r", LUP.gs.visual.colorStrings.red, count))
         end
     end
 
     -- Import button
-    frame.importButton = LUP:CreateButton(frame, "Update", function() end)
+    frame.importButton = LUP:CreateButton(frame, "Import", function() end)
 
     frame.importButton:SetNormalFontObject(LiquidFont15)
     frame.importButton:SetHighlightFontObject(LiquidFont15)
     frame.importButton:SetDisabledFontObject(LiquidFont15)
 
     frame.importButton:SetPoint("RIGHT", frame, "RIGHT", -8, 0)
+
+    frame.updateButton = LUP:CreateButton(frame, "Update", function() end)
+
+    frame.updateButton:SetNormalFontObject(LiquidFont15)
+    frame.updateButton:SetHighlightFontObject(LiquidFont15)
+    frame.updateButton:SetDisabledFontObject(LiquidFont15)
+
+    frame.updateButton:SetPoint("RIGHT", frame, "RIGHT", -8, 0)
+    frame.updateButton:Hide()
 
     -- Requires addon update text
     frame.requiresUpdateText = frame:CreateFontString(nil, "OVERLAY")
@@ -152,8 +165,9 @@ function LUP:CreateAuraImportElement(parent)
 
     frame:SetBorderColor(borderColor.r, borderColor.g, borderColor.b)
 
-    function frame:SetRequiresAddOnUpdate(requiresUpdate)
-        frame.importButton:SetShown(not requiresUpdate)
+    function frame:SetRequiresAddOnUpdate(requiresUpdate, exists)
+        frame.importButton:SetShown(not requiresUpdate and not exists)
+        frame.updateButton:SetShown(not requiresUpdate and exists)
         frame.requiresUpdateText:SetShown(requiresUpdate)
     end
 

@@ -241,15 +241,15 @@ local function CheckElementInitializer(frame, data)
             versionFrame.versionsBehindIcon:SetSize(24, 24)
             versionFrame.versionsBehindIcon:SetPoint("CENTER", versionFrame, "CENTER")
 
-            versionFrame.versionsBehindIcon.tex = versionFrame.versionsBehindIcon:CreateTexture(nil, "BACKGROUND")
-            versionFrame.versionsBehindIcon.tex:SetAllPoints()
+            versionFrame.versionsBehindIcon.text = versionFrame.versionsBehindIcon:CreateTexture(nil, "BACKGROUND")
+            versionFrame.versionsBehindIcon.text:SetAllPoints()
         end
 
         if versionsBehind == 0 then
             versionFrame.versionsBehindText:Hide()
             versionFrame.versionsBehindIcon:Show()
 
-            versionFrame.versionsBehindIcon.tex:SetAtlas("common-icon-checkmark")
+            versionFrame.versionsBehindIcon.text:SetAtlas("common-icon-checkmark")
 
             LUP.LiquidUI:AddTooltip(
                 versionFrame,
@@ -259,7 +259,7 @@ local function CheckElementInitializer(frame, data)
             versionFrame.versionsBehindText:Hide()
             versionFrame.versionsBehindIcon:Show()
 
-            versionFrame.versionsBehindIcon.tex:SetAtlas("common-icon-redx")
+            versionFrame.versionsBehindIcon.text:SetAtlas("common-icon-redx")
 
             LUP.LiquidUI:AddTooltip(
                 versionFrame,
@@ -269,7 +269,7 @@ local function CheckElementInitializer(frame, data)
             versionFrame.versionsBehindText:Show()
             versionFrame.versionsBehindIcon:Hide()
 
-            versionFrame.versionsBehindText:SetText(string.format("|cff%s%d|r", LUP.gs.visual.colorStrings.red, versionsBehind))
+            versionFrame.versionsBehindText:SetText(string.format("|cff%s%d Behind|r", LUP.gs.visual.colorStrings.red, versionsBehind))
 
             LUP.LiquidUI:AddTooltip(
                 versionFrame,

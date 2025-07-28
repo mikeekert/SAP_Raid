@@ -192,8 +192,8 @@ local function CheckElementInitializer(frame, data)
             subFrame.versionsBehindIcon:SetSize(24, 24)
             subFrame.versionsBehindIcon:SetPoint("CENTER", subFrame, "CENTER")
 
-            subFrame.versionsBehindIcon.tex = subFrame.versionsBehindIcon:CreateTexture(nil, "BACKGROUND")
-            subFrame.versionsBehindIcon.tex:SetAllPoints()
+            subFrame.versionsBehindIcon.text = subFrame.versionsBehindIcon:CreateTexture(nil, "BACKGROUND")
+            subFrame.versionsBehindIcon.text:SetAllPoints()
         end
 
         subFrame:SetSize(elementHeight, elementHeight)
@@ -215,14 +215,14 @@ local function CheckElementInitializer(frame, data)
 
     if not data.mrtNoteHash then
         if data.auraUpdater then
-            versionFrame.versionsBehindIcon.tex:SetAtlas("QuestTurnin")
+            versionFrame.versionsBehindIcon.text:SetAtlas("QuestTurnin")
 
             LUP.LiquidUI:AddTooltip(
                 versionFrame,
                 "No information about MRT note received.|n|nUser is running an outdated Addon version, or has MRT disabled."
             )
         else
-            versionFrame.versionsBehindIcon.tex:SetAtlas("QuestTurnin")
+            versionFrame.versionsBehindIcon.text:SetAtlas("QuestTurnin")
 
             LUP.LiquidUI:AddTooltip(
                 versionFrame,
@@ -230,14 +230,14 @@ local function CheckElementInitializer(frame, data)
             )
         end
     elseif mrtNoteHash == data.mrtNoteHash then
-        versionFrame.versionsBehindIcon.tex:SetAtlas("common-icon-checkmark")
+        versionFrame.versionsBehindIcon.text:SetAtlas("common-icon-checkmark")
 
         LUP.LiquidUI:AddTooltip(
             versionFrame,
             "MRT note is the same as yours."
         )
     else
-        versionFrame.versionsBehindIcon.tex:SetAtlas("common-icon-redx")
+        versionFrame.versionsBehindIcon.text:SetAtlas("common-icon-redx")
 
         LUP.LiquidUI:AddTooltip(
             versionFrame,
@@ -250,14 +250,14 @@ local function CheckElementInitializer(frame, data)
 
     if not data.ignores then
         if data.auraUpdater then
-            versionFrame.versionsBehindIcon.tex:SetAtlas("QuestTurnin")
+            versionFrame.versionsBehindIcon.text:SetAtlas("QuestTurnin")
 
             LUP.LiquidUI:AddTooltip(
                 versionFrame,
                 "No information about ignored players received.|n|nUser is running an outdated Addon version."
             )
         else
-            versionFrame.versionsBehindIcon.tex:SetAtlas("QuestTurnin")
+            versionFrame.versionsBehindIcon.text:SetAtlas("QuestTurnin")
 
             LUP.LiquidUI:AddTooltip(
                 versionFrame,
@@ -265,7 +265,7 @@ local function CheckElementInitializer(frame, data)
             )
         end
     elseif next(data.ignores) then
-        versionFrame.versionsBehindIcon.tex:SetAtlas("common-icon-redx")
+        versionFrame.versionsBehindIcon.text:SetAtlas("common-icon-redx")
 
         local ignoredPlayers = ""
 
@@ -278,7 +278,7 @@ local function CheckElementInitializer(frame, data)
             string.format("Players on ignore:%s", ignoredPlayers)
         )
     else
-        versionFrame.versionsBehindIcon.tex:SetAtlas("common-icon-checkmark")
+        versionFrame.versionsBehindIcon.text:SetAtlas("common-icon-checkmark")
 
         LUP.LiquidUI:AddTooltip(
             versionFrame,
@@ -290,7 +290,7 @@ local function CheckElementInitializer(frame, data)
     versionFrame = frame.versionFrames[3]
 
     if data.oldVersion then
-        versionFrame.versionsBehindIcon.tex:SetAtlas("QuestTurnin")
+        versionFrame.versionsBehindIcon.text:SetAtlas("QuestTurnin")
 
         LUP.LiquidUI:AddTooltip(
             versionFrame,
@@ -298,14 +298,14 @@ local function CheckElementInitializer(frame, data)
         )
     elseif not data.RCLC then
         if data.auraUpdater then
-            versionFrame.versionsBehindIcon.tex:SetAtlas("QuestTurnin")
+            versionFrame.versionsBehindIcon.text:SetAtlas("QuestTurnin")
 
             LUP.LiquidUI:AddTooltip(
                 versionFrame,
                 "No information about RCLC received.|n|nUser is running an outdated AuraUpdater version, or has RCLC disabled."
             )
         else
-            versionFrame.versionsBehindIcon.tex:SetAtlas("QuestTurnin")
+            versionFrame.versionsBehindIcon.text:SetAtlas("QuestTurnin")
 
             LUP.LiquidUI:AddTooltip(
                 versionFrame,
@@ -313,14 +313,14 @@ local function CheckElementInitializer(frame, data)
             )
         end
     elseif LUP:CompareRCLCVersions(LUP.highestSeenRCLCVersion, data.RCLC) == -1 then
-        versionFrame.versionsBehindIcon.tex:SetAtlas("common-icon-redx")
+        versionFrame.versionsBehindIcon.text:SetAtlas("common-icon-redx")
 
         LUP.LiquidUI:AddTooltip(
             versionFrame,
             string.format("User has an outdated RCLC version.|n|nNewest version: %s|n%s's version: %s", LUP.highestSeenRCLCVersion, data.coloredName, data.RCLC)
         )
     else
-        versionFrame.versionsBehindIcon.tex:SetAtlas("common-icon-checkmark")
+        versionFrame.versionsBehindIcon.text:SetAtlas("common-icon-checkmark")
 
         LUP.LiquidUI:AddTooltip(
             versionFrame,
