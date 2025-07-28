@@ -22,21 +22,22 @@ jobs:
           fetch-tags: true
 
       - name: Update Version and Changelog
+        id: update_version_and_changelog
         run: |
           TAG_NAME=${GITHUB_REF#refs/tags/}
           CLEAN_TAG=$(echo $TAG_NAME | sed 's/^1\.0\.//')
-        
+      
           sed -i "s/## Version: .*/## Version: $CLEAN_TAG/" SAP_Raid_Updater.toc
           echo "Updated TOC version to $CLEAN_TAG"
-          
+      
           # Get current date
           CURRENT_DATE=$(date +"%Y-%m-%d")
-          
+      
           # Get previous tag
           PREV_TAG=$(git tag --sort=-creatordate | grep -v "$TAG_NAME" | head -n 1)
           echo "Current tag: $TAG_NAME"
           echo "Previous tag: $PREV_TAG"
-        
+      
           if [ -n "$PREV_TAG" ]; then
             COMMIT_LOG=$(git log "$PREV_TAG..$TAG_NAME" --pretty=format:"- %s" | grep '\[sap\]' | grep -v '\[skip ci\]')
           else
@@ -45,7 +46,12 @@ jobs:
       
           echo "Commit log here: "
           echo "$COMMIT_LOG"
-
+      
+          # Output the commit_log for use in subsequent steps
+          echo "commit_log<<EOF" >> $GITHUB_OUTPUT
+          echo "$COMMIT_LOG" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+      
           # Only proceed if COMMIT_LOG is not empty
           if [ -n "$COMMIT_LOG" ]; then
             # Generate CHANGELOG.md.new if it doesn't exist
@@ -54,7 +60,7 @@ jobs:
               echo "$COMMIT_LOG" | sed 's/\[sap\]//g' >> CHANGELOG.md.new
               echo "Generated CHANGELOG.md.new"
             fi
-          
+      
             mv CHANGELOG.md.new CHANGELOG.md
             echo "Updated CHANGELOG.md with commit log from $PREV_TAG to $TAG_NAME"
           else
@@ -135,6 +141,14 @@ jobs:
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git add SAP_Raid_Updater.toc CHANGELOG.md
-          git commit -m "Update version to ${GITHUB_REF#refs/tags/} and update changelog [skip ci]"
+          git add SAP_Raid_Updater.toc
+          
+          # Only add CHANGELOG.md if it was updated
+          if [[ -n "${{ steps.update_version_and_changelog.outputs.commit_log }}" ]]; then
+            git add CHANGELOG.md
+            git commit -m "Update version to ${GITHUB_REF#refs/tags/} and update changelog [skip ci]"
+          else
+            git commit -m "Update version to ${GITHUB_REF#refs/tags/} [skip ci]"
+          fi
+          
           git push --force origin HEAD:master
