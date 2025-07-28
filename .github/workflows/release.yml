@@ -102,18 +102,19 @@ jobs:
             echo "No relevant commits found. Skipping changelog update."
           fi
           echo "::endgroup::"
-            - name: Prepare Addon Folder
-              run: |
-                mkdir -p package/SAP_Raid_Updater
-                shopt -s extglob
-                cp -r !(package|.git|.github) package/SAP_Raid_Updater/
-      
-            - name: Create ZIP with tag suffix
-              run: |
-                TAG_NAME=${GITHUB_REF#refs/tags/}
-                cd package
-                zip -qr SAP_Raid_Updater-v${TAG_NAME}.zip SAP_Raid_Updater/
-                echo "ZIP_NAME=SAP_Raid_Updater-v${TAG_NAME}.zip" >> $GITHUB_ENV
+
+      - name: Prepare Addon Folder
+        run: |
+          mkdir -p package/SAP_Raid_Updater
+          shopt -s extglob
+          cp -r !(package|.git|.github) package/SAP_Raid_Updater/
+
+      - name: Create ZIP with tag suffix
+        run: |
+          TAG_NAME=${GITHUB_REF#refs/tags/}
+          cd package
+          zip -qr SAP_Raid_Updater-v${TAG_NAME}.zip SAP_Raid_Updater/
+          echo "ZIP_NAME=SAP_Raid_Updater-v${TAG_NAME}.zip" >> $GITHUB_ENV
 
       - name: Upload Release Asset
         if: ${{ success() }}
