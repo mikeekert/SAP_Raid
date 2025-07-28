@@ -48,10 +48,10 @@ jobs:
           echo "Commit log here: "
           echo "$COMMIT_LOG"
   
-          if grep -q "^# SAP Updater" CHANGELOG.md && [ $(wc -l < CHANGELOG.md) -le 1 ]; then
-            echo -e "# SAP Updater\n\n## v$CLEAN_TAG ($CURRENT_DATE)\n$COMMIT_LOG" > CHANGELOG.md.new
+          if [ -n "$PREV_TAG" ]; then
+            COMMIT_LOG=$(git log "$PREV_TAG..$TAG_NAME" --pretty=format:"- %s" | grep '\[sap\]' | grep -v '\[skip ci\]')
           else
-            echo -e "# SAP Updater\n\n## v$CLEAN_TAG ($CURRENT_DATE)\n$COMMIT_LOG\n\n$(cat CHANGELOG.md | grep -v "^# SAP Updater" | tail -n +1)" > CHANGELOG.md.new
+            COMMIT_LOG=$(git log "$TAG_NAME" --pretty=format:"- %s" | grep '\[sap\]' | grep -v '\[skip ci\]')
           fi
           mv CHANGELOG.md.new CHANGELOG.md
 
@@ -98,7 +98,7 @@ jobs:
           ' CHANGELOG.md)
           
           VERSION_LINE=$(echo "$LATEST_ENTRY" | head -n 1)
-          CHANGELOG=$(echo "$LATEST_ENTRY" | tail -n +2 | sed ':a;N;$!ba;s/\n/\\n/g' | sed 's/"/\\"/g')
+          CHANGELOG=$(echo "$LATEST_ENTRY" | tail -n +2 | sed 's/\[sap\]//g' | sed ':a;N;$!ba;s/\n/\\n/g' | sed 's/"/\\"/g')
           
           EMBEDS=$(cat <<EOF
           [
