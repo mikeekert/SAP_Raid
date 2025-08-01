@@ -1,3 +1,6 @@
+## 1.0.8 (2025-08-01)
+- Manaforge Update - Weakauras for boss 1-7 
+
 ## 1.0.7 (2025-08-01)
 - Manaforge Update - Weakauras for boss 1-7 
 
