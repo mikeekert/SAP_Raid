@@ -130,20 +130,22 @@ function LUP:CreateAuraImportElement(parent)
         end
     end
 
+    function LUP:ApplyButtonFontStyles(button, fontObject)
+        button:SetNormalFontObject(fontObject)
+        button:SetHighlightFontObject(fontObject)
+        button:SetDisabledFontObject(fontObject)
+    end
+
     -- Import button
     frame.importButton = LUP:CreateButton(frame, "Import", function() end)
 
-    frame.importButton:SetNormalFontObject(LiquidFont15)
-    frame.importButton:SetHighlightFontObject(LiquidFont15)
-    frame.importButton:SetDisabledFontObject(LiquidFont15)
+    LUP:ApplyButtonFontStyles(frame.importButton, LiquidFont15)
 
     frame.importButton:SetPoint("RIGHT", frame, "RIGHT", -8, 0)
 
     frame.updateButton = LUP:CreateButton(frame, "Update", function() end)
 
-    frame.updateButton:SetNormalFontObject(LiquidFont15)
-    frame.updateButton:SetHighlightFontObject(LiquidFont15)
-    frame.updateButton:SetDisabledFontObject(LiquidFont15)
+    LUP:ApplyButtonFontStyles(frame.updateButton, LiquidFont15)
 
     frame.updateButton:SetPoint("RIGHT", frame, "RIGHT", -8, 0)
     frame.updateButton:Hide()

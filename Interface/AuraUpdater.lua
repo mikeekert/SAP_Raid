@@ -22,7 +22,8 @@ local guidToVersionsTable = {}
 
 local allAurasUpdatedText
 local playerVersionsTable -- Table containing all the version information. Serialized before sent to others. Used as-is for displaying our own versions.
-local UpdateVersionsForUnit = function(_, _) end
+local UpdateVersionsForUnit = function(_, _)
+end
 
 function LUP:GetInstalledAuraDataByUID(uid)
     local installedAuraID = UIDToID[uid]
@@ -36,6 +37,25 @@ end
 
 function LUP:UpdateVersionsTableForGUID(GUID, versionsTable)
     guidToVersionsTable[GUID] = versionsTable
+end
+
+function LUP:Serialize(data)
+    local serialized = LibSerialize:Serialize(data)
+    local compressed = LibDeflate:CompressDeflate(serialized, {level = 9})
+    return LibDeflate:EncodeForWoWAddonChannel(compressed)
+end
+
+function LUP:Deserialize(payload)
+    local decoded = LibDeflate:DecodeForWoWAddonChannel(payload)
+    if not decoded then return nil, "decode_failed" end
+
+    local decompressed = LibDeflate:DecompressDeflate(decoded)
+    if not decompressed then return nil, "decompress_failed" end
+
+    local success, data = LibSerialize:Deserialize(decompressed)
+    if not success then return nil, "deserialize_failed" end
+
+    return data
 end
 
 local function BroadcastVersions()
@@ -55,12 +75,7 @@ local function SerializeVersionsTable()
 
         playerVersionsTable.auras[displayName] = installedVersion
     end
-
-    local serialized = LibSerialize:Serialize(playerVersionsTable)
-    local compressed = LibDeflate:CompressDeflate(serialized, {level = 9})
-    local encoded = LibDeflate:EncodeForWoWAddonChannel(compressed)
-
-    serializedTable = encoded
+    serializedTable = LUP:Serialize(playerVersionsTable)
 
     if not serializedTable then
         LUP:ErrorPrint("could not serialize version table")
@@ -70,7 +85,9 @@ end
 local function UpdateNickname(nickname)
     nickname = strtrim(nickname)
 
-    if nickname == "" then nickname = nil end
+    if nickname == "" then
+        nickname = nil
+    end
 
     local oldNickname = playerVersionsTable.nickname
 
@@ -98,28 +115,27 @@ function LUP:QueueNicknameUpdate(nickname)
     )
 end
 
+function LUP:HasTableChanged(oldTable, newTable)
+    return not tCompare(oldTable, newTable, 3)
+end
+
 -- Returns true if a new group member was ignored
 local function UpdateIgnoredPlayers()
-    local foundNew = false
     local newIgnoredNames = {}
 
     for unit in LUP:IterateGroupMembers() do
         if C_FriendList.IsIgnored(unit) then
             local name = UnitNameUnmodified(unit)
-
             table.insert(newIgnoredNames, name)
         end
     end
 
     table.sort(newIgnoredNames)
 
-    if not tCompare(newIgnoredNames, playerVersionsTable.ignores) then
-        foundNew = true
-    end
-
+    local hasChanged = LUP:HasTableChanged(playerVersionsTable.ignores, newIgnoredNames)
     playerVersionsTable.ignores = newIgnoredNames
 
-    return foundNew
+    return hasChanged
 end
 
 -- Calculates checksum for the player's public MRT note
@@ -127,7 +143,9 @@ end
 local function GetMRTNoteHash()
     local text = VMRT and VMRT.Note.Text1
 
-    if not text then return end
+    if not text then
+        return
+    end
 
     local counter = 1
     local len = string.len(text)
@@ -141,7 +159,9 @@ end
 
 -- Returns true if a new MRT note was found
 local function UpdateMRTNoteHash()
-    if not C_AddOns.IsAddOnLoaded("MRT") then return end
+    if not C_AddOns.IsAddOnLoaded("MRT") then
+        return
+    end
 
     local foundNew = false
     local hash = GetMRTNoteHash()
@@ -169,6 +189,19 @@ function LUP:UpdateMinimapIconVisibility()
 
         LUP.LDB.icon = [[Interface\Addons\SAP_Raid_Updater\Media\Textures\minimap_logo_red.tga]]
     end
+end
+
+function LUP:PositionAuraImportElement(element, parent, index, offsetForFirstElement)
+    local effectiveIndex = index
+    if offsetForFirstElement and index > 1 then
+        effectiveIndex = index - 1
+    end
+
+    element:Show()
+    element:SetPoint("TOPLEFT", parent, "TOPLEFT", spacing, -(effectiveIndex - 1) * (element.height + spacing) - spacing)
+    element:SetPoint("TOPRIGHT", parent, "TOPRIGHT", -spacing, -(effectiveIndex - 1) * (element.height + spacing) - spacing)
+
+    return element
 end
 
 local function BuildAuraImportElements()
@@ -262,10 +295,7 @@ local function BuildAuraImportElements()
             auraImportFrame:SetRequiresAddOnUpdate(auraData.highestSeenVersion > auraData.importedVersion, isInstalled)
         end
 
-        auraImportFrame:Show()
-        auraImportFrame:SetPoint("TOPLEFT", parent, "TOPLEFT", spacing, -(i - 1) * (auraImportFrame.height + spacing) - spacing)
-        auraImportFrame:SetPoint("TOPRIGHT", parent, "TOPRIGHT", -spacing, -(i - 1) * (auraImportFrame.height + spacing) - spacing)
-
+        LUP:PositionAuraImportElement(auraImportFrame, parent, i, addOnVersionsBehind > 0)
         auraImportElementPool[i] = auraImportFrame
     end
 
@@ -277,7 +307,9 @@ local function BuildAuraImportElements()
 end
 
 function LUP:QueueUpdate()
-    if updateQueued then return end
+    if updateQueued then
+        return
+    end
 
     -- Don't update more than once per second
     -- This is mostly to prevent the update function from running when a large number of auras get added simultaneously
@@ -296,18 +328,24 @@ local function RequestVersions(chatType)
     AceComm:SendCommMessage("SAP_Request", " ", chatType or "GUILD")
 end
 
+function LUP:IsNewerVersion(oldVersion, newVersion)
+    return not oldVersion or oldVersion < newVersion
+end
+
 UpdateVersionsForUnit = function(versionsTable, unit)
     local shouldFullRebuildAura = false
     local shouldFullRebuildOther = false
     local GUID = UnitGUID(unit)
 
-    if not GUID then return end
+    if not GUID then
+        return
+    end
 
     -- Check addon version
     local addOnVersion = versionsTable.addOn
     local highestSeenAddOnVersion = LUP.highestSeenVersionsTable.addOn
 
-    if not highestSeenAddOnVersion or highestSeenAddOnVersion < addOnVersion then
+    if LUP:IsNewerVersion(highestSeenAddOnVersion, addOnVersion) then
         LUP.highestSeenVersionsTable.addOn = addOnVersion
 
         shouldFullRebuildAura = true
@@ -360,29 +398,14 @@ UpdateVersionsForUnit = function(versionsTable, unit)
 end
 
 local function ReceiveVersions(_, payload, _, sender)
-    if UnitIsUnit(sender, "player") then return end -- We handle our own versions directly, not through addon messages
-
-    local decoded = LibDeflate:DecodeForWoWAddonChannel(payload)
-
-    if not decoded then
-        LUP:ErrorPrint(string.format("could not decode version table received from %s", sender))
-
+    if UnitIsUnit(sender, "player") then
         return
-    end
+    end -- We handle our own versions directly, not through addon messages
 
-    local decompressed = LibDeflate:DecompressDeflate(decoded)
+    local versionsTable, errorMessage = LUP:Deserialize(payload)
 
-    if not decoded then
-        LUP:ErrorPrint(string.format("could not decompress version table received from %s", sender))
-
-        return
-    end
-
-    local success, versionsTable = LibSerialize:Deserialize(decompressed)
-
-    if not success then
-        LUP:ErrorPrint(string.format("could not deserialize version table received from %s", sender))
-
+    if not versionsTable then
+        LUP:ErrorPrint(string.format("could not process version table received from %s: %s", sender, errorMessage))
         return
     end
 
@@ -422,14 +445,18 @@ end
 
 -- Similar to ApplyLoadSettings: preserves sound settings in action tab
 function LUP:ApplySoundSettings(auraData, installedAuraData)
-    if not (installedAuraData and installedAuraData.actions) then return end
+    if not (installedAuraData and installedAuraData.actions) then
+        return
+    end
 
     local start = installedAuraData.actions.start
     local finish = installedAuraData.actions.finish
 
     -- Preserve on show sounds
     if start then
-        if not auraData.actions.start then auraData.actions.start = {} end
+        if not auraData.actions.start then
+            auraData.actions.start = {}
+        end
 
         auraData.actions.start.do_sound = start.do_sound
         auraData.actions.start.do_loop = start.do_loop
@@ -440,7 +467,9 @@ function LUP:ApplySoundSettings(auraData, installedAuraData)
 
     -- Preserve on hide sounds
     if finish then
-        if not auraData.actions.finish then auraData.actions.finish = {} end
+        if not auraData.actions.finish then
+            auraData.actions.finish = {}
+        end
 
         auraData.actions.finish.do_sound = finish.do_sound
         auraData.actions.finish.do_sound_fade = finish.do_sound_fade
@@ -455,7 +484,9 @@ end
 -- We don't want users to have to uncheck "group arrangement", so apply position settings of installed miscellaneous auras
 -- We only do this for direct children of miscellaneous groups, not for children of children etc.
 function LUP:ApplyMiscellaneousPositionSettings(groupAuraData)
-    if not groupAuraData.c then return end
+    if not groupAuraData.c then
+        return
+    end
 
     -- Collect names of miscellaneous auras
     local miscellaneousAuraNames = {}
@@ -578,29 +609,23 @@ local function HookWeakAuras()
     end
 end
 
+function LUP:CreateOrReplaceTimer(timerRef, delay, callback)
+    if timerRef and not timerRef:IsCancelled() then
+        timerRef:Cancel()
+    end
+    return C_Timer.NewTimer(delay, callback)
+end
+
 local function HookMRT()
     if MRTNote and MRTNote.text then
-        hooksecurefunc(
-                MRTNote.text,
-                "SetText",
-                function()
-                    if mrtUpdateTimer and not mrtUpdateTimer:IsCancelled() then
-                        mrtUpdateTimer:Cancel()
-                    end
-
-                    mrtUpdateTimer = C_Timer.NewTimer(
-                            3,
-                            function()
-                                local shouldBroadcast = UpdateMRTNoteHash()
-
-                                if shouldBroadcast then
-                                    SerializeVersionsTable()
-                                    BroadcastVersions()
-                                end
-                            end
-                    )
+        hooksecurefunc(MRTNote.text, "SetText", function()
+            mrtUpdateTimer = LUP:CreateOrReplaceTimer(mrtUpdateTimer, 3, function()
+                if UpdateMRTNoteHash() then
+                    SerializeVersionsTable()
+                    BroadcastVersions()
                 end
-        )
+            end)
+        end)
     end
 end
 
@@ -653,7 +678,9 @@ function LUP:InitializeAuraUpdater()
 
     -- For some reason the minimap icon doesn't hide if this code runs on the same frame it's being created
     -- In other words, if all auras are up to date, and the user hides the minimap icon, it doesn't hide on log (or reload)
-    C_Timer.After(0, function() LUP:UpdateMinimapIconVisibility() end)
+    C_Timer.After(0, function()
+        LUP:UpdateMinimapIconVisibility()
+    end)
 end
 
 local function OnEvent(_, event, ...)
