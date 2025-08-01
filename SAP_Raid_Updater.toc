@@ -1,5 +1,5 @@
 ## Interface: 110107
-## Version: 6
+## Version: 7
 ## Title: SAP Raid Tools [Manaforge]
 ## Author: SAP
 ## IconTexture: Interface\Addons\SAP_Raid_Updater\Media\Textures\logo_secondary.blp
