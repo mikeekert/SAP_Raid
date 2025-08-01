@@ -64,7 +64,7 @@ jobs:
           EMBEDS='[
             {
               "title": "New Version Deployed",
-              "description": "**'"$VERSION_LINE"'**\\n📝 Changelog\\n'"$CHANGELOG_TEXT"'",
+              "description": "**'"$VERSION_LINE"'**📝 Changelog - '"$CHANGELOG_TEXT"'",
               "color": 1127128
             }
           ]'
