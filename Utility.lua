@@ -88,5 +88,7 @@ function LUP:ClassColorName(unit)
 end
 
 function LUP:Print(text)
-    print(string.format("Addon |cffff0000ERROR|r: %s", text))
+    if SAPUpdaterSaved and SAPUpdaterSaved.settings.debug then
+        print(string.format("Addon |cffff0000DEBUG|r: %s", text))
+    end
 end

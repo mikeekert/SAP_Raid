@@ -84,6 +84,15 @@ function LUP:InitializeSettings()
         end
     )
 
+    AddCheckButton(
+            "debug",
+            "output print errors",
+            SAPUpdaterSaved.settings.debug,
+            function(debug)
+                SAPUpdaterSaved.settings.debug = debug
+            end
+    )
+
     nicknameEditBox = LUP:CreateEditBox(
         LUP.settingsWindow,
         "Nickname",

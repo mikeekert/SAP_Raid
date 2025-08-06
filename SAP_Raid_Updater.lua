@@ -126,12 +126,19 @@ function PreAuraUpdate(auraData)
     -- This should only be necessary if the user manually imported a version of the aura with a different UID, after logging in
     LUP:MatchInstalledUID(auraData.d)
 
+    local versionString = string.format("1.0.%d", modifiedAuraData.d.sapVersion)
+    modifiedAuraData.d.semver = versionString
+    modifiedAuraData.d.version = versionString
+
     ApplyLoadSettings(modifiedAuraData.d, installedAuraData) -- Preserve "load: never" settings
     ApplyMiscellaneousPositionSettings(modifiedAuraData) -- Preserve positioning of miscellaneous auras (they do not have an anchor)
 
     -- If we are updating a group, do the same for all child auras
     if modifiedAuraData.c then
         for _, childAuraData in pairs(modifiedAuraData.c) do
+            childAuraData.semver = nil
+            childAuraData.version = nil
+
             local installedChildAuraID = LUP:AuraUIDToID(childAuraData.uid)
             local installedChildAuraData = installedChildAuraID and WeakAuras.GetData(installedChildAuraID)
 
@@ -162,6 +169,7 @@ function PostAuraUpdate(auraData, version, customOnInit)
     auraData.preferToUpdate = true
     auraData.ignoreWagoUpdate = true
     auraData.sapVersion = version
+    auraData.semver = string.format("1.0.%d", version)
 
     ForceUpdateOnInit(customOnInit)
 end

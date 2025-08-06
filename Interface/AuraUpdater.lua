@@ -1,194 +1,149 @@
--- The purpose of this file is to handle the update process of auras
--- It takes care of preserving some of the user's settings (never load, sounds, etc.)
--- as well as making sure that essential parts of the aura gets updated (code in actions tab etc.)
+---@diagnostic disable: undefined-field
+local addon, LUP = ...
 
-local _, LUP = ...
+local LibSerialize = LibStub("LibSerialize")
+local LibDeflate = LibStub("LibDeflate")
+local LDBIcon = LibStub("LibDBIcon-1.0")
+local AceComm = LibStub("AceComm-3.0")
 
--- Called before updating an aura
--- Checks if the user already has the aura installed
--- If so, apply "load: never" settings from the existing aura (group) to the aura being imported
--- If "forceenable" is included in the description of an aura, always uncheck "load: never"
-local function ApplyLoadSettings(auraData, installedAuraData)
-    if installedAuraData and installedAuraData.load and not (installedAuraData.regionType == "group" or installedAuraData.regionType == "dynamicgroup") then
-        auraData.load.use_never = installedAuraData.load.use_never
+local updatePopupWindow
 
-        if auraData.desc and type(auraData.desc) == "string" and auraData.desc:match("forceenable") then
-            auraData.load.use_never = nil
-        end
-    end
-end
+local spacing = 4
+local lastUpdate = 0
+local updateQueued = false
 
--- Similar to ApplyLoadSettings: preserves sound settings in action tab
-local function ApplySoundSettings(auraData, installedAuraData)
-    if not (installedAuraData and installedAuraData.actions) then return end
+local broadcastTimer
 
-    local start = installedAuraData.actions.start
-    local finish = installedAuraData.actions.finish
+local auraImportElementPool = {}
+local UIDToID = {} -- Installed aura UIDs to ID (ID is required for WeakAuras.GetData call)
+local guidToVersionsTable = {}
 
-    -- Preserve on show sounds
-    if start then
-        if not auraData.actions.start then auraData.actions.start = {} end
+local allAurasUpdatedText
+local UpdateVersionsForUnit = function(_, _) end
 
-        auraData.actions.start.do_sound = start.do_sound
-        auraData.actions.start.do_loop = start.do_loop
-        auraData.actions.start.sound = start.sound
-        auraData.actions.start.sound_channel = start.sound_channel
-        auraData.actions.start.sound_repeat = start.sound_repeat
-    end
+local function BuildAuraImportElements()
+    lastUpdate = GetTime()
+    updateQueued = false
 
-    -- Preserve on hide sounds
-    if finish then
-        if not auraData.actions.finish then auraData.actions.finish = {} end
+    -- Check if addon requires an update
+    local addOnVersionsBehind = LUP:GetHighestSeenAddOnVersion() - LUP:GetPlayerVersionsTable().addOn
 
-        auraData.actions.finish.do_sound = finish.do_sound
-        auraData.actions.finish.do_sound_fade = finish.do_sound_fade
-        auraData.actions.finish.sound = finish.sound
-        auraData.actions.finish.sound_channel = finish.sound_channel
-        auraData.actions.finish.stop_sound = finish.stop_sound
-        auraData.actions.finish.stop_sound_fade = finish.stop_sound_fade
-    end
-end
+    -- Check which auras require updates
+    local aurasToUpdate = {}
 
--- Similar to the above: miscellaneous auras do not have an anchor associated with them
--- We don't want users to have to uncheck "group arrangement", so apply position settings of installed miscellaneous auras
--- We only do this for direct children of miscellaneous groups, not for children of children etc.
-local function ApplyMiscellaneousPositionSettings(groupAuraData)
-    if not groupAuraData.c then return end
+    for displayName, highestSeenVersion in pairs(LUP:GetHighestSeenAuraVersions()) do
+        local auraData = SAPUpdaterSaved.WeakAuras[displayName]
+        local uid = auraData and auraData.d.uid
+        local importedVersion = auraData and auraData.d.sapVersion or 0
+        local installedAuraID = uid and UIDToID[uid]
+        local installedVersion = installedAuraID and WeakAuras.GetData(installedAuraID).sapVersion or 0
 
-    -- Collect names of miscellaneous auras
-    local miscellaneousAuraNames = {}
-
-    for _, childAuraData in pairs(groupAuraData.c) do
-        local isGroup = childAuraData.regionType == "group"
-        local isMiscellaneousGroup = isGroup and childAuraData.groupIcon == "map-icon-ignored-bluequestion" and childAuraData.id:match("Miscellaneous")
-        local miscellaneousGroupChildren = isMiscellaneousGroup and childAuraData.controlledChildren
-
-        if miscellaneousGroupChildren then
-            for _, auraName in ipairs(miscellaneousGroupChildren) do
-                miscellaneousAuraNames[auraName] = true
+        if displayName == "SAP - Raid Anchors" then
+            if installedVersion > 0 then
+                installedVersion = 1
+                addOnVersionsBehind = 0
+                highestSeenVersion = 1
             end
         end
-    end
 
-    -- Fill UID to auraData table for miscellaneous auras
-    -- We want to use UIDs over IDs, since players may have renamed auras
-    local uidToAuraData = {}
-
-    for _, childAuraData in pairs(groupAuraData.c) do
-        local auraName = childAuraData.id
-
-        if miscellaneousAuraNames[auraName] then
-            uidToAuraData[childAuraData.uid] = childAuraData
+        if installedVersion < highestSeenVersion then
+            table.insert(
+                    aurasToUpdate,
+                    {
+                        displayName = displayName,
+                        installedVersion = installedVersion,
+                        importedVersion = importedVersion,
+                        highestSeenVersion = highestSeenVersion
+                    }
+            )
         end
     end
 
-    -- Apply position settings
-    for uid, auraData in pairs(uidToAuraData) do
-        local auraID = LUP:AuraUIDToID(uid)
-        local installedAuraData = auraID and WeakAuras.GetData(auraID)
+    table.sort(
+            aurasToUpdate,
+            function(auraData1, auraData2)
+                local versionsBehind1 = auraData1.highestSeenVersion - auraData1.installedVersion
+                local versionsBehind2 = auraData2.highestSeenVersion - auraData2.installedVersion
 
-        if installedAuraData then
-            local xOffset = installedAuraData.xOffset
-            local yOffset = installedAuraData.yOffset
-
-            if xOffset and auraData.xOffset and yOffset and auraData.yOffset then
-                auraData.xOffset = xOffset
-                auraData.yOffset = yOffset
-            end
-        end
-    end
-end
-
--- Force updates the on init code, even if the user unchecked "actions" when importing
--- Users often do this to preserve their sounds/glow colors/etc. but it can break assignment functionality
-local function ForceUpdateOnInit(customOnInit)
-    for id, customCode in pairs(customOnInit) do
-        local data = WeakAuras.GetData(id)
-
-        if data and data.actions and data.actions.init then
-            data.actions.init.do_custom = true
-            data.actions.init.custom = customCode
-        end
-    end
-end
-
--- Takes in some auraData (typically as stored in LiquidUpdaterSaved.WeakAuras), and prepares it for update by the user
--- This is done because the raw aura data we stores in SavedVariables isn't necessarily fit for import
--- Among other things, we want to make sure that some of the changes users make to their auras are preserved
--- We do this by applying these changes to the aura data that is being imported, before the import starts
--- This function also creates a table of aura IDs mapped to their custom "on init" code
--- This table is used in PostAuraUpdate to forcefully update the code (see ForceUpdateOnInit)
-function PreAuraUpdate(auraData)
-    local modifiedAuraData = CopyTable(auraData)
-    local installedAuraID = LUP:AuraUIDToID(modifiedAuraData.uid)
-    local installedAuraData = installedAuraID and WeakAuras.GetData(installedAuraID)
-
-    -- This should only be necessary if the user manually imported a version of the aura with a different UID, after logging in
-    LUP:MatchInstalledUID(auraData.d)
-
-    ApplyLoadSettings(modifiedAuraData.d, installedAuraData) -- Preserve "load: never" settings
-    ApplyMiscellaneousPositionSettings(modifiedAuraData) -- Preserve positioning of miscellaneous auras (they do not have an anchor)
-
-    local versionString = string.format("1.0.%d", modifiedAuraData.d.sapVersion)
-    modifiedAuraData.d.semver = versionString
-    modifiedAuraData.d.version = versionString
-
-    -- If we are updating a group, do the same for all child auras
-    if modifiedAuraData.c then
-        for _, childAuraData in pairs(modifiedAuraData.c) do
-            childAuraData.semver = nil
-            childAuraData.version = nil
-
-            local installedChildAuraID = LUP:AuraUIDToID(childAuraData.uid)
-            local installedChildAuraData = installedChildAuraID and WeakAuras.GetData(installedChildAuraID)
-
-            ApplyLoadSettings(childAuraData, installedChildAuraData)
-            ApplySoundSettings(childAuraData, installedChildAuraData)
-        end
-    end
-
-    -- Loop through children and save IDs of auras that have custom code on init
-    -- [aura_id] = custom_code (string)
-    local customOnInit = {}
-
-    for _, childData in ipairs(auraData.c or {auraData.d}) do
-        local doCustom = childData.actions and childData.actions.init and childData.actions.init.do_custom
-        local customCode = doCustom and childData.actions.init.custom
-
-        if doCustom and customCode and customCode ~= "" then
-            customOnInit[childData.id] = customCode
-        end
-    end
-
-    return modifiedAuraData, customOnInit
-end
-
--- Takes in the aura data (post update), and ensures essential data (such as init code) is updated
--- The customOnInit argument is produced by PreAuraUpdate()
-function PostAuraUpdate(auraData, version, customOnInit)
-    auraData.preferToUpdate = true
-    auraData.ignoreWagoUpdate = true
-    auraData.liquidVersion = version
-
-    ForceUpdateOnInit(customOnInit)
-end
-
--- This function initiates the aura update process for some aura data (as stored in LiquidUpdaterSaved.WeakAuras)
--- This is typically executed when the user clicks the "update" button for some aura
-function LUP:UpdateAura(auraData, version)
-    local modifiedAuraData, customOnInit = PreAuraUpdate(auraData)
-
-    WeakAuras.Import(
-            modifiedAuraData,
-            nil,
-            function(success, auraID)
-                if not success then return end
-
-                local updatedAuraData = WeakAuras.GetData(auraID)
-
-                PostAuraUpdate(updatedAuraData, version, customOnInit)
-
-                LUP:UpdateAuraVersions()
+                if versionsBehind1 ~= versionsBehind2 then
+                    return versionsBehind1 > versionsBehind2
+                else
+                    return auraData1.displayName < auraData2.displayName
+                end
             end
     )
+
+    -- Build the aura import elements
+    local parent = LUP.updateWindow
+
+    for _, element in ipairs(auraImportElementPool) do
+        element:Hide()
+    end
+
+    -- AddOn element
+    if addOnVersionsBehind > 0 then
+        local auraImportFrame = auraImportElementPool[1] or LUP:CreateAuraImportElement(parent)
+
+        auraImportFrame:SetDisplayName(addon)
+        auraImportFrame:SetVersionsBehind(addOnVersionsBehind)
+        auraImportFrame:SetRequiresAddOnUpdate(true)
+
+        auraImportFrame:Show()
+        auraImportFrame:SetPoint("TOPLEFT", parent, "TOPLEFT", spacing, -spacing)
+        auraImportFrame:SetPoint("TOPRIGHT", parent, "TOPRIGHT", -spacing, -spacing)
+
+        auraImportElementPool[1] = auraImportFrame
+    end
+
+    -- Aura elements
+    for index, auraData in ipairs(aurasToUpdate) do
+        -- If the addon requires an update, the first element indicates that
+        -- Aura updates should use subsequent elements
+        local i = addOnVersionsBehind > 0 and index + 1 or index
+        local auraImportFrame = auraImportElementPool[i] or LUP:CreateAuraImportElement(parent)
+
+        auraImportFrame:SetDisplayName(auraData.displayName)
+        auraImportFrame:SetVersionsBehind(auraData.highestSeenVersion - auraData.installedVersion)
+        auraImportFrame:SetRequiresAddOnUpdate(auraData.highestSeenVersion > auraData.importedVersion)
+
+        auraImportFrame:Show()
+        auraImportFrame:SetPoint("TOPLEFT", parent, "TOPLEFT", spacing, -(i - 1) * (auraImportFrame.height + spacing) - spacing)
+        auraImportFrame:SetPoint("TOPRIGHT", parent, "TOPRIGHT", -spacing, -(i - 1) * (auraImportFrame.height + spacing) - spacing)
+
+        auraImportElementPool[i] = auraImportFrame
+    end
+
+    LUP.upToDate = addOnVersionsBehind <= 0 and next(aurasToUpdate) == nil
+
+    allAurasUpdatedText:SetShown(LUP.upToDate)
+
+    LUP:UpdateMinimapIcon()
+end
+
+function LUP:QueueUpdate()
+    if updateQueued then return end
+
+    -- Don't update more than once per second
+    -- This is mostly to prevent the update function from running when a large number of auras get added simultaneously
+    local timeSinceLastUpdate = GetTime() - lastUpdate
+
+    if timeSinceLastUpdate > 1 then
+        BuildAuraImportElements()
+    else
+        updateQueued = true
+
+        C_Timer.After(1 - timeSinceLastUpdate, BuildAuraImportElements)
+    end
+end
+
+
+
+function LUP:InitializeAuraUpdater()
+    allAurasUpdatedText = LUP.updateWindow:CreateFontString(nil, "OVERLAY")
+
+    allAurasUpdatedText:SetFontObject(LiquidFont21)
+    allAurasUpdatedText:SetPoint("CENTER", LUP.updateWindow, "CENTER")
+    allAurasUpdatedText:SetText(string.format("|cff%sAll auras up to date!|r", LUP.gs.visual.colorStrings.green))
+
+    LUP:UpdateAuraVersions()
 end

@@ -21,7 +21,6 @@ end
 
 -- Called when we receive a new nickname for a unit
 function LUP:OnNicknameUpdate(unit, nickname)
-    print(aura, nickname)
     auraCheckGrid:UpdateDisplayNameForUnit(unit, nickname)
     otherCheckGrid:UpdateDisplayNameForUnit(unit, nickname)
 end

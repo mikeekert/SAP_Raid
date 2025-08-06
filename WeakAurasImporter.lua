@@ -83,6 +83,7 @@ local function ImportAura(auraInfo)
     -- Add a sapVersion field for version checking
     -- This is what AuraUpdater checks against to detect if a newer version is available compared to what is installed
     data.d.sapVersion = version
+    data.d.semver = string.format("1.0.%d", version)
 
     -- These fields are set to nil to prevent WeakAuras companion/Wago app from (mistakenly) suggesting there's updates available
     data.d.url = nil
