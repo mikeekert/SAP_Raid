@@ -12,7 +12,9 @@ function LUP:UpdateMinimapIcon()
                     type = "data source",
                     text = "SAP Updater",
                     icon = [[Interface\Addons\SAP_Raid_Updater\Media\Textures\minimap_logo.tga]],
-                    OnClick = function() LUP.window:SetShown(not LUP.window:IsShown()) end
+                    OnClick = function()
+                        LUP.window:SetShown(not LUP.window:IsShown())
+                    end
                 }
         )
 
@@ -48,6 +50,7 @@ local function EnsureSettings()
     if not SAPUpdaterSaved.nicknames then SAPUpdaterSaved.nicknames = {} end
     if SAPUpdaterSaved.settings.readyCheckPopup == nil then SAPUpdaterSaved.settings.readyCheckPopup = true end
     if SAPUpdaterSaved.settings.disableBigWigsAssignments == nil then SAPUpdaterSaved.settings.disableBigWigsAssignments = true end
+    if SAPUpdaterSaved.settings.debug == nil then SAPUpdaterSaved.settings.debug = false end
 end
 
 local function Initialize()
@@ -89,20 +92,17 @@ SlashCmdList["SAPRESET"] = function()
     if LUP then
         LUP:ClearAllSAPUpdaterSaved()
         LUP:UpdateMinimapIcon()
-    else
-        print("LUP is not available.")
     end
 end
 
 SlashCmdList["SAPSHOW"] = function()
     if LUP and LUP.window then
         LUP.window:SetShown(not LUP.window:IsShown())
-    else
-        print("LUP.window is not available.")
     end
 end
 
 function LUP:ClearAllSAPUpdaterSaved()
+    LUP:Print("Clearing all SAPUpdaterSaved data...")
     for key in pairs(SAPUpdaterSaved.WeakAuras) do
         SAPUpdaterSaved.WeakAuras[key] = nil
     end

@@ -9,7 +9,7 @@ function LUP:CreateAuraCheckGrid(parent)
 
     -- Set the column titles
     -- These are sorted alphabetically
-    -- We want AuraUpdater (the addon version) to show first, which works out this way
+    -- We want Addon (the addon version) to show first, which works out this way
     local titles = {"SAP_Raid_Updater"}
 
     for displayName in pairs(SAPUpdaterSaved.WeakAuras) do
@@ -45,7 +45,7 @@ function LUP:CreateAuraCheckGrid(parent)
         local addOnValue = highestSeenAddOnVersion - (versionsTable.addOn or 0)
         local addOnTooltip = GenerateTooltip("SAP_Raid_Updater", addOnValue)
 
-        data.sapUpdater = {
+        data.SAP_Raid_Updater = {
             value = addOnValue,
             tooltip = addOnTooltip
         }

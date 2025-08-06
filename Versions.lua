@@ -403,7 +403,7 @@ function LUP:InitializeVersions()
     end
 
     -- Set the highest seen versions to whatever our version of AuraUpdater supplies
-    highestSeenAddOnVersion = tonumber(C_AddOns.GetAddOnMetadata("SAP_Raid_Updater", "Version"))
+    highestSeenAddOnVersion = tonumber(C_AddOns.GetAddOnMetadata("SAP_Raid_Updater", "Version")) or 0
 
     for displayName, data in pairs(SAPUpdaterSaved.WeakAuras) do
         highestSeenAuraVersions[displayName] = data.d.sapVersion
