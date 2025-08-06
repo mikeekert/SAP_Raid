@@ -40,6 +40,7 @@ update_weakauras()
     if ! [ -d "WeakAuras/Mandatory" ]
     then
         echo "WeakAuras folder does not exists!"
+        mkdir -p WeakAuras/Mandatory
         return 1
     fi
 
@@ -62,6 +63,14 @@ update_weakauras()
     fi
 
     lua_tables=""
+    # Check if versions.json exists, if not create it
+    if ! [ -f "WeakAuras/.generated/versions.json" ]
+    then
+        echo "versions.json does not exist, creating it"
+        # Create an empty versions.json file
+        echo "{}" > WeakAuras/.generated/versions.json
+    fi
+
     updated_json=$(jq '.' WeakAuras/.generated/versions.json)
 
     # Loop over aura files and check if any of them were updated
