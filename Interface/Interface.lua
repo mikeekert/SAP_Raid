@@ -63,8 +63,8 @@ function LUP:UpdateWindowResizeBounds()
     local currentWidth, currentHeight = LUP.window:GetSize()
 
     LUP.window:SetSize(
-            math.max(currentWidth, minWidth),
-            math.max(currentHeight, minHeight)
+        math.max(currentWidth, minWidth),
+        math.max(currentHeight, minHeight)
     )
 end
 
@@ -96,11 +96,11 @@ function LUP:InitializeInterface()
     LUP.window:Hide()
 
     LUP.window:AddButton(
-            "Interface\\Addons\\SAP_Raid_Updater\\Media\\Textures\\Cogwheel.tga",
-            "Settings",
-            function()
-                LUP.settingsWindow:SetShown(not LUP.settingsWindow:IsShown())
-            end
+        "Interface\\Addons\\SAP_Raid_Updater\\Media\\Textures\\Cogwheel.tga",
+        "Settings",
+        function()
+            LUP.settingsWindow:SetShown(not LUP.settingsWindow:IsShown())
+        end
     )
 
     -- Button frame
@@ -131,13 +131,13 @@ function LUP:InitializeInterface()
     updateButton.text:SetText(string.format("|cff%sUpdate|r", LUP.gs.visual.colorStrings.white))
 
     updateButton:SetScript(
-            "OnMouseDown",
-            function()
-                LUP.updateWindow:Show()
-                LUP.auraCheckWindow:Hide()
-                LUP.otherCheckWindow:Hide()
-                SetActiveButton(updateButton)
-            end
+        "OnMouseDown",
+        function()
+            LUP.updateWindow:Show()
+            LUP.auraCheckWindow:Hide()
+            LUP.otherCheckWindow:Hide()
+            SetActiveButton(updateButton)
+        end
     )
 
     local borderColor = LUP.LiquidUI.settings.BORDER_COLOR
@@ -163,13 +163,13 @@ function LUP:InitializeInterface()
     auraCheckButton.text:SetText(string.format("|cff%sAura check|r", LUP.gs.visual.colorStrings.white))
 
     auraCheckButton:SetScript(
-            "OnMouseDown",
-            function()
-                LUP.updateWindow:Hide()
-                LUP.auraCheckWindow:Show()
-                LUP.otherCheckWindow:Hide()
-                SetActiveButton(auraCheckButton)
-            end
+        "OnMouseDown",
+        function()
+            LUP.updateWindow:Hide()
+            LUP.auraCheckWindow:Show()
+            LUP.otherCheckWindow:Hide()
+            SetActiveButton(auraCheckButton)
+        end
     )
 
     LUP.LiquidUI:AddBorder(auraCheckButton)
@@ -194,13 +194,13 @@ function LUP:InitializeInterface()
     otherCheckButton.text:SetText(string.format("|cff%sOther check|r", LUP.gs.visual.colorStrings.white))
 
     otherCheckButton:SetScript(
-            "OnMouseDown",
-            function()
-                LUP.updateWindow:Hide()
-                LUP.auraCheckWindow:Hide()
-                LUP.otherCheckWindow:Show()
-                SetActiveButton(otherCheckButton)
-            end
+        "OnMouseDown",
+        function()
+            LUP.updateWindow:Hide()
+            LUP.auraCheckWindow:Hide()
+            LUP.otherCheckWindow:Show()
+            SetActiveButton(otherCheckButton)
+        end
     )
 
     LUP.LiquidUI:AddBorder(otherCheckButton)
@@ -226,18 +226,18 @@ function LUP:InitializeInterface()
 
     -- When escape is pressed, close the main window
     LUP.window:SetScript(
-            "OnKeyDown",
-            function(_, key)
-                if InCombatLockdown() then return end
+        "OnKeyDown",
+        function(_, key)
+            if InCombatLockdown() then return end
 
-                if key == "ESCAPE" then
-                    LUP.window:SetPropagateKeyboardInput(false)
+            if key == "ESCAPE" then
+                LUP.window:SetPropagateKeyboardInput(false)
 
-                    LUP.window:Hide()
-                else
-                    LUP.window:SetPropagateKeyboardInput(true)
-                end
+                LUP.window:Hide()
+            else
+                LUP.window:SetPropagateKeyboardInput(true)
             end
+        end
     )
 
     SetActiveButton(updateButton)

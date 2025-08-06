@@ -38,7 +38,7 @@ local function BuildAuraImportElements()
         local installedAuraID = uid and UIDToID[uid]
         local installedVersion = installedAuraID and WeakAuras.GetData(installedAuraID).sapVersion or 0
 
-        if displayName == "SAP - Raid Anchors" then
+        if displayName == "SAP - Raid Anchors [11.2]" then
             if installedVersion > 0 then
                 installedVersion = 1
                 addOnVersionsBehind = 0
@@ -101,10 +101,17 @@ local function BuildAuraImportElements()
         -- Aura updates should use subsequent elements
         local i = addOnVersionsBehind > 0 and index + 1 or index
         local auraImportFrame = auraImportElementPool[i] or LUP:CreateAuraImportElement(parent)
+        local isAnchors = auraData.displayName == "SAP - Raid Anchors [11.2]"
+        local isInstalled = auraData.installedVersion > 0
+        local versionsBehind = auraData.highestSeenVersion - auraData.installedVersion
 
         auraImportFrame:SetDisplayName(auraData.displayName)
-        auraImportFrame:SetVersionsBehind(auraData.highestSeenVersion - auraData.installedVersion)
-        auraImportFrame:SetRequiresAddOnUpdate(auraData.highestSeenVersion > auraData.importedVersion)
+        print(versionsBehind, isAnchors, not isInstalled)
+        auraImportFrame:SetVersionsBehind(versionsBehind, isAnchors, not isInstalled)
+
+        if not isAnchors then
+            auraImportFrame:SetRequiresAddOnUpdate(auraData.highestSeenVersion > auraData.importedVersion, isInstalled)
+        end
 
         auraImportFrame:Show()
         auraImportFrame:SetPoint("TOPLEFT", parent, "TOPLEFT", spacing, -(i - 1) * (auraImportFrame.height + spacing) - spacing)
