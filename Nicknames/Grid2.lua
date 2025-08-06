@@ -6,7 +6,7 @@ local Grid2NicknameStatus
 
 -- Can be found under Miscellaneous -> AuraUpdater Nickname
 LUP.nicknameInitFunctions[ADDON_NAME] = function()
-    local statusName = "AuraUpdater Nickname"
+    local statusName = "Addon Nickname"
 
     Grid2NicknameStatus = Grid2.statusPrototype:new(statusName)
     Grid2NicknameStatus.IsActive = Grid2.statusLibrary.IsActive
@@ -52,7 +52,7 @@ end
 
 local function AddGrid2Options()
     if Grid2NicknameStatus then
-        Grid2Options:RegisterStatusOptions("AuraUpdater Nickname", "misc", function() end)
+        Grid2Options:RegisterStatusOptions("Addon Nickname", "misc", function() end)
     end
 end
 

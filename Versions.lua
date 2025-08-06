@@ -3,7 +3,7 @@
 -- It also maintains the highest seen addon/weakaura versions, as broadcast by other players
 -- Whenever this info changes, the appropriate handlers are notified (e.g. LUP:OnHighestSeenVersionsUpdate() etc.)
 
-local _, LUP = ...
+local addOnName, LUP = ...
 
 local LibSerialize = LibStub("LibSerialize")
 local LibDeflate = LibStub("LibDeflate")
@@ -30,11 +30,12 @@ local LibDeflate = LibStub("LibDeflate")
 --     nickname = <nickname (string)>
 -- }
 local versionsTable = {
-    addOn = tonumber(C_AddOns.GetAddOnMetadata("SAP_Raid_Addon", "Version")),
+    addOn = tonumber(C_AddOns.GetAddOnMetadata("SAP_Raid_Updater", "Version")),
     auras = {},
     ignores = {},
     nickname = SAPUpdaterSaved and SAPUpdaterSaved.nickname
 }
+
 
 -- These reflect the highest seen versions of both the addon(s)/weakauras as broadcast by group/guild members
 -- Our own verion's are compared to these to determine whether our addon is outdated
@@ -134,7 +135,7 @@ function LUP:UpdateAuraVersions()
     for displayName, auraData in pairs(SAPUpdaterSaved.WeakAuras) do
         local uid = auraData.d.uid
         local installedAuraID = uid and UIDToID[uid]
-        local installedVersion = installedAuraID and WeakAuras.GetData(installedAuraID).liquidVersion or 0
+        local installedVersion = installedAuraID and WeakAuras.GetData(installedAuraID).sapVersion or 0
 
         if versionsTable.auras[displayName] ~= installedVersion then
             changed = true
@@ -301,6 +302,7 @@ local function UpdateMRTNoteHash()
 
     versionsTable.mrtNoteHash = hash
 
+    print("MRT Hash Changed: ", changed, " New Hash: ", hash)
     if changed then
         OnPlayerVersionsTableUpdate()
 

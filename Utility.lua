@@ -86,3 +86,7 @@ function LUP:ClassColorName(unit)
 
     return string.format("|c%s%s|r", colorStr, name)
 end
+
+function LUP:Print(text)
+    print(string.format("Addon |cffff0000ERROR|r: %s", text))
+end

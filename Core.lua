@@ -80,14 +80,30 @@ eventFrame:SetScript(
         end
 )
 
-SLASH_SAPRESET = "/sapreset"
-SLASH_SAPSHOW = "/su"
+-- Define your slash commands
+SLASH_SAPRESET1 = "/sapreset"
+SLASH_SAPSHOW1  = "/su"
 
-function SlashCmdList.SAPRESET()
-    LUP:ClearAllSAPUpdaterSaved()
-    LUP:UpdateMinimapIcon()
+-- Register the slash command functions
+SlashCmdList["SAPRESET"] = function()
+    if LUP then
+        LUP:ClearAllSAPUpdaterSaved()
+        LUP:UpdateMinimapIcon()
+    else
+        print("LUP is not available.")
+    end
 end
 
-function SlashCmdList.SAPSHOW()
-    LUP.window:SetShown(not LUP.window:IsShown())
+SlashCmdList["SAPSHOW"] = function()
+    if LUP and LUP.window then
+        LUP.window:SetShown(not LUP.window:IsShown())
+    else
+        print("LUP.window is not available.")
+    end
+end
+
+function LUP:ClearAllSAPUpdaterSaved()
+    for key in pairs(SAPUpdaterSaved.WeakAuras) do
+        SAPUpdaterSaved.WeakAuras[key] = nil
+    end
 end

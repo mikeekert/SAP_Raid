@@ -138,7 +138,7 @@ function LUP:CreateUpdateElement(parent, auraName)
         updateElement.displayName:SetPoint("LEFT", updateElement, "LEFT", 38, 0)
     else
         local auraData = SAPUpdaterSaved.WeakAuras[auraName]
-        local version = SAPUpdaterSaved.WeakAuras[auraName].d.liquidVersion
+        local version = SAPUpdaterSaved.WeakAuras[auraName].d.sapVersion
 
         updateElement.importButton:SetScript(
             "OnClick",

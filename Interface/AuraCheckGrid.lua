@@ -45,7 +45,7 @@ function LUP:CreateAuraCheckGrid(parent)
         local addOnValue = highestSeenAddOnVersion - (versionsTable.addOn or 0)
         local addOnTooltip = GenerateTooltip("SAP_Raid_Updater", addOnValue)
 
-        data.AuraUpdater = {
+        data.sapUpdater = {
             value = addOnValue,
             tooltip = addOnTooltip
         }

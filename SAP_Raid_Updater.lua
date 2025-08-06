@@ -161,7 +161,7 @@ end
 function PostAuraUpdate(auraData, version, customOnInit)
     auraData.preferToUpdate = true
     auraData.ignoreWagoUpdate = true
-    auraData.liquidVersion = version
+    auraData.sapVersion = version
 
     ForceUpdateOnInit(customOnInit)
 end

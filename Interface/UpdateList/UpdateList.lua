@@ -50,7 +50,7 @@ function LUP:CreateUpdateList(parent)
         local importedVersions = {}
 
         for displayName, auraData in pairs(SAPUpdaterSaved.WeakAuras) do
-            importedVersions[displayName] = auraData.d.liquidVersion or 0
+            importedVersions[displayName] = auraData.d.sapVersion or 0
         end
 
         -- Create update elements for auras

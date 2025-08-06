@@ -13,15 +13,8 @@ local LibDeflate = LibStub("LibDeflate")
 -- The before/after fields are interface versions, as returned by GetBuildInfo()
 -- before is exclusive, after is inclusive
 local auraRelevancy = {
-    ["Nerub-ar Palace"] = {
-        before = 110100
-    },
-    ["Liberation of Undermine"] = {
-        --before = 110200,
-        after = 110100
-    },
-    ["Manaforge Omega"] = {
-        after = 110200
+    ["SAP - Manaforge Omega"] = {
+        110200
     }
 }
 
@@ -76,7 +69,7 @@ local function ImportAura(auraInfo)
     if not IsRelevantWeakAura(displayName) then return end -- Do not import irrelevant auras
 
     local version = auraInfo.version
-    local importedVersion = SAPUpdaterSaved.WeakAuras[displayName] and SAPUpdaterSaved.WeakAuras[displayName].d and SAPUpdaterSaved.WeakAuras[displayName].d.liquidVersion
+    local importedVersion = SAPUpdaterSaved.WeakAuras[displayName] and SAPUpdaterSaved.WeakAuras[displayName].d and SAPUpdaterSaved.WeakAuras[displayName].d.sapVersion
 
     if importedVersion and importedVersion >= version then return end -- Do not import auras that we've imported before
 
@@ -87,9 +80,9 @@ local function ImportAura(auraInfo)
     local decompressed = LibDeflate:DecompressDeflate(decoded)
     local _, data = LibSerialize:Deserialize(decompressed)
 
-    -- Add a liquidVersion field for version checking
+    -- Add a sapVersion field for version checking
     -- This is what AuraUpdater checks against to detect if a newer version is available compared to what is installed
-    data.d.liquidVersion = version
+    data.d.sapVersion = version
 
     -- These fields are set to nil to prevent WeakAuras companion/Wago app from (mistakenly) suggesting there's updates available
     data.d.url = nil
