@@ -57,6 +57,7 @@ function LUP:CreateUpdateList(parent)
         for displayName, highestSeenVersion in pairs(highestSeenAuraVersions) do
             local installedVersion = installedAuraVersions[displayName]
             local importedVersion = importedVersions[displayName]
+            local exists = importedVersion > 0
 
             if importedVersion then
                 local versionsBehind = highestSeenVersion - installedVersion
@@ -66,8 +67,8 @@ function LUP:CreateUpdateList(parent)
 
                     local updateElement = LUP:CreateUpdateElement(scrollFrame.contentFrame, displayName)
 
-                    updateElement:SetVersionsBehind(versionsBehind)
-                    updateElement:SetRequiresAddOnUpdate(requiresAddOnUpdate)
+                    updateElement:SetVersionsBehind(versionsBehind, exists)
+                    updateElement:SetRequiresAddOnUpdate(requiresAddOnUpdate, exists)
 
                     table.insert(updateElements, updateElement)
                 end
@@ -96,7 +97,7 @@ function LUP:CreateUpdateList(parent)
             local updateElement = LUP:CreateUpdateElement(scrollFrame.contentFrame, "SAP_Raid_Updater")
 
             updateElement:SetVersionsBehind(addOnVersionsBehind)
-            updateElement:SetRequiresAddOnUpdate(true)
+            updateElement:SetRequiresAddOnUpdate(true, true)
 
             table.insert(updateElements, 1, updateElement)
         end

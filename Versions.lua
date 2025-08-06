@@ -302,7 +302,6 @@ local function UpdateMRTNoteHash()
 
     versionsTable.mrtNoteHash = hash
 
-    print("MRT Hash Changed: ", changed, " New Hash: ", hash)
     if changed then
         OnPlayerVersionsTableUpdate()
 

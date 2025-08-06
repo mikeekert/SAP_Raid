@@ -86,7 +86,7 @@ local function BuildAuraImportElements()
 
         auraImportFrame:SetDisplayName(addon)
         auraImportFrame:SetVersionsBehind(addOnVersionsBehind)
-        auraImportFrame:SetRequiresAddOnUpdate(true)
+        auraImportFrame:SetRequiresAddOnUpdate(true, true)
 
         auraImportFrame:Show()
         auraImportFrame:SetPoint("TOPLEFT", parent, "TOPLEFT", spacing, -spacing)

@@ -92,10 +92,20 @@ function LUP:CreateCheckGridCell(parent)
             checkGridCell.hasData = true
             checkGridCell.value = count
 
-            checkGridCell.count:Show()
-            checkGridCell.tex:Hide()
+            -- check if its missing totally
+            if count <= 0 then
+                checkGridCell.count:Hide()
+                checkGridCell.tex:Show()
 
-            checkGridCell.count:SetFormattedText("|cff%s%d|r", LUP.gs.visual.colorStrings.red, count)
+                checkGridCell.tex:SetAtlas(CROSS_ATLAS)
+                checkGridCell.tex:SetDesaturated(false)
+            else
+
+                checkGridCell.count:Show()
+                checkGridCell.tex:Hide()
+
+                checkGridCell.count:SetFormattedText("|cff%s%d|r", LUP.gs.visual.colorStrings.red, count)
+            end
         end
 
         function checkGridCell:SetTooltip(tooltip)

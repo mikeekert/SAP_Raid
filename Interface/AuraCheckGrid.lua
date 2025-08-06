@@ -20,21 +20,22 @@ function LUP:CreateAuraCheckGrid(parent)
 
     checkGrid:SetTitles(titles)
 
-    local function GenerateTooltip(displayName, versions)
+    local function GenerateTooltip(displayName, versions, isMissing)
+
         if versions <= 0 then
             return string.format("|cff%s%s|r is up to date", TOOLTIP_NAME_COLOR, displayName)
         else
+            local status = isMissing and "Missing" or string.format("%d version(s) behind", versions)
             return string.format(
-                "|cff%s%s|r is |cff%s%d|r version(s) behind",
-                TOOLTIP_NAME_COLOR,
-                displayName,
-                LUP.gs.visual.colorStrings.red,
-                versions
+                    "|cff%s%s|r is |cff%s%s|r",
+                    TOOLTIP_NAME_COLOR,
+                    displayName,
+                    LUP.gs.visual.colorStrings.red,
+                    status
             )
         end
     end
 
-    -- Takes in a versions table, and returns a formatted table that the check grid can interpret
     local function FormatVersionsTable(versionsTable)
         local data = {}
 
@@ -43,7 +44,10 @@ function LUP:CreateAuraCheckGrid(parent)
 
         -- AddOn version
         local addOnValue = highestSeenAddOnVersion - (versionsTable.addOn or 0)
-        local addOnTooltip = GenerateTooltip("SAP_Raid_Updater", addOnValue)
+        local isMissing = highestSeenAddOnVersion - versionsTable.addOn == 0
+
+        local addOnTooltip = GenerateTooltip("SAP_Raid_Updater", addOnValue, isMissing)
+        -- imported version
 
         data.SAP_Raid_Updater = {
             value = addOnValue,
@@ -53,10 +57,14 @@ function LUP:CreateAuraCheckGrid(parent)
         -- Aura versions
         for displayName, version in pairs(versionsTable.auras) do
             local value = (highestSeenAuraVersions[displayName] or 0) - version
-            local tooltip = GenerateTooltip(displayName, value)
+
+            -- if value == 0 then its missing
+            local auraIsMissing = version == 0
+
+            local tooltip = GenerateTooltip(displayName, value, auraIsMissing)
 
             data[displayName] = {
-                value = value,
+                value = auraIsMissing and -1 or value,
                 tooltip = tooltip
             }
         end

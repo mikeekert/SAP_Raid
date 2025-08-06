@@ -12,9 +12,7 @@ function LUP:UpdateMinimapIcon()
                     type = "data source",
                     text = "SAP Updater",
                     icon = [[Interface\Addons\SAP_Raid_Updater\Media\Textures\minimap_logo.tga]],
-                    OnClick = function()
-                        LUP.window:SetShown(not LUP.window:IsShown())
-                    end
+                    OnClick = function() LUP.window:SetShown(not LUP.window:IsShown()) end
                 }
         )
 
@@ -91,7 +89,6 @@ SLASH_SAPSHOW1  = "/su"
 SlashCmdList["SAPRESET"] = function()
     if LUP then
         LUP:ClearAllSAPUpdaterSaved()
-        LUP:UpdateMinimapIcon()
     end
 end
 

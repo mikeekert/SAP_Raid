@@ -68,7 +68,7 @@ function LUP:CreateUpdateElement(parent, auraName)
         updateElement.displayName:SetPoint("LEFT", updateElement, "LEFT", MARGIN, 0)
 
         -- Import button
-        updateElement.importButton = LUP:CreateButton(updateElement, "Update", function() end)
+        updateElement.importButton = LUP:CreateButton(updateElement, "Import", function() end)
 
         updateElement.importButton:SetNormalFontObject(LiquidFont15)
         updateElement.importButton:SetHighlightFontObject(LiquidFont15)
@@ -100,19 +100,26 @@ function LUP:CreateUpdateElement(parent, auraName)
             LUP.LiquidUI:AddTooltip(updateElement, tooltip)
         end
 
-        function updateElement:SetVersionsBehind(count)
+        function updateElement:SetVersionsBehind(count, isMissing)
             updateElement.versionsBehind = count
 
-            updateElement.versionCount:SetFormattedText("|cff%s%d version(s)|r", LUP.gs.visual.colorStrings.red, count)
+            if isMissing then
+                updateElement.versionCount:SetFormattedText("|cff%sMissing!|r", LUP.gs.visual.colorStrings.red)
+            else
+                updateElement.versionCount:SetFormattedText("|cff%s%d version(s)|r", LUP.gs.visual.colorStrings.red, count)
+            end
 
-            UpdateTooltip()
-        end
 
-        function updateElement:SetRequiresAddOnUpdate(requiresUpdate)
+                UpdateTooltip()
+            end
+
+        function updateElement:SetRequiresAddOnUpdate(requiresUpdate, exists)
             updateElement.requiresUpdate = requiresUpdate
 
-            updateElement.versionCount:SetShown(not requiresUpdate)
-            updateElement.importButton:SetShown(not requiresUpdate)
+            local showVersion = not requiresUpdate
+            updateElement.versionCount:SetShown(showVersion)
+            updateElement.importButton:SetShown(showVersion)
+            updateElement.importButton:SetText(showVersion and (not exists and "Update" or "Import") or "")
             updateElement.requiresUpdateText:SetShown(requiresUpdate)
 
             UpdateTooltip()
