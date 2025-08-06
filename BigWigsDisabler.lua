@@ -9,7 +9,7 @@ local function DisableBigWigsSettings(module)
     local optionsToDisable = moduleSettingsTable[moduleName]
 
     if not optionsToDisable then return end
-    
+
     for optionKey, optionValue in pairs(optionsToDisable) do
         local optionExists = module.db.profile[optionKey] ~= nil
         local optionMatchesType = type(module.db.profile[optionKey]) == type(optionValue)
@@ -19,8 +19,8 @@ local function DisableBigWigsSettings(module)
                 module.db.profile[optionKey] = optionValue
             elseif type(optionValue) == "number" then -- Turning off suboptions
                 module.db.profile[optionKey] = bit.band(
-                    module.db.profile[optionKey],
-                    optionValue
+                        module.db.profile[optionKey],
+                        optionValue
                 )
             end
         end
@@ -31,16 +31,16 @@ function LUP:RegisterBigWigsDisabler()
     if not BigWigsLoader then return end
 
     BigWigsLoader.RegisterMessage(
-        "AuraUpdaterDisabler",
-        "BigWigs_OnBossEngage",
-        function(_, module)
-            if not module then return end
-            if not module.moduleName then return end
-            if not module.db then return end
-            if not module.db.profile then return end
+            "AuraUpdaterDisabler",
+            "BigWigs_OnBossEngage",
+            function(_, module)
+                if not module then return end
+                if not module.moduleName then return end
+                if not module.db then return end
+                if not module.db.profile then return end
 
-            DisableBigWigsSettings(module)
-        end
+                DisableBigWigsSettings(module)
+            end
     )
 end
 
@@ -72,10 +72,10 @@ local f = CreateFrame("Frame")
 f:RegisterEvent("ADDON_LOADED")
 
 f:SetScript(
-    "OnEvent",
-    function(_, _, addOnName)
-        if addOnName == "BigWigs_Core" then
-            LUP:InitializeBigWigsDisabler()
+        "OnEvent",
+        function(_, _, addOnName)
+            if addOnName == "BigWigs_Core" then
+                LUP:InitializeBigWigsDisabler()
+            end
         end
-    end
 )

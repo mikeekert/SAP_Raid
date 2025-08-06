@@ -7,9 +7,9 @@ namespace.LiquidUI = {
 local LUI = namespace.LiquidUI
 
 -- Tooltip
-CreateFrame("GameTooltip", "LRTooltip", UIParent, "GameTooltipTemplate")
+CreateFrame("GameTooltip", "LUITooltip", UIParent, "GameTooltipTemplate")
 
-LUI.Tooltip = _G["LRTooltip"]
+LUI.Tooltip = _G["LUITooltip"]
 LUI.Tooltip:SetOwner(WorldFrame, "ANCHOR_NONE")
 
 LUI.Tooltip:AddFontStrings(

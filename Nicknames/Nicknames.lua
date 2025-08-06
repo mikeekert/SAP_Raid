@@ -113,7 +113,7 @@ end
 
 -- For a given nickname, returns the character in the group that is associated with it
 -- This could either be a name or an actual unit id (no guarantees)
-function SAP_Raid_Updater:GetCharacterInGroup(nickname)
+function AuraUpdater:GetCharacterInGroup(nickname)
     local character = nicknameToCharacterCache[nickname]
 
     if not character then

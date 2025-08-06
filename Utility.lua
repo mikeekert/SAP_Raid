@@ -27,25 +27,25 @@ end
 -- Rounds a value, optionally to a certain number of decimals
 function LUP:Round(value, decimals)
     if not decimals then decimals = 0 end
-    
+
     local p = math.pow(10, decimals)
-    
+
     value = value * p
     value = Round(value)
     value = value / p
-    
+
     return value
 end
 
 -- Same as the game's SecondsToClock, except adds a single decimal to the seconds
 function LUP:SecondsToClock(seconds, displayZeroHours)
-	local units = ConvertSecondsToUnits(seconds)
+    local units = ConvertSecondsToUnits(seconds)
 
-	if units.hours > 0 or displayZeroHours then
-		return format("%.2d:%.2d:%04.1f", units.hours, units.minutes, units.seconds + units.milliseconds)
-	else
-		return format("%.2d:%04.1f", units.minutes, units.seconds + units.milliseconds)
-	end
+    if units.hours > 0 or displayZeroHours then
+        return format("%.2d:%.2d:%04.1f", units.hours, units.minutes, units.seconds + units.milliseconds)
+    else
+        return format("%.2d:%04.1f", units.minutes, units.seconds + units.milliseconds)
+    end
 end
 
 -- Iterates group units
@@ -76,17 +76,13 @@ function LUP:IconString(iconID)
     return CreateTextureMarkup(iconID, 64, 64, 0, 0, 5/64, 59/64, 5/64, 59/64)
 end
 
-function LUP:ErrorPrint(text)
-    print(string.format("Addon |cffff0000ERROR|r: %s", text))
-end
-
 function LUP:ClassColorName(unit)
     if not UnitExists(unit) then return unit end
-    
+
     local name = UnitNameUnmodified(unit)
     local class = UnitClassBase(unit)
 
     local colorStr = RAID_CLASS_COLORS[class].colorStr
-    
+
     return string.format("|c%s%s|r", colorStr, name)
 end

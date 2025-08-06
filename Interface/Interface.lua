@@ -1,16 +1,11 @@
 local _, LUP = ...
 
--- Tooltip
-CreateFrame("GameTooltip", "LRTooltip", UIParent, "GameTooltipTemplate")
-
-LUP.Tooltip = _G["LRTooltip"]
-LUP.Tooltip.TextLeft1:SetFontObject(LiquidFont13)
-
 -- Main window
-local windowWidth = 640
-local windowHeight = 400
+local MIN_WINDOW_WIDTH = 600
+local MIN_WINDOW_HEIGHT = 400
 
 local updateButton, auraCheckButton, otherCheckButton
+local updateList, auraCheckGrid, otherCheckGrid
 
 local function ResizeHeaderButtons(_, buttonFrameWidth)
     local combinedButtonWidth = buttonFrameWidth - 16
@@ -19,22 +14,58 @@ local function ResizeHeaderButtons(_, buttonFrameWidth)
     auraCheckButton:SetWidth(combinedButtonWidth / 3)
 end
 
-local function SetActiveButton(activeButton)
-    updateButton.Background = updateButton.Background or updateButton:CreateTexture(nil, "BACKGROUND")
-    updateButton.Background:SetAllPoints()
-    updateButton.Background:SetColorTexture(0, 0, 0, 0)
+-- Called when the installed version of an aura supplied by AuraUpdater changes for the player
+function LUP:OnPlayerAuraUpdate()
+    updateList:Rebuild()
+end
 
-    auraCheckButton.Background = auraCheckButton.Background or auraCheckButton:CreateTexture(nil, "BACKGROUND")
-    auraCheckButton.Background:SetAllPoints()
-    auraCheckButton.Background:SetColorTexture(0, 0, 0, 0)
+-- Called when we receive a new nickname for a unit
+function LUP:OnNicknameUpdate(unit, nickname)
+    auraCheckGrid:UpdateDisplayNameForUnit(unit, nickname)
+    otherCheckGrid:UpdateDisplayNameForUnit(unit, nickname)
+end
 
-    otherCheckButton.Background = otherCheckButton.Background or otherCheckButton:CreateTexture(nil, "BACKGROUND")
-    otherCheckButton.Background:SetAllPoints()
-    otherCheckButton.Background:SetColorTexture(0, 0, 0, 0)
+-- Called whenever the versions table for a group member changes (including our own)
+function LUP:OnVersionsTableUpdate(unit, versionsTable)
+    auraCheckGrid:UpdateVersionsTableForUnit(unit, versionsTable)
+    otherCheckGrid:UpdateVersionsTableForUnit(unit, versionsTable)
+end
 
-    activeButton.Background = activeButton.Background or activeButton:CreateTexture(nil, "BACKGROUND")
-    activeButton.Background:SetAllPoints()
-    activeButton.Background:SetColorTexture(0.3, 0.3, 0.9, 0.3) -- Blue highlight
+-- When the MRT hash changes for the player, we want to fully rebuild the other check grid
+-- The reason for this, is that the MRT cell for every row is compared to ours
+function LUP:OnMRTHashUpdate()
+    otherCheckGrid:UpdateVersionsTableForUnit("player", LUP:GetPlayerVersionsTable())
+
+    otherCheckGrid:FullRebuild()
+end
+
+-- Called when we receive a highest addon/weakaura version than those we had previously seen
+-- We want to fully rebuild the checker grids, since this change has to be reflected in every row
+function LUP:OnHighestSeenVersionsUpdate()
+    updateList:Rebuild()
+
+    auraCheckGrid:FullRebuild()
+    otherCheckGrid:FullRebuild()
+end
+
+-- Updates the minimum resize bounds for the AuraUpdater window, based on the min width of the check grids
+-- This is called whenever the titles for a check grid header change
+function LUP:UpdateWindowResizeBounds()
+    local auraCheckGridWidth = auraCheckGrid and auraCheckGrid:GetMinimumWidth() or 0
+    local otherCheckGridWidth = otherCheckGrid and otherCheckGrid:GetMinimumWidth() or 0
+
+    local minWidth = math.max(MIN_WINDOW_WIDTH, auraCheckGridWidth, otherCheckGridWidth)
+    local minHeight = MIN_WINDOW_HEIGHT
+
+    LUP.window:SetResizeBounds(minWidth, minHeight)
+
+    -- If the size of the window is currently smaller than the minimum size, increase it
+    local currentWidth, currentHeight = LUP.window:GetSize()
+
+    LUP.window:SetSize(
+        math.max(currentWidth, minWidth),
+        math.max(currentHeight, minHeight)
+    )
 end
 
 function LUP:InitializeInterface()
@@ -43,7 +74,6 @@ function LUP:InitializeInterface()
 
     LUP.window:RaiseOnClick()
     LUP.window:SetFrameStrata("HIGH")
-    LUP.window:SetResizeBounds(windowWidth, windowHeight)
     LUP.window:SetPoint("CENTER")
     LUP.window:Hide()
 
@@ -74,11 +104,13 @@ function LUP:InitializeInterface()
     updateButton.highlight = updateButton:CreateTexture(nil, "HIGHLIGHT")
     updateButton.highlight:SetColorTexture(1, 1, 1, 0.05)
     updateButton.highlight:SetAllPoints()
+    updateButton.highlight:SetSnapToPixelGrid(false)
+    updateButton.highlight:SetTexelSnappingBias(0)
 
     updateButton.text = updateButton:CreateFontString(nil, "OVERLAY")
     updateButton.text:SetFontObject(LiquidFont17)
     updateButton.text:SetPoint("CENTER", updateButton, "CENTER")
-    updateButton.text:SetText(string.format("|cff%sUpdate WeakAura|r", LUP.gs.visual.colorStrings.white))
+    updateButton.text:SetText(string.format("|cff%sUpdate|r", LUP.gs.visual.colorStrings.white))
 
     updateButton:SetScript(
         "OnMouseDown",
@@ -86,7 +118,6 @@ function LUP:InitializeInterface()
             LUP.updateWindow:Show()
             LUP.auraCheckWindow:Hide()
             LUP.otherCheckWindow:Hide()
-            SetActiveButton(updateButton)
         end
     )
 
@@ -104,11 +135,13 @@ function LUP:InitializeInterface()
     auraCheckButton.highlight = auraCheckButton:CreateTexture(nil, "HIGHLIGHT")
     auraCheckButton.highlight:SetColorTexture(1, 1, 1, 0.05)
     auraCheckButton.highlight:SetAllPoints()
+    auraCheckButton.highlight:SetSnapToPixelGrid(false)
+    auraCheckButton.highlight:SetTexelSnappingBias(0)
 
     auraCheckButton.text = auraCheckButton:CreateFontString(nil, "OVERLAY")
     auraCheckButton.text:SetFontObject(LiquidFont17)
     auraCheckButton.text:SetPoint("CENTER", auraCheckButton, "CENTER")
-    auraCheckButton.text:SetText(string.format("|cff%sCheck Raid Team versions|r", LUP.gs.visual.colorStrings.white))
+    auraCheckButton.text:SetText(string.format("|cff%sAura check|r", LUP.gs.visual.colorStrings.white))
 
     auraCheckButton:SetScript(
         "OnMouseDown",
@@ -116,7 +149,6 @@ function LUP:InitializeInterface()
             LUP.updateWindow:Hide()
             LUP.auraCheckWindow:Show()
             LUP.otherCheckWindow:Hide()
-            SetActiveButton(auraCheckButton)
         end
     )
 
@@ -133,11 +165,13 @@ function LUP:InitializeInterface()
     otherCheckButton.highlight = otherCheckButton:CreateTexture(nil, "HIGHLIGHT")
     otherCheckButton.highlight:SetColorTexture(1, 1, 1, 0.05)
     otherCheckButton.highlight:SetAllPoints()
+    otherCheckButton.highlight:SetSnapToPixelGrid(false)
+    otherCheckButton.highlight:SetTexelSnappingBias(0)
 
     otherCheckButton.text = otherCheckButton:CreateFontString(nil, "OVERLAY")
     otherCheckButton.text:SetFontObject(LiquidFont17)
     otherCheckButton.text:SetPoint("CENTER", otherCheckButton, "CENTER")
-    otherCheckButton.text:SetText(string.format("|cff%sCheck other items|r", LUP.gs.visual.colorStrings.white))
+    otherCheckButton.text:SetText(string.format("|cff%sOther check|r", LUP.gs.visual.colorStrings.white))
 
     otherCheckButton:SetScript(
         "OnMouseDown",
@@ -145,7 +179,6 @@ function LUP:InitializeInterface()
             LUP.updateWindow:Hide()
             LUP.auraCheckWindow:Hide()
             LUP.otherCheckWindow:Show()
-            SetActiveButton(otherCheckButton)
         end
     )
 
@@ -168,8 +201,6 @@ function LUP:InitializeInterface()
     LUP.auraCheckWindow:Hide()
     LUP.otherCheckWindow:Hide()
 
-    LUP.window:SetSize(windowWidth, windowHeight)
-
     LUP:InitializeSettings()
 
     -- When escape is pressed, close the main window
@@ -188,5 +219,38 @@ function LUP:InitializeInterface()
         end
     )
 
-    SetActiveButton(updateButton)
+    -- Update list
+    updateList = LUP:CreateUpdateList(LUP.updateWindow)
+
+    updateList:SetPoint("TOPLEFT", LUP.updateWindow, "TOPLEFT", 4, -4)
+    updateList:SetPoint("BOTTOMRIGHT", LUP.updateWindow, "BOTTOMRIGHT", -1, 4)
+
+    -- Aura check grid
+    auraCheckGrid = LUP:CreateAuraCheckGrid(LUP.auraCheckWindow)
+
+    auraCheckGrid:SetPoint("TOPLEFT", LUP.auraCheckWindow, "TOPLEFT", 4, -4)
+    auraCheckGrid:SetPoint("BOTTOMRIGHT", LUP.auraCheckWindow, "BOTTOMRIGHT", -1, 4)
+
+    -- Other check grid
+    otherCheckGrid = LUP:CreateOtherCheckGrid(LUP.otherCheckWindow)
+
+    otherCheckGrid:SetPoint("TOPLEFT", LUP.otherCheckWindow, "TOPLEFT", 4, -4)
+    otherCheckGrid:SetPoint("BOTTOMRIGHT", LUP.otherCheckWindow, "BOTTOMRIGHT", -1, 4)
+
+    LUP:UpdateWindowResizeBounds()
+
+    -- -- Test
+    -- local window = LUP:CreateWindow(nil, true, true, true)
+
+    -- window:SetPoint("CENTER")
+
+    -- local checkGrid = LUP:CreateAuraCheckGrid(window)
+
+    -- checkGrid:SetPoint("TOPLEFT", window.moverFrame, "BOTTOMLEFT", 4, -4)
+    -- checkGrid:SetPoint("BOTTOMRIGHT", window, "BOTTOMRIGHT", -4, 4)
+
+    -- window:SetResizeBounds(checkGrid:GetMinimumWidth(), 400)
+    -- window:SetSize(checkGrid:GetMinimumWidth(), 400)
+
+    -- LUP.auraCheckGrid = checkGrid
 end
