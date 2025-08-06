@@ -47,6 +47,8 @@ update_weakauras()
     if ! [ -d "WeakAuras/.generated" ]
     then
         echo "Generated folder does not exists!"
+        # make one
+        mkdir -p WeakAuras/.generated
         return 1
     fi
 
@@ -126,22 +128,22 @@ update_weakauras()
     git commit --allow-empty -m "WeakAura update"
 }
 
-# Check if we are on the master branch before releasing
-if ! [[ $(git branch --show-current) == "master" ]]
-then
-    echo "you are not on master."
-    return 1
-fi
-
-# Fetch remote release tags, in case we do not have them locally yet
-git fetch --tags origin master;
-
-# Check if we are up to date with master
-if ! [[ $(git rev-list @..master --count) -eq 0 ]]
-then
-    echo "behind master, please pull before release."
-    return 1
-fi
+## Check if we are on the master branch before releasing
+#if ! [[ $(git branch --show-current) == "master" ]]
+#then
+#    echo "you are not on master."
+#    return 1
+#fi
+#
+## Fetch remote release tags, in case we do not have them locally yet
+#git fetch --tags origin master;
+#
+## Check if we are up to date with master
+#if ! [[ $(git rev-list @..master --count) -eq 0 ]]
+#then
+#    echo "behind master, please pull before release."
+#    return 1
+#fi
 
 update_weakauras
 
@@ -152,4 +154,4 @@ then
     git commit --allow-empty "Release"
 fi
 
-increment_tag_and_release
+#increment_tag_and_release
