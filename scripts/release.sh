@@ -69,6 +69,7 @@ update_weakauras()
         echo "versions.json does not exist, creating it"
         # Create an empty versions.json file
         echo "{}" > WeakAuras/.generated/versions.json
+        updated_json=$(jq '.' WeakAuras/.generated/versions.json)
     fi
 
     updated_json=$(jq '.' WeakAuras/.generated/versions.json)
@@ -77,9 +78,10 @@ update_weakauras()
     files="WeakAuras/Mandatory/*.txt"
     for f in $files
     do
+      echo "Processing $f"
         filename=$(basename "$f")
         auraname="${filename%.*}"
-        auradata=$(<$f)
+        auradata=$(<"$f")
 
         # Check if the file contains a weakaura (just check the weakaura prefix)
         if ! [[ $auradata == "!WA:2!"* ]]
@@ -133,8 +135,8 @@ update_weakauras()
     printf "$lua_tables" > WeakAuras.lua
 
     # Commit changes (assume all remaining changes are WeakAura updates)
-    git add .
-    git commit --allow-empty -m "WeakAura update"
+#    git add .
+#    git commit --allow-empty -m "WeakAura update"
 }
 
 ## Check if we are on the master branch before releasing
@@ -158,9 +160,9 @@ update_weakauras
 
 # Check if there are actually any staged commits to release
 # If not, make an empty commit
-if ! [[ $(git rev-list FETCH_HEAD..master --count) -gt 0 ]]
-then
-    git commit --allow-empty "Release"
-fi
+#if ! [[ $(git rev-list FETCH_HEAD..master --count) -gt 0 ]]
+#then
+#    git commit --allow-empty "Release"
+#fi
 
 #increment_tag_and_release
