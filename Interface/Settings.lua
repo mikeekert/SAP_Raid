@@ -50,7 +50,7 @@ function LUP:InitializeSettings()
         function(hideMinimapIcon)
             SAPUpdaterSaved.settings.hideMinimapIcon = hideMinimapIcon
             
-            LUP:UpdateMinimapIconVisibility()
+            LUP:UpdateMinimapIcon()
         end
     )
 
@@ -84,6 +84,15 @@ function LUP:InitializeSettings()
         end
     )
 
+    AddCheckButton(
+            "debug",
+            "output print errors",
+            SAPUpdaterSaved.settings.debug,
+            function(debug)
+                SAPUpdaterSaved.settings.debug = debug
+            end
+    )
+
     nicknameEditBox = LUP:CreateEditBox(
         LUP.settingsWindow,
         "Nickname",
@@ -106,7 +115,7 @@ function LUP:InitializeSettings()
     -- If the user has a preset nickname, don't allow them to change their nickname manually
     local presetNickname = LUP:GetPresetNickname()
 
-    if presetNickname then
+    if false and presetNickname then
         nicknameEditBox:SetText(presetNickname)
 
         nicknameEditBox:SetScript(

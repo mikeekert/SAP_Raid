@@ -1,15 +1,29 @@
-## Interface: 110107
+## Interface: 110107, 110200
 ## Version: 9
 ## Title: SAP Raid Tools [Manaforge]
 ## Author: SAP
 ## IconTexture: Interface\Addons\SAP_Raid_Updater\Media\Textures\logo_secondary.blp
 ## SavedVariables: SAPUpdaterSaved
 ## Dependencies: WeakAuras
+## LoadSavedVariablesFirst: 1
 ## OptionalDeps: ViragDevTool, DBM-Core, Liquid, LiquidUpdater
 ## Category: SAP
 
 embeds.xml
 LiquidUI/LiquidUI.xml
+
+Interface/UpdateList/UpdateList.lua
+Interface/UpdateList/UpdateElement.lua
+
+Interface/CheckGrid/CheckGrid.lua
+Interface/CheckGrid/CheckGridTitle.lua
+Interface/CheckGrid/CheckGridHeader.lua
+Interface/CheckGrid/CheckGridCell.lua
+Interface/CheckGrid/CheckGridRow.lua
+
+Interface/AuraCheckGrid.lua
+Interface/OtherCheckGrid.lua
+Interface/Notifications.lua
 
 GlobalSettings.lua
 BigWigsDisabler.lua
@@ -28,10 +42,9 @@ Nicknames/VuhDo.lua
 Nicknames/WeakAuras.lua
 
 Interface/Interface.lua
-Interface/AuraImportElement.lua
-Interface/AuraUpdater.lua
-Interface/AuraChecker.lua
-Interface/OtherChecker.lua
 Interface/Settings.lua
 
+Transmission.lua
+Versions.lua
 SAP_Raid_Updater.lua
+Core.lua

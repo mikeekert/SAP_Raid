@@ -133,7 +133,7 @@ function LUP.auraChecker:UpdateCheckElementForUnit(unit, versionsTable, force)
         local auraVersion = versionsTable and versionsTable.auras[displayName] or 0
         local auraVersionsBehind
 
-        if displayName == "SAP - Raid Anchors" then
+        if displayName == "SAP - Raid Anchors [11.2]" then
             auraVersionsBehind = auraVersion > 0 and 0 or -1
         else
             auraVersionsBehind = (versionsTable and highestAuraVersion - auraVersion == highestAuraVersion) and -1

@@ -107,7 +107,7 @@ function namespace:CreateWindow(name, exitable, movable, resizable)
         window.moverFrame.tex = window.moverFrame:CreateTexture(nil, "BACKGROUND")
         window.moverFrame.tex:SetPoint("TOPLEFT", window)
         window.moverFrame.tex:SetPoint("BOTTOMRIGHT", window, "TOPRIGHT", 0, -MOVER_FRAME_HEIGHT)
-        window.moverFrame.tex:SetColorTexture(5/255, 5/255, 5/255)
+        window.moverFrame.tex:SetColorTexture(0/255, 15/255, 41/255)
         window.moverFrame.tex:SetSnapToPixelGrid(false)
         window.moverFrame.tex:SetTexelSnappingBias(0)
 

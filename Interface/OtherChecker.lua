@@ -134,7 +134,7 @@ function LUP.otherChecker:UpdateCheckElementForUnit(unit, versionsTable, force)
     }
 
     if versionsTable then
-        data.auraUpdater = true -- Whether AuraUpdater is active
+        data.sapUpdater = true -- Whether AuraUpdater is active
         data.mrtNoteHash = versionsTable.mrtNoteHash
         data.ignores = versionsTable.ignores
         data.RCLC = versionsTable.RCLC
@@ -214,7 +214,7 @@ local function CheckElementInitializer(frame, data)
     local versionFrame = frame.versionFrames[1]
 
     if not data.mrtNoteHash then
-        if data.auraUpdater then
+        if data.sapUpdater then
             versionFrame.versionsBehindIcon.text:SetAtlas("QuestTurnin")
 
             LUP.LiquidUI:AddTooltip(
@@ -249,7 +249,7 @@ local function CheckElementInitializer(frame, data)
     versionFrame = frame.versionFrames[2]
 
     if not data.ignores then
-        if data.auraUpdater then
+        if data.sapUpdater then
             versionFrame.versionsBehindIcon.text:SetAtlas("QuestTurnin")
 
             LUP.LiquidUI:AddTooltip(
@@ -297,19 +297,19 @@ local function CheckElementInitializer(frame, data)
             "No information about RCLC version received.|n|nUser is running an outdated Addon version."
         )
     elseif not data.RCLC then
-        if data.auraUpdater then
+        if data.sapUpdater then
             versionFrame.versionsBehindIcon.text:SetAtlas("QuestTurnin")
 
             LUP.LiquidUI:AddTooltip(
                 versionFrame,
-                "No information about RCLC received.|n|nUser is running an outdated AuraUpdater version, or has RCLC disabled."
+                "No information about RCLC received.|n|nUser is running an outdated Addon version, or has RCLC disabled."
             )
         else
             versionFrame.versionsBehindIcon.text:SetAtlas("QuestTurnin")
 
             LUP.LiquidUI:AddTooltip(
                 versionFrame,
-                "No information about RCLC note received.|n|nUser is not running AuraUpdater."
+                "No information about RCLC note received.|n|nUser is not running Addon."
             )
         end
     elseif LUP:CompareRCLCVersions(LUP.highestSeenRCLCVersion, data.RCLC) == -1 then
