@@ -68,6 +68,24 @@ function LUP:UpdateWindowResizeBounds()
     )
 end
 
+local function SetActiveButton(activeButton)
+    updateButton.Background = updateButton.Background or updateButton:CreateTexture(nil, "BACKGROUND")
+    updateButton.Background:SetAllPoints()
+    updateButton.Background:SetColorTexture(0, 0, 0, 0)
+
+    auraCheckButton.Background = auraCheckButton.Background or auraCheckButton:CreateTexture(nil, "BACKGROUND")
+    auraCheckButton.Background:SetAllPoints()
+    auraCheckButton.Background:SetColorTexture(0, 0, 0, 0)
+
+    otherCheckButton.Background = otherCheckButton.Background or otherCheckButton:CreateTexture(nil, "BACKGROUND")
+    otherCheckButton.Background:SetAllPoints()
+    otherCheckButton.Background:SetColorTexture(0, 0, 0, 0)
+
+    activeButton.Background = activeButton.Background or activeButton:CreateTexture(nil, "BACKGROUND")
+    activeButton.Background:SetAllPoints()
+    activeButton.Background:SetColorTexture(0.3, 0.3, 0.9, 0.3) -- Blue highlight
+end
+
 function LUP:InitializeInterface()
     -- Window
     LUP.window = LUP:CreateWindow(nil, true, true, true)
@@ -118,6 +136,7 @@ function LUP:InitializeInterface()
             LUP.updateWindow:Show()
             LUP.auraCheckWindow:Hide()
             LUP.otherCheckWindow:Hide()
+            SetActiveButton(updateButton)
         end
     )
 
@@ -149,6 +168,7 @@ function LUP:InitializeInterface()
             LUP.updateWindow:Hide()
             LUP.auraCheckWindow:Show()
             LUP.otherCheckWindow:Hide()
+            SetActiveButton(auraCheckButton)
         end
     )
 
@@ -179,6 +199,7 @@ function LUP:InitializeInterface()
             LUP.updateWindow:Hide()
             LUP.auraCheckWindow:Hide()
             LUP.otherCheckWindow:Show()
+            SetActiveButton(otherCheckButton)
         end
     )
 
@@ -218,6 +239,8 @@ function LUP:InitializeInterface()
             end
         end
     )
+
+    SetActiveButton(updateButton)
 
     -- Update list
     updateList = LUP:CreateUpdateList(LUP.updateWindow)

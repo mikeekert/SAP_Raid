@@ -19,21 +19,12 @@ function namespace:CreateWindow(name, exitable, movable, resizable)
     window:SetScript("OnMouseWheel", function() end) -- Stop scroll wheel propagation
     window:EnableMouse(true)
 
-    -- Background
-    window.upperTexture = window:CreateTexture(nil, "BACKGROUND")
-    window.upperTexture:SetPoint("TOPLEFT", window, "TOPLEFT")
-    window.upperTexture:SetPoint("BOTTOMRIGHT", window, "RIGHT")
-    window.upperTexture:SetTexture("Interface/Buttons/WHITE8x8")
-    window.upperTexture:SetGradient("VERTICAL", CreateColor(0/255, 21/255, 56/255, 1), CreateColor(17/255, 62/255, 127/255, 1))
-    window.upperTexture:SetSnapToPixelGrid(false)
-    window.upperTexture:SetTexelSnappingBias(0)
-    
-    window.lowerTexture = window:CreateTexture(nil, "BACKGROUND")
-    window.lowerTexture:SetPoint("TOPLEFT", window, "LEFT")
-    window.lowerTexture:SetPoint("BOTTOMRIGHT", window, "BOTTOMRIGHT")
-    window.lowerTexture:SetColorTexture(0/255, 21/255, 56/255)
-    window.lowerTexture:SetSnapToPixelGrid(false)
-    window.lowerTexture:SetTexelSnappingBias(0)
+    window.backgroundTexture = window:CreateTexture(nil, "BACKGROUND")
+    window.backgroundTexture:SetPoint("TOPLEFT", window, "TOPLEFT")
+    window.backgroundTexture:SetPoint("BOTTOMRIGHT", window, "BOTTOMRIGHT")
+    window.backgroundTexture:SetColorTexture(15/255, 15/255, 15/255) -- Single dark gray color
+    window.backgroundTexture:SetSnapToPixelGrid(false)
+    window.backgroundTexture:SetTexelSnappingBias(0)
 
     -- Border
     LUI:AddBorder(window, 1, 1, 1)
