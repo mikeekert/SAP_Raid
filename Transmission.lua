@@ -67,8 +67,8 @@ local function UpdateVersionsTableForUnit(unit, versionsTable)
             LUP:OnNicknameUpdate(unit, nickname)
         end
 
-        LUP:OnVersionsTableUpdate(unit, versionsTable)
         LUP:UpdateHighestSeenVersions(versionsTable)
+        LUP:OnVersionsTableUpdate(unit, versionsTable)
     else -- If the player is not in our group (i.e. they're just in our guild), only update highest seen versions
         LUP:UpdateHighestSeenVersions(versionsTable)
     end
