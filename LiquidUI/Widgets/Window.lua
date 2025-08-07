@@ -104,6 +104,11 @@ function namespace:CreateWindow(name, exitable, movable, resizable)
         window.moverFrame:SetPoint("TOPRIGHT", window)
         window.moverFrame:SetHeight(MOVER_FRAME_HEIGHT)
 
+        local verString = C_AddOns.GetAddOnMetadata(addOnName, "Version")
+        window.moverFrame.title = window.moverFrame:CreateFontString(nil, "OVERLAY", "LiquidFont17")
+        window.moverFrame.title:SetPoint("LEFT", window.moverFrame, "LEFT", BUTTON_MARGIN_X, 0)
+        window.moverFrame.title:SetText(string.format("%s v%s", "SAP: ", verString or "Unknown"))
+
         window.moverFrame.tex = window.moverFrame:CreateTexture(nil, "BACKGROUND")
         window.moverFrame.tex:SetPoint("TOPLEFT", window)
         window.moverFrame.tex:SetPoint("BOTTOMRIGHT", window, "TOPRIGHT", 0, -MOVER_FRAME_HEIGHT)
