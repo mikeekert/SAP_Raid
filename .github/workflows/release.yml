@@ -54,17 +54,19 @@ jobs:
             echo "$COMMIT_LOG" | sed 's/\[sap\]//g'
             echo
             [ -f CHANGELOG.md ] && cat CHANGELOG.md
+            echo "[$TAG_NAME ZIP](https://github.com/mikeekert/SAP_Raid/releases/download/$TAG_NAME/SAP_Raid_Updater-v$TAG_NAME.zip)"
           } > CHANGELOG.md.new
           mv CHANGELOG.md.new CHANGELOG.md
-
+          
           # Prepare JSON for Discord
           VERSION_LINE="## $TAG_NAME ($CURRENT_DATE)"
           CHANGELOG_TEXT=$(echo "$COMMIT_LOG" | sed 's/\[sap\]//g' | sed ':a;N;$!ba;s/\n/\\n/g' | sed 's/"/\\"/g')
+          DOWNLOAD_LINK="[Download v$TAG_NAME](https://github.com/mikeekert/SAP_Raid/releases/download/$TAG_NAME/SAP_Raid_Updater-v$TAG_NAME.zip)"
 
           EMBEDS='[
             {
               "title": "New Version Deployed",
-              "description": "**'"$VERSION_LINE"'**📝 Changelog - '"$CHANGELOG_TEXT"'",
+              "description": "**'"$VERSION_LINE"'**\n\n📝 Changelog:\n'"$CHANGELOG_TEXT"'\n\n📥 '"$DOWNLOAD_LINK"'",
               "color": 1127128
             }
           ]'
@@ -93,6 +95,7 @@ jobs:
         with:
           tag_name: ${{ github.ref_name }}
           files: package/${{ env.ZIP_NAME }}
+          draft: true
           body: |
             This release was automatically generated from tag `${{ github.ref_name }}`
         env:

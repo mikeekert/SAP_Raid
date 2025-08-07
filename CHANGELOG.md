@@ -1,3 +1,13 @@
+## 1.0.20 (2025-08-08)
+-  Test!
+- Testing github actions script update for DL link 
+
+## 1.0.19 (2025-08-08)
+- Github actions, send release page links with the webhook msg 
+
+## 1.0.18 (2025-08-08)
+-  testing DL link
+
 ## 1.0.11 (2025-08-07)
 - Fixing things for 11.2 
 
@@ -5,4 +15,5 @@
 - Manaforge Update - Weakauras for boss 1-7 
 
 ## 1.0.2 (2025-07-28)
-- Initial Implementation [sap]
+- Initial Implementation [sap][1.0.19 ZIP](https://github.com/mikeekert/SAP_Raid/releases/download/1.0.19/SAP_Raid_Updater-v1.0.19.zip)
+[1.0.20 ZIP](https://github.com/mikeekert/SAP_Raid/releases/download/1.0.20/SAP_Raid_Updater-v1.0.20.zip)
