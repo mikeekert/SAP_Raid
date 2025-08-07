@@ -56,7 +56,7 @@ local function Initialize()
     SetSoundNumChannels()
 
     LUP.LiquidUI:Initialize(SAPUpdaterSaved)
-
+    LUP:ClearAllSAPUpdaterSaved()
     LUP:InitializeNicknames()
     LUP:InitializeBigWigsDisabler()
     LUP:InitializeWeakAurasImporter()
