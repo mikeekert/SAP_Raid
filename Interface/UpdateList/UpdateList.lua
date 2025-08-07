@@ -63,6 +63,7 @@ function LUP:CreateUpdateList(parent)
                 local versionsBehind = highestSeenVersion - installedVersion
 
                 if versionsBehind > 0 then
+
                     local requiresAddOnUpdate = importedVersion < highestSeenVersion
 
                     local updateElement = LUP:CreateUpdateElement(scrollFrame.contentFrame, displayName)

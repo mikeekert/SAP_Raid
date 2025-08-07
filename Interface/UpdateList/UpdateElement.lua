@@ -88,17 +88,17 @@ function LUP:CreateUpdateElement(parent, auraName)
             local str = not exists and "Missing!" or "|cff%s%s|r is |cff%s%d|r version(s) behind."
 
             local tooltip = string.format(
-                str,
-                TOOLTIP_NAME_COLOR,
-                updateElement.auraName,
-                LUP.gs.visual.colorStrings.red,
-                updateElement.versionsBehind
+                    str,
+                    TOOLTIP_NAME_COLOR,
+                    updateElement.auraName,
+                    LUP.gs.visual.colorStrings.red,
+                    updateElement.versionsBehind
             )
 
             if updateElement.requiresUpdate and updateElement.auraName ~= "SAP_Raid_Updater" then
                 tooltip = tooltip .. "|n|nYou must update Addon before this version is available to you."
             end
-            
+
             LUP.LiquidUI:AddTooltip(updateElement, tooltip)
         end
 
@@ -111,16 +111,16 @@ function LUP:CreateUpdateElement(parent, auraName)
                 updateElement.versionCount:SetFormattedText("|cff%s%d version(s)|r", LUP.gs.visual.colorStrings.red, count)
             end
 
-            UpdateTooltip(exists)
-        end
+                UpdateTooltip(exists)
+            end
 
         function updateElement:SetRequiresAddOnUpdate(requiresUpdate, exists)
             updateElement.requiresUpdate = requiresUpdate
 
-            local showVersion = not requiresUpdate
-            updateElement.versionCount:SetShown(showVersion)
-            updateElement.importButton:SetShown(showVersion)
-            updateElement.importButton:SetText(showVersion and (not exists and "Update" or "Import") or "")
+            updateElement.versionCount:SetShown(not requiresUpdate)
+            updateElement.importButton:SetShown(not requiresUpdate)
+            updateElement.importButton:SetText(not requiresUpdate and (exists and "Update" or "Import") or "")
+
             updateElement.requiresUpdateText:SetShown(requiresUpdate)
 
             UpdateTooltip()

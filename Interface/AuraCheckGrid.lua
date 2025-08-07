@@ -21,16 +21,17 @@ function LUP:CreateAuraCheckGrid(parent)
     checkGrid:SetTitles(titles)
 
     local function GenerateTooltip(displayName, versions, isMissing)
+
         if versions <= 0 then
             return string.format("|cff%s%s|r is up to date", TOOLTIP_NAME_COLOR, displayName)
         else
-            local str = isMissing and "|cff%s%s|r is missing" or "|cff%s%s|r is |cff%s%d|r version(s) behind"
+            local status = isMissing and "Missing" or string.format("%d version(s) behind", versions)
             return string.format(
-                    str,
+                    "|cff%s%s|r is |cff%s%s|r",
                     TOOLTIP_NAME_COLOR,
                     displayName,
                     LUP.gs.visual.colorStrings.red,
-                    versions
+                    status
             )
         end
     end
@@ -43,7 +44,7 @@ function LUP:CreateAuraCheckGrid(parent)
 
         -- AddOn version
         local addOnValue = highestSeenAddOnVersion - (versionsTable.addOn or 0)
-        local isMissing = versionsTable.addOn == 0
+        local isMissing = highestSeenAddOnVersion - versionsTable.addOn == 0
 
         local addOnTooltip = GenerateTooltip("SAP_Raid_Updater", addOnValue, isMissing)
         -- imported version
@@ -57,6 +58,7 @@ function LUP:CreateAuraCheckGrid(parent)
         for displayName, version in pairs(versionsTable.auras) do
             local value = (highestSeenAuraVersions[displayName] or 0) - version
 
+            -- if value == 0 then its missing
             local auraIsMissing = version == 0
 
             local tooltip = GenerateTooltip(displayName, value, auraIsMissing)

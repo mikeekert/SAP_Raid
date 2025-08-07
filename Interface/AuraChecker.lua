@@ -225,11 +225,6 @@ local function CheckElementInitializer(frame, data)
 
     frame.coloredName:SetText(string.format("|cff%s%s|r", LUP.gs.visual.colorStrings.white, data.coloredName))
 
-    local versionsTable = LUP:GetPlayerVersionsTable()
-
-    local installedAddOnVersion = versionsTable.addOn
-    local notInstalled = installedAddOnVersion == 0
-
     for i, versionInfo in ipairs(data.versionsBehindTable) do
         local versionsBehind = versionInfo.versionsBehind
         local versionFrame = frame.versionFrames[i]
