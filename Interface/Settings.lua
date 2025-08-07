@@ -1,7 +1,7 @@
 local _, LUP = ...
 
 local windowWidth = 250
-local windowHeight = 176
+local windowHeight = 200
 
 local padding = 8
 local spacing = 4 -- Spacing between UI elements
