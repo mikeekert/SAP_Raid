@@ -184,6 +184,10 @@ end
 -- Compares two RCLC TOC versions
 -- Returns -1 if version1 is higher, 0 if they are equal, 1 if version2 is higher
 function LUP:CompareRCLCVersions(version1, version2)
+    if version1 == version2 then return 0 end
+    if not version1 then return 1 end
+    if not version2 then return -1 end
+
     local major1, minor1, patch1 = version1:match("(%d+).(%d+).(%d+)")
     local major2, minor2, patch2 = version2:match("(%d+).(%d+).(%d+)")
 
