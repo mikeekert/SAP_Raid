@@ -58,7 +58,6 @@ function LUP:CreateAuraCheckGrid(parent)
         for displayName, version in pairs(versionsTable.auras) do
             local value = (highestSeenAuraVersions[displayName] or 0) - version
 
-            -- if value == 0 then its missing
             local auraIsMissing = version == 0
 
             local tooltip = GenerateTooltip(displayName, value, auraIsMissing)
