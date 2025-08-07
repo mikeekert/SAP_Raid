@@ -28,8 +28,8 @@ increment_tag_and_release()
         tag="v"$(($"${lastTag:1}"+1));
     fi
 
-    git tag $tag;
-    git push origin master && git push origin $tag;
+    git tag "$tag";
+    git push origin master && git push origin "$tag";
 }
 
 # Checks if there are any updates to WeakAuras
@@ -95,30 +95,27 @@ update_weakauras()
         # If we couldn't find an existing version, this is version 1
         if [[ $version = null ]]
         then
-            echo "New aura detected: "${filename%.*}
+            echo "New aura detected: ""${filename%.*}"
             version=1
         else
             # Check if any changes were made to the aura since the last release
             # If not we don't up the version number
             cmp -s "WeakAuras/Mandatory/$filename" "WeakAuras/.generated/$filename"
-            if [ $? -eq 0 ] # Files are identical
-            then
-                # Create the lua table entry for WeakAuras.lua
-                lua_tables=$lua_tables"{version="$(($version))",displayName=\""$auraname"\",data=\""$auradata"\",},"
 
-                continue
-            elif [ $? -eq 1 ] # Files are different
-            then
-                echo "New version detected: "${filename%.*} "["$version"->"$((version+1))"]"
-                version=$((version+1)) # Increment version
-            else
-                echo "Something went wrong while comparing versions for "$filename
-                return 1
-            fi
+            # Check exit code directly with e.g. 'if mycmd;', not indirectly with $?.
+
+          if cmp -s "WeakAuras/Mandatory/$filename" "WeakAuras/.generated/$filename"; then
+              lua_tables=$lua_tables"{version=$version,displayName=\"$auraname\",data=\"$auradata\",},"
+              continue
+          else
+              # Files are different
+              echo "New version detected: ""${filename%.*}" "[$version->"$((version+1))"]"
+              version=$((version+1)) # Increment version
+          fi
         fi
 
         # Create the lua table entry for WeakAuras.lua
-        lua_tables=$lua_tables"{version="$(($version))",displayName=\""$auraname"\",data=\""$auradata"\",},"
+        lua_tables=$lua_tables"{version=$version,displayName=\"$auraname\",data=\"$auradata\",},"
 
         # Copy the aura to the generated folder
         cp "WeakAuras/Mandatory/$filename" "WeakAuras/.generated/$filename"
@@ -128,12 +125,11 @@ update_weakauras()
     done
 
     # Increase version numbers in versions.json
-    printf "$updated_json" > WeakAuras/.generated/versions.json
+    printf '%s' "$updated_json" > WeakAuras/.generated/versions.json
 
     # Generate WeakAuras.lua
-    lua_tables="local _, LUP = ...; LUP.WeakAuras = {"$lua_tables"}"
-    printf "$lua_tables" > WeakAuras.lua
-
+    lua_tables="local _, LUP = ...; LUP.WeakAuras = {$lua_tables}"
+    printf '%s' "$lua_tables" > WeakAuras.lua
     # Commit changes (assume all remaining changes are WeakAura updates)
 #    git add .
 #    git commit --allow-empty -m "WeakAura update"
