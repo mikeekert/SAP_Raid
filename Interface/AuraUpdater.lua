@@ -1,25 +1,13 @@
----@diagnostic disable: undefined-field
 local addon, LUP = ...
-
-local LibSerialize = LibStub("LibSerialize")
-local LibDeflate = LibStub("LibDeflate")
-local LDBIcon = LibStub("LibDBIcon-1.0")
-local AceComm = LibStub("AceComm-3.0")
-
-local updatePopupWindow
 
 local spacing = 4
 local lastUpdate = 0
 local updateQueued = false
 
-local broadcastTimer
-
 local auraImportElementPool = {}
 local UIDToID = {} -- Installed aura UIDs to ID (ID is required for WeakAuras.GetData call)
-local guidToVersionsTable = {}
 
 local allAurasUpdatedText
-local UpdateVersionsForUnit = function(_, _) end
 
 local function BuildAuraImportElements()
     lastUpdate = GetTime()
@@ -84,7 +72,8 @@ local function BuildAuraImportElements()
     if addOnVersionsBehind > 0 then
         local auraImportFrame = auraImportElementPool[1] or LUP:CreateAuraImportElement(parent)
 
-        auraImportFrame:SetDisplayName(addon)
+        local tAddonNAme = LUP:ReplaceTitles(addon)
+        auraImportFrame:SetDisplayName(tAddonNAme)
         auraImportFrame:SetVersionsBehind(addOnVersionsBehind)
         auraImportFrame:SetRequiresAddOnUpdate(true, true)
 
@@ -105,7 +94,8 @@ local function BuildAuraImportElements()
         local isInstalled = auraData.installedVersion > 0
         local versionsBehind = auraData.highestSeenVersion - auraData.installedVersion
 
-        auraImportFrame:SetDisplayName(auraData.displayName)
+        local tempName = LUP:ReplaceTitles(auraData.displayName)
+        auraImportFrame:SetDisplayName(tempName)
         auraImportFrame:SetVersionsBehind(versionsBehind, isAnchors, not isInstalled)
 
         if not isAnchors then

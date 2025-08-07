@@ -92,3 +92,12 @@ function LUP:Print(text)
         print(string.format("Addon |cffff0000DEBUG|r: %s", text))
     end
 end
+
+function LUP:ReplaceTitles(text)
+    local titles = {
+        ["SAP_Raid_Updater"] = "SAP Addon",
+        ["SAP - Manaforge"] = "Manaforge Weakaura",
+        ["SAP - Raid Anchors [11.2]"] = "WeakAura Anchors"
+    }
+    return titles[text] or text
+end

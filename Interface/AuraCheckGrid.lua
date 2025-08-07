@@ -21,15 +21,16 @@ function LUP:CreateAuraCheckGrid(parent)
     checkGrid:SetTitles(titles)
 
     local function GenerateTooltip(displayName, versions, isMissing)
+        local tDisplayName = LUP:ReplaceTitles(displayName)
 
         if versions <= 0 then
-            return string.format("|cff%s%s|r is up to date", TOOLTIP_NAME_COLOR, displayName)
+            return string.format("|cff%s%s|r is up to date", TOOLTIP_NAME_COLOR, tDisplayName)
         else
             local status = isMissing and "Missing" or string.format("%d version(s) behind", versions)
             return string.format(
                     "|cff%s%s|r is |cff%s%s|r",
                     TOOLTIP_NAME_COLOR,
-                    displayName,
+                    tDisplayName,
                     LUP.gs.visual.colorStrings.red,
                     status
             )

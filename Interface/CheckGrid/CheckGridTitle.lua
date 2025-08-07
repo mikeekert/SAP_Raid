@@ -27,7 +27,8 @@ function LUP:CreateCheckGridTitle(parent)
         checkGridTitle.title:SetPoint("BOTTOM", checkGridTitle, "BOTTOM")
 
         function checkGridTitle:SetTitle(title)
-            checkGridTitle.title:SetFormattedText("|cff%s%s|r", LUP.gs.visual.colorStrings.white, title)
+            local tempTitle = LUP:ReplaceTitles(title)
+            checkGridTitle.title:SetFormattedText("|cff%s%s|r", LUP.gs.visual.colorStrings.white, tempTitle)
 
             -- GetUnboundedStringWidth undershoots the width on the frame that the text is set
             -- 1.1 is an arbitrary factor to account for this somewhat

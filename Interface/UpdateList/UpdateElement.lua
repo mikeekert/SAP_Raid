@@ -136,7 +136,8 @@ function LUP:CreateUpdateElement(parent, auraName)
     updateElement.auraName = auraName
     updateElement.versionsBehind = 0
     updateElement.requiresUpdate = false
-    updateElement.displayName:SetFormattedText("|cff%s%s|r", LUP.gs.visual.colorStrings.white, auraName)
+    local tAuraName = LUP:ReplaceTitles(auraName)
+    updateElement.displayName:SetFormattedText("|cff%s%s|r", LUP.gs.visual.colorStrings.white, tAuraName)
     
     -- If this element shows an addon update instead of an aura update, don't add an update button script
     -- Icon is also hardcoded, rather than taken from aura data (there is no aura)
