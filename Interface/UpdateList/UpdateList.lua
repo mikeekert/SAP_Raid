@@ -57,7 +57,7 @@ function LUP:CreateUpdateList(parent)
         for displayName, highestSeenVersion in pairs(highestSeenAuraVersions) do
             local installedVersion = installedAuraVersions[displayName]
             local importedVersion = importedVersions[displayName]
-            local exists = installedVersion and installedVersion > 0 or 0
+            local exists = installedVersion and installedVersion > 0
 
             if importedVersion then
                 local versionsBehind = highestSeenVersion - installedVersion
