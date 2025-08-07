@@ -71,19 +71,24 @@ end
 local function SetActiveButton(activeButton)
     updateButton.Background = updateButton.Background or updateButton:CreateTexture(nil, "BACKGROUND")
     updateButton.Background:SetAllPoints()
-    updateButton.Background:SetColorTexture(0, 0, 0, 0)
+    updateButton.Background:SetColorTexture(0, 0, 0, .8)
+    updateButton:SetBorderColor(0.0, 0.0, 0.0, .7)
 
     auraCheckButton.Background = auraCheckButton.Background or auraCheckButton:CreateTexture(nil, "BACKGROUND")
     auraCheckButton.Background:SetAllPoints()
-    auraCheckButton.Background:SetColorTexture(0, 0, 0, 0)
+    auraCheckButton.Background:SetColorTexture(0, 0, 0, .8)
+    auraCheckButton:SetBorderColor(0.0, 0.0, 0.0, .7)
 
     otherCheckButton.Background = otherCheckButton.Background or otherCheckButton:CreateTexture(nil, "BACKGROUND")
     otherCheckButton.Background:SetAllPoints()
-    otherCheckButton.Background:SetColorTexture(0, 0, 0, 0)
+    otherCheckButton.Background:SetColorTexture(0, 0, 0, .8)
+    otherCheckButton:SetBorderColor(0.0, 0.0, 0.0, .7)
 
     activeButton.Background = activeButton.Background or activeButton:CreateTexture(nil, "BACKGROUND")
     activeButton.Background:SetAllPoints()
     activeButton.Background:SetColorTexture(0.3, 0.3, 0.9, 0.3) -- Blue highlight
+    activeButton:SetBorderColor(0.3, 0.3, 0.9, 1.0)
+
 end
 
 function LUP:InitializeInterface()
@@ -141,7 +146,7 @@ function LUP:InitializeInterface()
     )
 
     local borderColor = LUP.LiquidUI.settings.BORDER_COLOR
-    LUP.LiquidUI:AddBorder(updateButton)
+    LUP.LiquidUI:AddBorder(updateButton, 2)
     updateButton:SetBorderColor(borderColor.r, borderColor.g, borderColor.b)
 
     -- Aura check button
@@ -172,7 +177,7 @@ function LUP:InitializeInterface()
         end
     )
 
-    LUP.LiquidUI:AddBorder(auraCheckButton)
+    LUP.LiquidUI:AddBorder(auraCheckButton, 2)
     auraCheckButton:SetBorderColor(borderColor.r, borderColor.g, borderColor.b)
 
     -- Other check button
@@ -203,7 +208,7 @@ function LUP:InitializeInterface()
         end
     )
 
-    LUP.LiquidUI:AddBorder(otherCheckButton)
+    LUP.LiquidUI:AddBorder(otherCheckButton, 2)
     otherCheckButton:SetBorderColor(borderColor.r, borderColor.g, borderColor.b)
 
     -- Sub windows

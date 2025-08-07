@@ -106,7 +106,7 @@ local function BuildAuraImportElements()
         local versionsBehind = auraData.highestSeenVersion - auraData.installedVersion
 
         auraImportFrame:SetDisplayName(auraData.displayName)
-        print(versionsBehind, isAnchors, not isInstalled)
+
         auraImportFrame:SetVersionsBehind(versionsBehind, isAnchors, not isInstalled)
 
         if not isAnchors then

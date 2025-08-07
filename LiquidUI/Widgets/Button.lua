@@ -63,7 +63,7 @@ function namespace:CreateButton(parent, title, OnClick)
     button.tex:SetTexelSnappingBias(0)
 
     -- Border
-    LUI:AddBorder(button)
+    LUI:AddBorder(button, 2)
     button:SetBorderColor(BORDER_COLOR.r, BORDER_COLOR.g, BORDER_COLOR.b)
 
     -- Highlight

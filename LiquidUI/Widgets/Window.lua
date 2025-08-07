@@ -22,7 +22,7 @@ function namespace:CreateWindow(name, exitable, movable, resizable)
     window.backgroundTexture = window:CreateTexture(nil, "BACKGROUND")
     window.backgroundTexture:SetPoint("TOPLEFT", window, "TOPLEFT")
     window.backgroundTexture:SetPoint("BOTTOMRIGHT", window, "BOTTOMRIGHT")
-    window.backgroundTexture:SetColorTexture(15/255, 15/255, 15/255) -- Single dark gray color
+    window.backgroundTexture:SetColorTexture(20/255, 20/255, 20/255, 1) -- Slightly darker gray
     window.backgroundTexture:SetSnapToPixelGrid(false)
     window.backgroundTexture:SetTexelSnappingBias(0)
 

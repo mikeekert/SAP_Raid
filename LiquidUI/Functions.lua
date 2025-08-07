@@ -104,7 +104,7 @@ end
 
 -- Adds a tooltip to a frame
 -- Can be called repeatedly to change the tooltip
-function LUI:AddTooltip(frame, tooltipText, secondaryTooltipText) 
+function LUI:AddTooltip(frame, tooltipText, secondaryTooltipText)
     if not tooltipText then tooltipText = "" end
 
     frame.secondaryTooltipText = secondaryTooltipText -- Used for stuff like warnings/additional info that shouldn't change the main tooltip text

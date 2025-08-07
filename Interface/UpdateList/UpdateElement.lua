@@ -84,9 +84,11 @@ function LUP:CreateUpdateElement(parent, auraName)
         updateElement.requiresUpdateText:SetFormattedText("|cff%sUpdate addon!|r", LUP.gs.visual.colorStrings.red)
         updateElement.requiresUpdateText:Hide()
 
-        local function UpdateTooltip()
+        local function UpdateTooltip(exists)
+            local str = not exists and "Missing!" or "|cff%s%s|r is |cff%s%d|r version(s) behind."
+
             local tooltip = string.format(
-                "|cff%s%s|r is |cff%s%d|r version(s) behind",
+                str,
                 TOOLTIP_NAME_COLOR,
                 updateElement.auraName,
                 LUP.gs.visual.colorStrings.red,
@@ -100,18 +102,17 @@ function LUP:CreateUpdateElement(parent, auraName)
             LUP.LiquidUI:AddTooltip(updateElement, tooltip)
         end
 
-        function updateElement:SetVersionsBehind(count, isMissing)
+        function updateElement:SetVersionsBehind(count, exists)
             updateElement.versionsBehind = count
 
-            if isMissing then
+            if not exists then
                 updateElement.versionCount:SetFormattedText("|cff%sMissing!|r", LUP.gs.visual.colorStrings.red)
             else
                 updateElement.versionCount:SetFormattedText("|cff%s%d version(s)|r", LUP.gs.visual.colorStrings.red, count)
             end
 
-
-                UpdateTooltip()
-            end
+            UpdateTooltip(exists)
+        end
 
         function updateElement:SetRequiresAddOnUpdate(requiresUpdate, exists)
             updateElement.requiresUpdate = requiresUpdate
