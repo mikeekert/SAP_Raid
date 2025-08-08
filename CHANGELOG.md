@@ -1,16 +1,6 @@
 ## 1.0.18 (2025-08-08)
 - Updating github actions, and add DL Link 
 
-## 1.0.20 (2025-08-08)
--  Test!
-- Testing github actions script update for DL link 
-
-## 1.0.19 (2025-08-08)
-- Github actions, send release page links with the webhook msg 
-
-## 1.0.18 (2025-08-08)
--  testing DL link
-
 ## 1.0.11 (2025-08-07)
 - Fixing things for 11.2 
 
