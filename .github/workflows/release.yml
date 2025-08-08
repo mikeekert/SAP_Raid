@@ -95,7 +95,7 @@ jobs:
         with:
           tag_name: ${{ github.ref_name }}
           files: package/${{ env.ZIP_NAME }}
-          draft: true
+          draft: false
           body: |
             This release was automatically generated from tag `${{ github.ref_name }}`
         env:
