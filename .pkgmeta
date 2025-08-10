@@ -1,0 +1,10 @@
+ignore:
+  - .github
+  - scripts
+  - WeakAuras
+  - .gitignore
+  - .idea
+
+manual-changelog:
+  filename: CHANGELOG.md
+  markup-type: markdown
