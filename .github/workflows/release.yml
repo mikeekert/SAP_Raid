@@ -80,6 +80,34 @@ jobs:
           echo "EOF" >> $GITHUB_OUTPUT
           echo "has_changelog=true" >> $GITHUB_OUTPUT
 
+      - name: Prepare Addon Folder
+        run: |
+          mkdir -p package/SAP_Raid_Updater
+          shopt -s extglob
+          cp -r !(package|.git|.github) package/SAP_Raid_Updater/
+
+      - name: Create ZIP with tag suffix
+        run: |
+          TAG_NAME=${GITHUB_REF#refs/tags/}
+          cd package
+          zip -qr SAP_Raid_Updater-v${TAG_NAME}.zip SAP_Raid_Updater/ \
+            --exclude "SAP_Raid_Updater/.github/*" \
+                      "SAP_Raid_Updater/scripts/*" \
+                      "SAP_Raid_Updater/WeakAuras/*" \
+                      "SAP_Raid_Updater/.gitignore" \
+                      "SAP_Raid_Updater/.idea/*"
+          echo "ZIP_NAME=SAP_Raid_Updater-${TAG_NAME}.zip" >> $GITHUB_ENV
+
+      - name: Upload Release Asset
+        if: ${{ success() }}
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          files: package/${{ env.ZIP_NAME }}
+          draft: false
+          body: |
+            This release was automatically generated from tag `${{ github.ref_name }}`
+
       - name: Discord Notification
         if: false #if: ${{ steps.update_version_and_changelog.outputs.has_changelog == 'true' }}
         uses: Ilshidur/action-discord@master
