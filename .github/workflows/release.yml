@@ -119,6 +119,12 @@ jobs:
         with:
           args: ''
 
+      - name: Debug TOC File
+        run: cat SAP_Raid_Updater.toc
+
+      - name: Debug Staged Files
+        run: git status
+
       - name: Commit updated files
         if: ${{ success() }}
         run: |
