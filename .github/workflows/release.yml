@@ -33,48 +33,46 @@ jobs:
           TAG_NAME=${GITHUB_REF#refs/tags/}
           CLEAN_TAG=$(echo "$TAG_NAME" | sed 's/^1\.0\.//')
           CURRENT_DATE=$(date +"%Y-%m-%d")
-
+      
           # Update .toc version
           sed -i "s/## Version: .*/## Version: $CLEAN_TAG/" SAP_Raid_Updater.toc
           echo "Updated TOC version to $CLEAN_TAG"
-
+      
           # Get commit log
           PREV_TAG=$(git tag --sort=-creatordate | grep -v "$TAG_NAME" | head -n 1 || true)
           COMMIT_LOG=$(git log "${PREV_TAG:+$PREV_TAG..}$TAG_NAME" --pretty=format:"- %s" | grep '\[sap\]' | grep -v '\[skip ci\]' || true)
-
+      
           echo "commit_log<<EOF" >> $GITHUB_OUTPUT
           echo "$COMMIT_LOG" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
-
+      
           if [ -z "$COMMIT_LOG" ]; then
-            echo "No relevant commits found."
-            echo "has_changelog=false" >> $GITHUB_OUTPUT
-            exit 0
+          echo "No relevant commits found."
+          echo "has_changelog=false" >> $GITHUB_OUTPUT
+          exit 0
           fi
-
+      
           # Write changelog
           {
             echo "## $TAG_NAME ($CURRENT_DATE)"
             echo "$COMMIT_LOG" | sed 's/\[sap\]//g'
             echo
             [ -f CHANGELOG.md ] && cat CHANGELOG.md
-            echo "[$TAG_NAME ZIP](https://github.com/mikeekert/SAP_Raid/releases/download/$TAG_NAME/SAP_Raid_Updater-v$TAG_NAME.zip)"
           } > CHANGELOG.md.new
           mv CHANGELOG.md.new CHANGELOG.md
-          
+      
           # Prepare JSON for Discord
           VERSION_LINE="## $TAG_NAME ($CURRENT_DATE)"
           CHANGELOG_TEXT=$(echo "$COMMIT_LOG" | sed 's/\[sap\]//g' | sed ':a;N;$!ba;s/\n/\\n/g' | sed 's/"/\\"/g')
-          DOWNLOAD_LINK="[Download v$TAG_NAME](https://github.com/mikeekert/SAP_Raid/releases/download/$TAG_NAME/SAP_Raid_Updater-v$TAG_NAME.zip)"
-
+      
           EMBEDS='[
             {
               "title": "New Version Deployed",
-              "description": "**'"$VERSION_LINE"'**\n\n📝 Changelog:\n'"$CHANGELOG_TEXT"'\n\n📥 '"$DOWNLOAD_LINK"'",
+              "description": "**'"$VERSION_LINE"'**\n\n📝 Changelog:\n'"$CHANGELOG_TEXT"'",
               "color": 1127128
             }
           ]'
-
+      
           echo "embeds<<EOF" >> $GITHUB_OUTPUT
           echo "$EMBEDS" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
@@ -85,28 +83,6 @@ jobs:
           mkdir -p package/SAP_Raid_Updater
           shopt -s extglob
           cp -r !(package|.git|.github) package/SAP_Raid_Updater/
-
-      - name: Create ZIP with tag suffix
-        run: |
-          TAG_NAME=${GITHUB_REF#refs/tags/}
-          cd package
-          zip -qr SAP_Raid_Updater-v${TAG_NAME}.zip SAP_Raid_Updater/ \
-            --exclude "SAP_Raid_Updater/.github/*" \
-                      "SAP_Raid_Updater/scripts/*" \
-                      "SAP_Raid_Updater/WeakAuras/*" \
-                      "SAP_Raid_Updater/.gitignore" \
-                      "SAP_Raid_Updater/.idea/*"
-          echo "ZIP_NAME=SAP_Raid_Updater-v${TAG_NAME}.zip" >> $GITHUB_ENV
-
-      - name: Upload Release Asset
-        if: ${{ success() }}
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: ${{ github.ref_name }}
-          files: package/${{ env.ZIP_NAME }}
-          draft: false
-          body: |
-            This release was automatically generated from tag `${{ github.ref_name }}`
 
       - name: Discord Notification
         if: false #if: ${{ steps.update_version_and_changelog.outputs.has_changelog == 'true' }}
@@ -119,41 +95,21 @@ jobs:
         with:
           args: ''
 
-      - name: Debug TOC File
-        run: cat SAP_Raid_Updater.toc
-
-      - name: Debug Staged Files
-        run: git status
+      - name: Package and release
+        uses: BigWigsMods/packager@v2
 
       - name: Commit updated files
         if: ${{ success() }}
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-      
-          # Delete the existing tag locally and remotely
-          TAG_NAME=${GITHUB_REF#refs/tags/}
-          git tag -d "$TAG_NAME"
-          git push origin :refs/tags/"$TAG_NAME"
-      
+          
           # Commit the updated .toc file
           git add SAP_Raid_Updater.toc
           if [[ "${{ steps.update_version_and_changelog.outputs.has_changelog }}" == "true" ]]; then
-          git add CHANGELOG.md
-          git commit -m "Update version to $TAG_NAME and update changelog [skip ci]"
+            git add CHANGELOG.md
+            git commit -m "Update version and changelog [skip ci]"
           else
-          git commit -m "Update version to $TAG_NAME [skip ci]"
+            git commit -m "Update version [skip ci]"
           fi
           git push origin HEAD:master
-      
-          # Recreate the tag on the new commit
-          git tag -a "$TAG_NAME" -m "Updated tag after TOC changes"
-          git push origin "$TAG_NAME"
-
-      - name: Pull latest changes
-        run: |
-          git checkout master
-          git pull origin master
-
-      - name: Package and release
-        uses: BigWigsMods/packager@v2
