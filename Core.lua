@@ -56,7 +56,6 @@ local function Initialize()
     SetSoundNumChannels()
 
     LUP.LiquidUI:Initialize(SAPUpdaterSaved)
-    LUP:ClearAllSAPUpdaterSaved()
     LUP:InitializeNicknames()
     LUP:InitializeBigWigsDisabler()
     LUP:InitializeWeakAurasImporter()
@@ -99,6 +98,11 @@ SlashCmdList["SAPSHOW"] = function()
 end
 
 function LUP:ClearAllSAPUpdaterSaved()
+    if not SAPUpdaterSaved or not SAPUpdaterSaved.WeakAuras then
+        LUP:Print("No SAPUpdaterSaved or WeakAuras data to clear.")
+        return
+    end
+
     LUP:Print("Clearing all SAPUpdaterSaved data...")
     for key in pairs(SAPUpdaterSaved.WeakAuras) do
         SAPUpdaterSaved.WeakAuras[key] = nil
