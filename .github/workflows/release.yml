@@ -9,6 +9,10 @@ on:
 permissions:
   contents: write
 
+env:
+  CF_API_KEY: ${{ secrets.CURSEFORGE_API_TOKEN }}
+  GITHUB_OAUTH: ${{ secrets.GITHUB_TOKEN }}
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -20,9 +24,6 @@ jobs:
         with:
           fetch-depth: 0
           fetch-tags: true
-        env:
-          CF_API_KEY: ${{ secrets.CURSEFORGE_API_TOKEN }}
-          GITHUB_OAUTH: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Update Version and Process Changelog
         id: update_version_and_changelog
@@ -89,7 +90,12 @@ jobs:
         run: |
           TAG_NAME=${GITHUB_REF#refs/tags/}
           cd package
-          zip -qr SAP_Raid_Updater-v${TAG_NAME}.zip SAP_Raid_Updater/
+          zip -qr SAP_Raid_Updater-v${TAG_NAME}.zip SAP_Raid_Updater/ \
+            --exclude "SAP_Raid_Updater/.github/*" \
+                      "SAP_Raid_Updater/scripts/*" \
+                      "SAP_Raid_Updater/WeakAuras/*" \
+                      "SAP_Raid_Updater/.gitignore" \
+                      "SAP_Raid_Updater/.idea/*"
           echo "ZIP_NAME=SAP_Raid_Updater-v${TAG_NAME}.zip" >> $GITHUB_ENV
 
       - name: Upload Release Asset
