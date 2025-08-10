@@ -20,6 +20,9 @@ jobs:
         with:
           fetch-depth: 0
           fetch-tags: true
+        env:
+          CF_API_KEY: ${{ secrets.CURSEFORGE_API_TOKEN }}
+          GITHUB_OAUTH: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Update Version and Process Changelog
         id: update_version_and_changelog
@@ -127,16 +130,10 @@ jobs:
           fi
 
           git push --force origin HEAD:master
-      - name: Install cfcli
-        run: npm install -g @cfcli/cfcli
-      - name: Upload to CurseForge
-        if: ${{ success() }}
-        run: |
-          TAG_NAME=${GITHUB_REF#refs/tags/}
-          cfcli upload \
-            --api-token ${{ secrets.CURSEFORGE_API_TOKEN }} \
-            --project-id ${{ secrets.CURSEFORGE_PROJ_ID }} \
-            --file package/SAP_Raid_Updater-v${TAG_NAME}.zip \
-            --game-version 110200
-        env:
-          CFCLI_VERSION: latest
+      - name: Clone project
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Package and release
+        uses: BigWigsMods/packager@v2
