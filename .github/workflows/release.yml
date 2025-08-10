@@ -102,7 +102,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Discord Notification
-        if: ${{ steps.update_version_and_changelog.outputs.has_changelog == 'true' }}
+        if: false #if: ${{ steps.update_version_and_changelog.outputs.has_changelog == 'true' }}
         uses: Ilshidur/action-discord@master
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
@@ -127,3 +127,16 @@ jobs:
           fi
 
           git push --force origin HEAD:master
+      - name: Install cfcli
+        run: npm install -g @cfcli/cfcli
+      - name: Upload to CurseForge
+        if: ${{ success() }}
+        run: |
+          TAG_NAME=${GITHUB_REF#refs/tags/}
+          cfcli upload \
+            --api-token ${{ secrets.CURSEFORGE_API_TOKEN }} \
+            --project-id ${{ secrets.CURSEFORGE_PROJ_ID }} \
+            --file package/SAP_Raid_Updater-v${TAG_NAME}.zip \
+            --game-version 110200
+        env:
+          CFCLI_VERSION: latest
