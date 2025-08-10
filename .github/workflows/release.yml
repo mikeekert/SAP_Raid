@@ -96,7 +96,7 @@ jobs:
                       "SAP_Raid_Updater/WeakAuras/*" \
                       "SAP_Raid_Updater/.gitignore" \
                       "SAP_Raid_Updater/.idea/*"
-          echo "ZIP_NAME=SAP_Raid_Updater-${TAG_NAME}.zip" >> $GITHUB_ENV
+          echo "ZIP_NAME=SAP_Raid_Updater-v${TAG_NAME}.zip" >> $GITHUB_ENV
 
       - name: Upload Release Asset
         if: ${{ success() }}
