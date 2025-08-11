@@ -29,6 +29,8 @@ end
 function LUP:OnVersionsTableUpdate(unit, versionsTable)
     auraCheckGrid:UpdateVersionsTableForUnit(unit, versionsTable)
     otherCheckGrid:UpdateVersionsTableForUnit(unit, versionsTable)
+
+    otherCheckGrid:FullRebuild()
 end
 
 -- When the MRT hash changes for the player, we want to fully rebuild the other check grid

@@ -9,11 +9,12 @@ function LUP:CreateOtherCheckGrid(parent)
 
     -- Set the column titles
     checkGrid:SetTitles(
-        {
-            "MRT note",
-            "Ignore list",
-            "RCLC"
-        }
+            {
+                "MRT note",
+                "Ignore list",
+                "RCLC",
+                "Misc Issues"
+            }
     )
 
     -- Takes in a versions table, and returns a formatted table that the check grid can interpret
@@ -75,6 +76,30 @@ function LUP:CreateOtherCheckGrid(parent)
             data["Ignore list"] = {
                 value = true,
                 tooltip = "No group members on ignore"
+            }
+        end
+
+        if versionsTable.liquidWA then
+            local lwa = versionsTable.liquidWA
+            if not next(lwa) then
+                return
+            end
+
+            local hasIssue = false
+            local issueMessage = ""
+
+            for _, name in ipairs({"LiquidWeakAuras", "LiquidWeakAuras 2"}) do
+                local weakAuraData = lwa[name]
+                if weakAuraData and weakAuraData.isDupe then
+                    hasIssue = true
+                    issueMessage = string.format("Error: '%s' found outside of SAP Pack. Please delete it.", name)
+                    break
+                end
+            end
+
+            data["Misc Issues"] = {
+                value = not hasIssue,
+                tooltip = hasIssue and issueMessage or "No Liquid WeakAura issues found."
             }
         end
 

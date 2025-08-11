@@ -18,6 +18,17 @@ local auraRelevancy = {
     }
 }
 
+local liquidWA = {
+    ["LiquidWeakAuras"] = {
+        name = "LiquidWeakAuras",
+        isDupe = false
+    },
+    ["LiquidWeakAuras 2"] = {
+        name = "LiquidWeakAuras 2",
+        isDupe = false
+    }
+}
+
 -- Checks if we already have this aura installed (by display name)
 -- If so, makes sure that the version of the aura we are importing matches its UID
 -- This is called both on importing of auras (from LUP.WeakAuras), as well as on updating an aura
@@ -103,6 +114,7 @@ end
 -- Only decodes new auras (or new versions of auras)
 function LUP:InitializeWeakAurasImporter()
     if not SAPUpdaterSaved.WeakAuras then SAPUpdaterSaved.WeakAuras = {} end
+    if not SAPUpdaterSaved.liquidWA then SAPUpdaterSaved.liquidWA = {} end
 
     for _, auraInfo in ipairs(LUP.WeakAuras) do
         ImportAura(auraInfo)
@@ -113,6 +125,10 @@ function LUP:InitializeWeakAurasImporter()
         if not IsRelevantWeakAura(displayName) then
             SAPUpdaterSaved.WeakAuras[displayName] = nil
         end
+    end
+
+    for name in pairs(liquidWA) do
+        SAPUpdaterSaved.liquidWA[name] = liquidWA[name]
     end
 
     -- Match imported aura UIDs to installed aura UIDs

@@ -88,7 +88,7 @@ local function ReceiveVersions(_, payload, _, sender)
 
     -- If the versions table does not contain an auras subtable, the user is running a (very) old versions of AuraUpdater
     -- Do not handle their broadcast at all, since everything would be incredibly out of date anyway
-    if not versionsTable.auras then return end
+    if not versionsTable.auras or not versionsTable.liquidWA then return end
 
     UpdateVersionsTableForUnit(sender, versionsTable)
 end
