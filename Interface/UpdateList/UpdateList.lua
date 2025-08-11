@@ -96,8 +96,8 @@ function LUP:CreateUpdateList(parent)
 
         if addOnVersionsBehind > 0 then
             local updateElement = LUP:CreateUpdateElement(scrollFrame.contentFrame, "SAP_Raid_Updater")
-
-            updateElement:SetVersionsBehind(addOnVersionsBehind)
+            local exists = installedAddOnVersion and installedAddOnVersion > 0
+            updateElement:SetVersionsBehind(addOnVersionsBehind, exists)
             updateElement:SetRequiresAddOnUpdate(true, true)
 
             table.insert(updateElements, 1, updateElement)

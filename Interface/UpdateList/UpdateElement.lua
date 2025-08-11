@@ -123,7 +123,7 @@ function LUP:CreateUpdateElement(parent, auraName)
 
             updateElement.requiresUpdateText:SetShown(requiresUpdate)
 
-            UpdateTooltip()
+            UpdateTooltip(exists)
         end
 
         function updateElement:Release()

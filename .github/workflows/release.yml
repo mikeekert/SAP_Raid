@@ -85,7 +85,7 @@ jobs:
           cp -r !(package|.git|.github) package/SAP_Raid_Updater/
 
       - name: Discord Notification
-        if: false #if: ${{ steps.update_version_and_changelog.outputs.has_changelog == 'true' }}
+        if: ${{ steps.update_version_and_changelog.outputs.has_changelog == 'true' }}
         uses: Ilshidur/action-discord@master
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
