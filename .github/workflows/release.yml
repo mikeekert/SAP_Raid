@@ -40,8 +40,8 @@ jobs:
       
           # Get commit log
           PREV_TAG=$(git tag --sort=-creatordate | grep -v "$TAG_NAME" | head -n 1 || true)
-          COMMIT_LOG=$(git log "${PREV_TAG:+$PREV_TAG..}$TAG_NAME" --pretty=format:"- %s" | grep '\[sap\]' | grep -v '\[skip ci\]' || true)
-      
+          COMMIT_LOG=$(git log "${PREV_TAG:+$PREV_TAG..}$TAG_NAME" --pretty=format:"- %B" | grep '\[sap\]' | grep -v '\[skip ci\]' || true)
+          
           echo "commit_log<<EOF" >> $GITHUB_OUTPUT
           echo "$COMMIT_LOG" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
