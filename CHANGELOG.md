@@ -1,3 +1,6 @@
+## 1.0.26 (2025-08-12)
+- - Adding old SAP liquidweakauras check  - Updating WAs for latest Manaforge-Liquid changes 
+
 ## 1.0.25 (2025-08-11)
 - Adding duplicate LiquidWA checks 
 
