@@ -34,7 +34,7 @@ update_weakauras()
     do
         filename=$(basename "$f")
         auraname="${filename%.*}"
-        auradata=$(<$f)
+        auradata=$(cat "$f")
 
         # Check if the file contains a weakaura (just check the weakaura prefix)
         if ! [[ $auradata == "!WA:2!"* ]]

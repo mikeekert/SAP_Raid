@@ -146,9 +146,28 @@ function LUP:UpdateAuraVersions()
     end
 
     for displayName in pairs(SAPUpdaterSaved.liquidWA) do
+        local function isAuraDupe(auraData, loadNever)
+            if not auraData then
+                return false
+            end
+            if loadNever then
+                return false
+            end
+            if not (auraData.parent == "SAP - Core" or auraData.parent == "SAP - Core 2") then
+                return true
+            end
+
+            local grandfather = WeakAuras.GetData(auraData.parent)
+            if not grandfather or grandfather.parent ~= "SAP - Manaforge" then
+                return true
+            end
+
+            return false
+        end
+
         local auraData = WeakAuras.GetData(displayName)
         local loadNever = auraData and auraData.load and auraData.load.use_never
-        local isDupe = auraData ~= nil and auraData.parent ~= "SAP - Core" and not loadNever
+        local isDupe = isAuraDupe(auraData, loadNever)
 
         if versionsTable.liquidWA[displayName] and versionsTable.liquidWA[displayName].isDupe ~= isDupe then
             changed = true
@@ -253,41 +272,53 @@ local function HookWeakAuras()
             UIDToID[auraData.uid] = id
         end
 
-        local function isLiquidWeakAura(id)
-            return id and string.lower(id):find("liquidweakauras")
-        end
+        hooksecurefunc(
+                WeakAuras,
+                "Add",
+                function(data)
+                    local uid = data.uid
 
-        -- Helper function to update UID mapping and check for liquidWA
-        local function handleWeakAuraChange(data, newID)
-            local uid = data.uid
-            local id = newID or data.id
+                    if uid then
+                        UIDToID[uid] = data.id
+                    end
 
-            if uid then
-                if id then
-                    UIDToID[uid] = id
-                else
-                    UIDToID[uid] = nil
+                    if data.id and string.lower(data.id):find("liquidweakauras") then
+                        LUP:UpdateAuraVersions()
+                    end
                 end
-            end
+        )
 
-            -- Check if we need to update versions
-            if isLiquidWeakAura(data.id) or (auraUIDs[uid] and not id) then
-                LUP:UpdateAuraVersions()
-            end
-        end
+        hooksecurefunc(
+                WeakAuras,
+                "Rename",
+                function(data, newID)
+                    local uid = data.uid
 
-        -- Simplified hooks
-        hooksecurefunc(WeakAuras, "Add", function(data)
-            handleWeakAuraChange(data)
-        end)
+                    if uid then
+                        UIDToID[uid] = newID
+                    end
+                end
+        )
 
-        hooksecurefunc(WeakAuras, "Rename", function(data, newID)
-            handleWeakAuraChange(data, newID)
-        end)
+        hooksecurefunc(
+                WeakAuras,
+                "Delete",
+                function(data)
+                    local uid = data.uid
 
-        hooksecurefunc(WeakAuras, "Delete", function(data)
-            handleWeakAuraChange(data, nil)
-        end)
+                    if uid then
+                        UIDToID[uid] = nil
+
+                        if auraUIDs[uid] then
+                            LUP:UpdateAuraVersions()
+                        end
+                    end
+
+                    if data.id and string.lower(data.id):find("liquidweakauras") then
+                        LUP:UpdateAuraVersions()
+                    end
+                end
+        )
     end
 end
 
