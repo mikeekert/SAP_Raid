@@ -63,6 +63,9 @@ function LUP:CreateCheckGrid(parent)
         local nameB = rowB.name
 
         if nameA ~= nameB then
+            if not nameA then return false end
+            if not nameB then return true end
+            
             return nameA < nameB
         end
 
