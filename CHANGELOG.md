@@ -1,3 +1,6 @@
+## 1.0.29 (2025-08-13)
+- Weakaura changes for Wednesday 
+
 ## 1.0.26 (2025-08-12)
 - - Adding old SAP liquidweakauras check  - Updating WAs for latest Manaforge-Liquid changes 
 
