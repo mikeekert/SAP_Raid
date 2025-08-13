@@ -1,3 +1,6 @@
+## 1.0.30 (2025-08-13)
+- Actually updating the WA code this time 
+
 ## 1.0.29 (2025-08-13)
 - Weakaura changes for Wednesday 
 
