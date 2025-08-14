@@ -109,13 +109,15 @@ function LUP:UpdateHighestSeenVersions(receivedVersionsTable)
     end
 
     -- Update highest seen aura versions
-    for displayName, receivedVersion in pairs(receivedVersionsTable.auras) do
-        local currentVersion = highestSeenAuraVersions[displayName] or 0
+    if receivedVersionsTable.addOn > LUP:GetPlayerVersionsTable().addOn then
+        for displayName, receivedVersion in pairs(receivedVersionsTable.auras) do
+            local currentVersion = highestSeenAuraVersions[displayName] or 0
 
-        if receivedVersion > currentVersion then
-            highestSeenAuraVersions[displayName] = receivedVersion
+            if receivedVersion > currentVersion then
+                highestSeenAuraVersions[displayName] = receivedVersion
 
-            changed = true
+                changed = true
+            end
         end
     end
 
