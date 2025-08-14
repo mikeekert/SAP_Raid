@@ -88,8 +88,8 @@ update_weakauras()
     printf "$lua_tables" > WeakAuras.lua
 
     # Commit changes (assume all remaining changes are WeakAura updates)
-    git add .
-    git commit --allow-empty -m "WeakAura update [skip]"
+#    git add .
+#    git commit --allow-empty -m "WeakAura update [skip]"
 }
 
 update_weakauras
