@@ -1,3 +1,6 @@
+## 1.0.31 (2025-08-14)
+- Updating Dimensius, and a few heroic changes 
+
 ## 1.0.30 (2025-08-13)
 - Actually updating the WA code this time 
 
