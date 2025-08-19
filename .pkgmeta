@@ -5,6 +5,20 @@ ignore:
   - .gitignore
   - .idea
 
+externals:
+  Libs/LibStub: https://repos.wowace.com/wow/libstub/trunk
+  Libs/AceComm-3.0: https://repos.curseforge.com/wow/ace3/trunk/AceComm-3.0
+  Libs/LibDataBroker-1.1: https://github.com/tekkub/libdatabroker-1-1
+  Libs/LibDBIcon-1.0: https://repos.curseforge.com/wow/libdbicon-1-0/trunk/LibDBIcon-1.0
+  Libs/LibDeflate: https://github.com/SafeteeWoW/LibDeflate
+  Libs/LibSerialize:
+    url: https://github.com/rossnichols/LibSerialize
+    tag: v1.0.0
+  Libs/LibOpenRaid:
+    url: https://github.com/Tercioo/Open-Raid-Library.git
+    branch: main
+
+
 manual-changelog:
   filename: CHANGELOG.md
   markup-type: markdown
