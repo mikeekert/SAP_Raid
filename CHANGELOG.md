@@ -1,3 +1,6 @@
+## 1.0.33 (2025-08-19)
+- LiquidWeakAuras update too 
+
 ## 1.0.32 (2025-08-19)
 - Updates since mythic week concluded 
 
