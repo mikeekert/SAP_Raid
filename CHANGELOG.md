@@ -1,3 +1,6 @@
+## 1.0.34 (2025-08-21)
+- A few changes for Loomithar Mythic / Dimensius 
+
 ## 1.0.33 (2025-08-19)
 - LiquidWeakAuras update too 
 
