@@ -1,3 +1,6 @@
+## 1.0.35 (2025-08-22)
+- Small Loomithar tweaks post-prog 
+
 ## 1.0.34 (2025-08-21)
 - A few changes for Loomithar Mythic / Dimensius 
 
