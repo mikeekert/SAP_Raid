@@ -66,12 +66,7 @@ function LUP:InitializeSettings()
     -- To check options for a module, make sure it's loaded (by going into its options), then dump BigWigs:GetBossModule(moduleName).db
     AddCheckButton(
         "Disable BigWigs assignments",
-        "When checked, automatically disables BigWigs assignments (and marks) that clash with Liquid WeakAura assignments.|n|n" ..
-        "The following options are disabled:|n|n" ..
-        CreateTextureMarkup(5770809, 64, 64, 0, 0, 5/64, 59/64, 5/64, 59/64) .. " |cff1998faNerub-ar Palace|r|n" ..
-        "- Experimental Dosage assignments|n" ..
-        "- Voracious Worm marking|n" ..
-        "- Reactive Toxin assignments",
+        "When checked, automatically disables BigWigs assignments (and marks) that clash with Liquid WeakAura assignments.",
         SAPUpdaterSaved.settings.disableBigWigsAssignments,
         function(disableBigWigsAssignments)
             SAPUpdaterSaved.settings.disableBigWigsAssignments = disableBigWigsAssignments
