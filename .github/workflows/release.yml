@@ -84,17 +84,6 @@ jobs:
           shopt -s extglob
           cp -r !(package|.git|.github) package/SAP_Raid_Updater/
 
-      - name: Discord Notification
-        if: ${{ steps.update_version_and_changelog.outputs.has_changelog == 'true' }}
-        uses: Ilshidur/action-discord@master
-        env:
-          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
-          DISCORD_USERNAME: 'SAP Raid Updater'
-          DISCORD_AVATAR: 'https://i.imgur.com/kJ98eyt.png'
-          DISCORD_EMBEDS: ${{ steps.update_version_and_changelog.outputs.embeds }}
-        with:
-          args: ''
-
       - name: Package and release
         uses: BigWigsMods/packager@v2
 
@@ -113,3 +102,14 @@ jobs:
             git commit -m "Update version [skip ci]"
           fi
           git push origin HEAD:master
+
+      - name: Discord Notification
+        if: ${{ steps.update_version_and_changelog.outputs.has_changelog == 'true' }}
+        uses: Ilshidur/action-discord@master
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+          DISCORD_USERNAME: 'SAP Raid Updater'
+          DISCORD_AVATAR: 'https://i.imgur.com/kJ98eyt.png'
+          DISCORD_EMBEDS: ${{ steps.update_version_and_changelog.outputs.embeds }}
+        with:
+          args: ''
