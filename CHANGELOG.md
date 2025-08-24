@@ -1,3 +1,6 @@
+## 1.0.36 (2025-08-24)
+- Fixed some Dimension stuff with latest Mythic Liquid update 
+
 ## 1.0.35 (2025-08-22)
 - Small Loomithar tweaks post-prog 
 
