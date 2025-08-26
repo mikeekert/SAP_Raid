@@ -1,3 +1,6 @@
+## 1.0.39 (2025-08-26)
+- Small WA fixes for latest TL update :)  
+
 ## 1.0.38 (2025-08-26)
 - fixed a few annoying dimensius things 
 
