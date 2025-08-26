@@ -1,3 +1,6 @@
+## 1.0.38 (2025-08-26)
+- fixed a few annoying dimensius things 
+
 ## 1.0.37 (2025-08-24)
 - Adding Araz - Mythic 
 
