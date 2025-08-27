@@ -1,3 +1,6 @@
+## 1.0.40 (2025-08-27)
+- Updating with new Liquid changes, all bosses 
+
 ## 1.0.39 (2025-08-26)
 - Small WA fixes for latest TL update :)  
 
