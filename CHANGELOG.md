@@ -1,3 +1,6 @@
+## 1.0.41 (2025-08-28)
+- Updating a few small changes for non-Araz bosses 
+
 ## 1.0.40 (2025-08-27)
 - Updating with new Liquid changes, all bosses 
 
