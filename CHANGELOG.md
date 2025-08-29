@@ -1,3 +1,6 @@
+## 1.0.42 (2025-08-29)
+- Removing the auto-marker from the WA pack. We will use it outside the folder, and just RL/Assist 
+
 ## 1.0.41 (2025-08-28)
 - Updating a few small changes for non-Araz bosses 
 
