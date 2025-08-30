@@ -1,3 +1,6 @@
+## 1.0.44 (2025-08-30)
+- Adding /say spam to Soak calls on Araz 
+
 ## 1.0.43 (2025-08-30)
 - Updates for Araz/DemonHunters/Fractillus 
 
