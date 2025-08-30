@@ -1,3 +1,6 @@
+## 1.0.43 (2025-08-30)
+- Updates for Araz/DemonHunters/Fractillus 
+
 ## 1.0.42 (2025-08-29)
 - Removing the auto-marker from the WA pack. We will use it outside the folder, and just RL/Assist 
 
