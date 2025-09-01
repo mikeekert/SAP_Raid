@@ -1,3 +1,6 @@
+## 1.0.46 (2025-09-01)
+- fixed a oopsies 
+
 ## 1.0.44 (2025-08-30)
 - Adding /say spam to Soak calls on Araz 
 
