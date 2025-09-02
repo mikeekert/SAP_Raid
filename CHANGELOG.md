@@ -1,3 +1,6 @@
+## 1.0.47 (2025-09-02)
+- Setting up Fractillus items 
+
 ## 1.0.46 (2025-09-01)
 - fixed a oopsies 
 
