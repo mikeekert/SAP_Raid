@@ -1,3 +1,6 @@
+## 1.0.48 (2025-09-04)
+- some apparent urgent Fractillus fixes 
+
 ## 1.0.47 (2025-09-02)
 - Setting up Fractillus items 
 
