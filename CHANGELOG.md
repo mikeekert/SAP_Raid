@@ -1,3 +1,6 @@
+## 1.0.50 (2025-09-10)
+- fractillus fix & soul hunters starter pack 
+
 ## 1.0.49 (2025-09-09)
 - YUPdate 
 
