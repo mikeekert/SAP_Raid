@@ -1,3 +1,6 @@
+## 1.0.51 (2025-09-11)
+- few small updates for Soul Hunters 
+
 ## 1.0.50 (2025-09-10)
 - fractillus fix & soul hunters starter pack 
 
