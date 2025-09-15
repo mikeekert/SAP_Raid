@@ -1,3 +1,6 @@
+## 1.0.52 (2025-09-15)
+- removing some fluff from Soul Hunters boss we don't need 
+
 ## 1.0.51 (2025-09-11)
 - few small updates for Soul Hunters 
 
