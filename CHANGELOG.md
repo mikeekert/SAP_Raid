@@ -1,3 +1,6 @@
+## 1.0.53 (2025-09-17)
+- nexus king early draft of WA setup 
+
 ## 1.0.52 (2025-09-15)
 - removing some fluff from Soul Hunters boss we don't need 
 
