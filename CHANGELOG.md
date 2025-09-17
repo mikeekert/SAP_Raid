@@ -1,3 +1,6 @@
+## 1.0.54 (2025-09-17)
+- this should be the right WA pack 
+
 ## 1.0.53 (2025-09-17)
 - nexus king early draft of WA setup 
 
