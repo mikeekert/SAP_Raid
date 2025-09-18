@@ -1,3 +1,6 @@
+## 1.0.55 (2025-09-18)
+- Uploading P3 Map texture file and fixing P3 specific issues for NK 
+
 ## 1.0.54 (2025-09-17)
 - this should be the right WA pack 
 
