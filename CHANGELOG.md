@@ -1,3 +1,6 @@
+## 1.0.56 (2025-09-19)
+- adding dragon blaze line callouts 
+
 ## 1.0.55 (2025-09-18)
 - Uploading P3 Map texture file and fixing P3 specific issues for NK 
 
