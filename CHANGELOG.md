@@ -1,3 +1,6 @@
+## 1.0.57 (2025-09-19)
+- Forgot the backend logic WA for P3 lol.  Also, refined a few callouts from our P1 prog 
+
 ## 1.0.56 (2025-09-19)
 - adding dragon blaze line callouts 
 
