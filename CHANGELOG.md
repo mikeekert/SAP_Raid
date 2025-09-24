@@ -1,3 +1,6 @@
+## 1.0.58 (2025-09-24)
+- App change only-- added "/sap" cmd  to show/hide 
+
 ## 1.0.57 (2025-09-19)
 - Forgot the backend logic WA for P3 lol.  Also, refined a few callouts from our P1 prog 
 
