@@ -83,6 +83,7 @@ eventFrame:SetScript(
 -- Define your slash commands
 SLASH_SAPRESET1 = "/sapreset"
 SLASH_SAPSHOW1  = "/su"
+SLASH_SAPSHOW2  = "/sap"
 
 -- Register the slash command functions
 SlashCmdList["SAPRESET"] = function()
