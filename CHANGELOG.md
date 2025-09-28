@@ -1,3 +1,6 @@
+## 1.0.59 (2025-09-28)
+- Tiny NexusKing improvements + Dimensius Mythic 
+
 ## 1.0.58 (2025-09-24)
 - App change only-- added "/sap" cmd  to show/hide 
 
