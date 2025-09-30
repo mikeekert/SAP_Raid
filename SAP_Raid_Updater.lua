@@ -26,7 +26,7 @@ local function ApplySoundSettings(auraData, installedAuraData)
     local finish = installedAuraData.actions.finish
 
     -- Preserve on show sounds
-    if start then
+    if start and start.do_sound then
         if not auraData.actions.start then auraData.actions.start = {} end
 
         auraData.actions.start.do_sound = start.do_sound
@@ -37,7 +37,7 @@ local function ApplySoundSettings(auraData, installedAuraData)
     end
 
     -- Preserve on hide sounds
-    if finish then
+    if finish and finish.do_sound then
         if not auraData.actions.finish then auraData.actions.finish = {} end
 
         auraData.actions.finish.do_sound = finish.do_sound
@@ -46,6 +46,24 @@ local function ApplySoundSettings(auraData, installedAuraData)
         auraData.actions.finish.sound_channel = finish.sound_channel
         auraData.actions.finish.stop_sound = finish.stop_sound
         auraData.actions.finish.stop_sound_fade = finish.stop_sound_fade
+    end
+
+    -- Preserve on show text-to-speech
+    if start and start.do_message and start.message_type and start.message_type == "TTS" then
+        if not auraData.actions.start then auraData.actions.start = {} end
+
+        auraData.actions.start.do_message = start.do_message
+        auraData.actions.start.message_type = start.message_type
+        auraData.actions.start.message = start.message
+    end
+
+    -- Preserve on hide text-to-speech
+    if finish and finish.do_message and finish.message_type and finish.message_type == "TTS" then
+        if not auraData.actions.finish then auraData.actions.finish = {} end
+
+        auraData.actions.finish.do_message = finish.do_message
+        auraData.actions.finish.message_type = finish.message_type
+        auraData.actions.finish.message = finish.message
     end
 end
 
@@ -102,6 +120,8 @@ end
 -- Force updates the on init code, even if the user unchecked "actions" when importing
 -- Users often do this to preserve their sounds/glow colors/etc. but it can break assignment functionality
 local function ForceUpdateOnInit(customOnInit)
+    if not SAPUpdaterSaved.forceUpdateOnInit then return end
+
     for id, customCode in pairs(customOnInit) do
         local data = WeakAuras.GetData(id)
 

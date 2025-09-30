@@ -46,6 +46,7 @@ local function EnsureSettings()
     if not SAPUpdaterSaved.settings then SAPUpdaterSaved.settings = {} end
     if not SAPUpdaterSaved.settings.frames then SAPUpdaterSaved.settings.frames = {} end
     if not SAPUpdaterSaved.nicknames then SAPUpdaterSaved.nicknames = {} end
+    if SAPUpdaterSaved.forceUpdateOnInit == nil then SAPUpdaterSaved.forceUpdateOnInit = true end
     if SAPUpdaterSaved.settings.readyCheckPopup == nil then SAPUpdaterSaved.settings.readyCheckPopup = true end
     if SAPUpdaterSaved.settings.disableBigWigsAssignments == nil then SAPUpdaterSaved.settings.disableBigWigsAssignments = true end
     if SAPUpdaterSaved.settings.debug == nil then SAPUpdaterSaved.settings.debug = false end

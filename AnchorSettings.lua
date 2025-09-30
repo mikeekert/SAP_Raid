@@ -1,6 +1,6 @@
 local SharedMedia = LibStub("LibSharedMedia-3.0")
 
-SAP_Raid_Updater = {}
+if not SAP_Raid_Updater then SAP_Raid_Updater = {} end
 
 local anchorSettings = {}
 local updateAnchorFunctions = {}
