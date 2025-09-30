@@ -1,3 +1,6 @@
+## 1.0.61 (2025-09-30)
+- WeakAura change - Adding more predictive tank combo WA 
+
 ## 1.0.60 (2025-09-30)
 - adding some sound files from Liquid WA pack.  also a few more Save Custom TTS options for users when updating 
 
