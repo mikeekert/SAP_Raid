@@ -1,3 +1,6 @@
+## 1.0.60 (2025-09-30)
+- adding some sound files from Liquid WA pack.  also a few more Save Custom TTS options for users when updating 
+
 ## 1.0.59 (2025-09-28)
 - Tiny NexusKing improvements + Dimensius Mythic 
 
