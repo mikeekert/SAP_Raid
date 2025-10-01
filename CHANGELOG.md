@@ -1,3 +1,6 @@
+## 1.0.63 (2025-10-01)
+- tiny fixes.  buff tracker should work now, and an insignificant gateway timer change 
+
 ## 1.0.61 (2025-09-30)
 - WeakAura change - Adding more predictive tank combo WA 
 
