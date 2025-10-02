@@ -1,3 +1,6 @@
+## 1.0.64 (2025-10-02)
+- adding small timer for Tanks in P3, for new Clones spawning 
+
 ## 1.0.63 (2025-10-01)
 - tiny fixes.  buff tracker should work now, and an insignificant gateway timer change 
 
