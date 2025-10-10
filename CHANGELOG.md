@@ -1,3 +1,6 @@
+## 1.0.66 (2025-10-10)
+- cleanup on 2 dead WA 
+
 ## 1.0.65 (2025-10-08)
 - a few updates to Dimensius WA Imports 
 

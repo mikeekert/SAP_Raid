@@ -1,5 +1,5 @@
 ## Interface: 110200
-## Version: 65
+## Version: 66
 ## X-Curse-Project-ID: 1324243
 ## Title: SAP Raid Tools [Manaforge]
 ## Author: SAP
