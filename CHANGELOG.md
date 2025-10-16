@@ -1,3 +1,6 @@
+## 1.0.67 (2025-10-16)
+-  promoting key P2 timers to Annoying Text bucket
+
 ## 1.0.66 (2025-10-10)
 - cleanup on 2 dead WA 
 
