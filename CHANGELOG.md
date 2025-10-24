@@ -1,3 +1,6 @@
+## 1.0.68 (2025-10-24)
+-  the final WA update ever?
+
 ## 1.0.67 (2025-10-16)
 -  promoting key P2 timers to Annoying Text bucket
 
