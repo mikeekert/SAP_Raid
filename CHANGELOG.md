@@ -1,3 +1,6 @@
+## 1.0.69 (2025-11-06)
+-  extremely small P3 Pull timer update
+
 ## 1.0.68 (2025-10-24)
 -  the final WA update ever?
 
