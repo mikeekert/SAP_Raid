@@ -1,3 +1,6 @@
+## 1.0.70 (2025-11-10)
+-  updating older bosses with latest assignment code
+
 ## 1.0.69 (2025-11-06)
 -  extremely small P3 Pull timer update
 
